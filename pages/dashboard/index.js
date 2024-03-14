@@ -73,7 +73,7 @@ export async function getServerSideProps({ req, res }) {
       const token = await getToken({ req });
 
       let details = await axios.get(
-        "https://b2fa-2401-4900-1c01-b144-a469-cd11-c7ee-dd54.ngrok-free.app/api/me/details?key=" +
+        "https://65f30ef779bf5de4f8477a8f--poetic-fenglisu-025301.netlify.app/api/me/details?key=" +
           token.twitter.access_token
       );
 
