@@ -20,8 +20,7 @@ export const authOptions = {
     TwitterProvider({
       clientId: process.env.TWITTER_CLIENT_ID,
       clientSecret: process.env.TWITTER_CLIENT_SECRET,
-      version: "2.0",
-      checks: ['none']
+      version: "2.0"
     }),
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -197,7 +196,7 @@ export const authOptions = {
       }
     },
     async redirect({ url, baseUrl }) {
-      console.log(baseUrl)
+      console.log(baseUrl,url)
       return baseUrl;
     },
     async jwt({ token, user, account = {}, profile = {}, isNewUser }) {
