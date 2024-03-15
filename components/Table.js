@@ -31,13 +31,13 @@ const Table = ({ columns, data }) => {
 
       //find and update with selectedUser
       await axios.post("/api/me/message", {
-        username
+        username,
       });
 
-      alert('Message sent successfully')
+      alert("Message sent successfully");
     } catch (e) {
       console.error(e);
-      alert('Something went wrong. Check logs.')
+      alert("Something went wrong. Check logs.");
     }
   }
 
@@ -57,7 +57,7 @@ const Table = ({ columns, data }) => {
   let [isOpen, setIsOpen] = useState(false);
   let [selectedUser, setSelectedUser] = useState("");
 
-  console.log(selectedUser)
+  console.log(selectedUser);
 
   return (
     <>
@@ -101,30 +101,35 @@ const Table = ({ columns, data }) => {
                           className="pt-8 h-full px-4 flex items-center gap-x-1"
                           {...cell.getCellProps()}
                         >
-                          <button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-2 py-1 rounded-md hover:bg-indigo-400">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              strokeWidth={1.5}
-                              stroke="currentColor"
-                              className="w-4 h-4 -rotate-45"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
-                              />
-                            </svg>
-                            <span
-                              onClick={() => sendMessage(cell.value)}
-                            >
-                              Message
-                            </span>
-                            {/* <span>{cell.render("Cell")}</span> */}
-                          </button>
+                            {console.log(cell.value)}
+                          {/* check if user's message object is an empty field, if no then admin already sent msg */}
+                          {(!cell.value?.text) && (
+                            <button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-2 py-1 rounded-md hover:bg-indigo-400">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                strokeWidth={1.5}
+                                stroke="currentColor"
+                                className="w-4 h-4 -rotate-45"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+                                />
+                              </svg>
+                              {/* dont show message btn is twitter already verified */}
+
+                              <span onClick={() => sendMessage(cell.value)}>
+                                Message
+                              </span>
+
+                              {/* <span>{cell.render("Cell")}</span> */}
+                            </button>
+                          )}
                           <a
-                            href={`https://twitter.com/${cell.value}`}
+                            href={`https://twitter.com/${row.cells[15].value}`}
                             target="_blank"
                             className="flex items-center gap-x-1 bg-gray-900 text-white text-sm px-2 py-1 rounded-md hover:bg-gray-800"
                           >

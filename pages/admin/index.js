@@ -8,7 +8,7 @@ export default function Page({users}) {
   const columns = [
     {
       Header: 'Actions',
-      accessor: 'twitt_username',
+      accessor: 'message',
     },
     {
       Header: 'Name',
@@ -65,6 +65,10 @@ export default function Page({users}) {
     {
       Header: 'Like Count',
       accessor: 'like_count',
+    },
+    {
+      Header: 'Twitter Username',
+      accessor: 'twitt_username',
     },
     {
       Header: 'Created At',
