@@ -1,6 +1,5 @@
 import CopyWebpackPlugin from "copy-webpack-plugin"
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config, { isServer }) => {
     if (isServer) {
