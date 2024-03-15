@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --external:geoip-lite",
     "start": "next start",
     "lint": "next lint"
   },
@@ -23,8 +23,8 @@
     "framer-motion": "^11.0.8",
     "geoip-lite": "^1.4.10",
     "mongodb": "^6.4.0",
-    "next": "13.4.4",
-    "next-auth": "4.22.1",
+    "next": "13.4.8",
+    "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
     "react-table": "^7.8.0",
