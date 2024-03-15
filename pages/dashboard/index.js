@@ -98,6 +98,10 @@ export async function getServerSideProps({ req, res }) {
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
 
+      const country = req.headers["x-country"];
+
+      console.log('Country here',country)
+
       const ip =
         typeof forwarded === "string"
           ? forwarded.split(/, /)[0]
