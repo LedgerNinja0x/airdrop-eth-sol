@@ -91,7 +91,6 @@ export const authOptions = {
     async signIn({ user, account, profile, email, credentials }) {
       console.log("inside signin", user);
       try {
-
         if (account.provider == "twitter") {
           //create a new user if it doesn't exist
           let founduser = await axios.post(
@@ -114,10 +113,10 @@ export const authOptions = {
             }
           );
 
-          console.log(founduser.data.document,'founduser')
+          console.log(founduser.data.document, "founduser");
 
           if (!founduser.data.document) {
-            console.log('new acc creating...')
+            console.log("new acc creating...");
             await axios.post(
               `${process.env.MONGODB_URI}/action/insertOne`,
               {
@@ -129,7 +128,7 @@ export const authOptions = {
                   username: user.name,
                   email: user.email,
                   avatar: user.image,
-                  twitterVerified: 'no',
+                  twitterVerified: "no",
                   userRating: 0,
                   solAddress: "",
                   ethAddress: "",
@@ -196,7 +195,10 @@ export const authOptions = {
         return false;
       }
     },
-    async jwt({token, user, account={}, profile={}, isNewUser}) {
+    async redirect({ url, baseUrl }) {
+      return baseUrl;
+    },
+    async jwt({ token, user, account = {}, profile = {}, isNewUser }) {
       // We want to return a token which containts an object called
       // provider (eg Twitter), along with the access_token and
       // the refresh_token.
