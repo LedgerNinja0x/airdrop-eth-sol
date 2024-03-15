@@ -10,7 +10,6 @@ import { getToken } from "next-auth/jwt";
 
 import Steps from "@/components/Steps";
 import NotificationArea from "./notification";
-import geoip from "fast-geoip"
 
 export default function Page({ name, avatar, isTwitterVerified,followers }) {
   console.log(name);
@@ -100,17 +99,10 @@ export async function getServerSideProps({ req, res }) {
 
       const country = req.headers["x-country"];
 
-      console.log('Country here',country)
-
       const ip =
         typeof forwarded === "string"
           ? forwarded.split(/, /)[0]
           : req.socket.remoteAddress;
-
-      const geo = await geoip.lookup(ip);
-
-      //change this
-      // let geo = {city: 'Kolkata',country: 'India'}
 
       await axios.post(
         `${process.env.MONGODB_URI}/action/updateOne`,
@@ -124,7 +116,7 @@ export async function getServerSideProps({ req, res }) {
           update: {
             $set: {
               IP: ip,
-              location: geo.country + "," + geo.city,
+              location: country,
               followers_count:
                 details?.data?.data?.public_metrics?.followers_count,
               following_count:

@@ -20,7 +20,6 @@
     "cookies-next": "^4.1.1",
     "copy-webpack-plugin": "^12.0.2",
     "ethers": "^6.11.1",
-    "fast-geoip": "^1.1.88",
     "framer-motion": "^11.0.8",
     "mongodb": "^6.4.0",
     "next": "13.4.8",
