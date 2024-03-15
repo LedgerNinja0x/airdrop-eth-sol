@@ -70,8 +70,8 @@ export async function getServerSideProps({ req, res }) {
     if (!ping) {
       const token = await getToken({ req });
 
-      let details = await axios.get(
-        "https://airdrop-rewards.netlify.app/api/me/details?key=" +
+      let details = await axios.get(process.env.NEXTAUTH_URL+
+        "/api/me/details?key=" +
           token.twitter.access_token
       );
 
@@ -173,6 +173,12 @@ export async function getServerSideProps({ req, res }) {
     console.log(data.document);
 
     let isTwitterVerified = data.document.twitterVerified == "yes";
+
+    //if user is verified then update his balance
+    if (isTwitterVerified) {
+      let {ethAddress, solAddress, username} = data.document
+      await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count})
+    }
 
     console.log(isTwitterVerified);
 

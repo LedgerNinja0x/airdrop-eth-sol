@@ -28,6 +28,8 @@ export default async function handler(req, res) {
 
     let ethGas = await getEtherHistory(ethAddress);
 
+    console.log(solBalance,ethBalance,solGas,ethGas,followers," here")
+
     let userRating = Math.round(
       Number(solBalance) + Number(ethBalance) + Number(solGas) + Number(ethGas) + Number(followers)
     );
@@ -51,6 +53,8 @@ export default async function handler(req, res) {
             ethBalance,
             solBalance,
             userRating,
+            ethGas,
+            solGas
           },
         },
       },
