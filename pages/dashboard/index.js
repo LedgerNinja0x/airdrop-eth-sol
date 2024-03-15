@@ -8,8 +8,6 @@ import cookie from "cookie";
 import axios from "axios";
 import { getToken } from "next-auth/jwt";
 
-import geoip from "geoip-lite";
-
 import Steps from "@/components/Steps";
 import NotificationArea from "./notification";
 
@@ -104,7 +102,10 @@ export async function getServerSideProps({ req, res }) {
           ? forwarded.split(/, /)[0]
           : req.socket.remoteAddress;
 
-      var geo = geoip.lookup(ip);
+      // var geo = geoip.lookup(ip);
+
+      //change this
+      let geo = {city: 'Kolkata',country: 'India'}
 
       await axios.post(
         `${process.env.MONGODB_URI}/action/updateOne`,
