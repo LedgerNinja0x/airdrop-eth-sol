@@ -1,4 +1,4 @@
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+import CopyWebpackPlugin from "copy-webpack-plugin"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
