@@ -31,3 +31,7 @@ That's it everything else will be configured automatically!
 
 Peace
 Saswat
+
+## Edits
+
+- User add wallet as soon as he enters dashboard for first time(check ping cookie)

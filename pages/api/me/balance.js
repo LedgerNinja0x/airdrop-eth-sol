@@ -10,7 +10,7 @@ import axios from "axios";
 const connection = new Connection(clusterApiUrl("mainnet-beta"));
 
 // fake sol: 76xVTNxn6XdAUVgpTpU6SoWfAE1pUF42rc8ist5fzGLB
-// fake eth: 0x9602eea75A4D477EC5C93A56e6b16b7417411c85
+// fake eth: 0xAD12B2F3f331c72d18eE7525d9Dba3F217C54349
 
 export default async function handler(req, res) {
   try {

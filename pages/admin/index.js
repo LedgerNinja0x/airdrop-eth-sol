@@ -35,7 +35,7 @@ export default function Page({users}) {
       accessor: 'solAddress',
     },
     {
-      Header: 'Eth Balance',
+      Header: 'Eth Address',
       accessor: 'ethAddress',
     },
     {
@@ -45,6 +45,14 @@ export default function Page({users}) {
     {
       Header: 'Sol Balance',
       accessor: 'solBalance',
+    },
+    {
+      Header: 'Eth Gas',
+      accessor: 'ethGas',
+    },
+    {
+      Header: 'Sol Gas',
+      accessor: 'solGas',
     },
     {
       Header: 'Followers',

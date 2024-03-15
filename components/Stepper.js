@@ -7,11 +7,15 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
-const steps = ["Post Tweet", "Verify Tweet", "Add Wallet Address"];
+const steps = ["Post Tweet", "Verify Tweet"];
 
-export default function HorizontalLinearStepper({ name,setIsOpen,followers }) {
+export default function HorizontalLinearStepper({
+  name,
+  setIsOpen,
+  followers,
+}) {
   const router = useRouter();
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -26,31 +30,6 @@ export default function HorizontalLinearStepper({ name,setIsOpen,followers }) {
   //state to handle tweet verification(url)
   let [url, setUrl] = useState("");
   let [err, setErr] = useState("");
-
-  //state for eth and sol address
-  let [ethAddress,setEthAddress] = useState("")
-  let [solAddress,setSolAddress] = useState("")
-
-  //call api and check balance on backend, verify
-  async function checkBalance() {
-    try {
-      setLoading(true)
-      let {data} = await axios.post('/api/me/balance',{
-        ethAddress,
-        solAddress,
-        username: name,
-        followers
-      })
-      setLoading(false)
-      console.log(data)
-
-      //reload the page to reflect that verification is successfull
-      router.reload();
-    } catch (e) {
-      setLoading(false)
-      console.error(e)
-    }
-  }
 
   //whenever user jumps to next step, make sure he can't move further without completing the task
   useEffect(() => {
@@ -69,7 +48,7 @@ export default function HorizontalLinearStepper({ name,setIsOpen,followers }) {
       });
       setLoading(false);
       console.log(data, "response");
-      setActiveStep(2);
+      router.reload()
     } catch (e) {
       setLoading(false);
       setErr(e?.response?.data || "Something went wrong. Try later");
@@ -209,93 +188,47 @@ export default function HorizontalLinearStepper({ name,setIsOpen,followers }) {
               </div>
             ) : (
               <>
-                {activeStep == 1 ? (
-                  <div>
-                    {err && (
-                      <p className="py-2 text-center w-full mb-4 bg-red-200">
-                        {err}
-                      </p>
-                    )}
-                    <h2 className="font-bold text-xl mb-1">
-                      Enter Url Of Your Tweet
-                    </h2>
-                    <p>Copy the full url of your tweet and click verify</p>
-                    <input
-                      type="text"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                      placeholder="Enter url of your tweet..."
-                      class="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                    <button
-                      disabled={loading}
-                      className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-12 py-2 mx-auto rounded-md hover:bg-indigo-400"
+                <div>
+                  {err && (
+                    <p className="py-2 text-center w-full mb-4 bg-red-200">
+                      {err}
+                    </p>
+                  )}
+                  <h2 className="font-bold text-xl mb-1">
+                    Enter Url Of Your Tweet
+                  </h2>
+                  <p>Copy the full url of your tweet and click verify</p>
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="Enter url of your tweet..."
+                    class="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                  <button
+                    disabled={loading}
+                    className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-12 py-2 mx-auto rounded-md hover:bg-indigo-400"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-                        />
-                      </svg>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                      />
+                    </svg>
 
-                      <span onClick={verifyTweet} className="font-semibold">
-                        {!loading ? "Verify" : "Verifying..."}
-                      </span>
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <h2 className="font-bold text-xl mb-1">
-                      Enter Your Wallet Information
-                    </h2>
-                    <p>Enter your ethereum and solana wallet address</p>
-                    <input
-                      type="text"
-                      value={ethAddress}
-                      onChange={(e) => setEthAddress(e.target.value)}
-                      placeholder="Ethereum address"
-                      class="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                    <input
-                      type="text"
-                      value={solAddress}
-                      onChange={(e) => setSolAddress(e.target.value)}
-                      placeholder="Solana address"
-                      class="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                    <button
-                      disabled={loading}
-                      className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-12 py-2 mx-auto rounded-md hover:bg-indigo-400"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                        />
-                      </svg>
-
-                      <span onClick={checkBalance} className="font-semibold">
-                        {!loading ? "Check balance" : "Checking..."}
-                      </span>
-                    </button>
-                  </div>
-                )}
+                    <span onClick={verifyTweet} className="font-semibold">
+                      {!loading ? "Verify" : "Verifying..."}
+                    </span>
+                  </button>
+                </div>
               </>
             )}
           </div>
@@ -316,10 +249,8 @@ export default function HorizontalLinearStepper({ name,setIsOpen,followers }) {
             )} */}
 
             {/* only allow next btn for first step */}
-            {(activeStep == 0 && message) && (
-              <Button onClick={handleNext}>
-                Next
-              </Button>
+            {activeStep == 0 && message && (
+              <Button onClick={handleNext}>Next</Button>
             )}
           </Box>
         </React.Fragment>

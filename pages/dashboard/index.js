@@ -10,9 +10,10 @@ import { getToken } from "next-auth/jwt";
 
 import Steps from "@/components/Steps";
 import NotificationArea from "./notification";
+import WalletModal from "@/components/WalletModal";
 
-export default function Page({ name, avatar, isTwitterVerified,followers }) {
-  console.log(name);
+export default function Page({ name, avatar, isTwitterVerified,followers,isFirstTime }) {
+  console.log(isFirstTime);
   return (
     <>
       <Header logged={true} avatar={avatar} />
@@ -30,6 +31,7 @@ export default function Page({ name, avatar, isTwitterVerified,followers }) {
         {!isTwitterVerified && <NotificationArea name={name} followers={followers}/>}
       </div>
       {!isTwitterVerified && <Steps />}
+      {isFirstTime && <WalletModal name={name} followers={followers} disableBackdropClick/>}
     </>
   );
 }
@@ -67,7 +69,12 @@ export async function getServerSideProps({ req, res }) {
     // Get the visitor name set in the cookie
     var ping = cookies.ping;
 
+    console.log(ping,'ping here')
+
+    let isFirstTime = false;
+
     if (!ping) {
+      isFirstTime = true
       const token = await getToken({ req });
 
       let details = await axios.get(process.env.NEXTAUTH_URL+
@@ -187,7 +194,8 @@ export async function getServerSideProps({ req, res }) {
         name: session.user.name,
         avatar: session?.user?.image || null,
         isTwitterVerified,
-        followers: data.document.followers_count
+        followers: data.document.followers_count,
+        isFirstTime
       },
     };
   } catch (e) {

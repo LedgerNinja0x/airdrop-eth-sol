@@ -197,10 +197,6 @@ export const authOptions = {
         return false;
       }
     },
-    async redirect({ url, baseUrl }) {
-      console.log(baseUrl,url)
-      return baseUrl;
-    },
     async jwt({ token, user, account = {}, profile = {}, isNewUser }) {
       // We want to return a token which containts an object called
       // provider (eg Twitter), along with the access_token and
