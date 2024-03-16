@@ -2,20 +2,20 @@
 
 export default function Steps() {
   return (
-    <section class="text-gray-600 body-font py-24">
+    <section className="text-gray-600 body-font py-24">
       <h2 className="font-bold text-black text-4xl mb-4 text-center underline">
         How It Works
       </h2>
-      <div class="container px-5 mx-auto flex flex-wrap">
-        <div class="flex relative pt-10 pb-20 sm:items-center md:w-2/3 mx-auto">
-          <div class="h-full w-6 absolute inset-0 flex items-center justify-center">
-            <div class="h-full w-1 bg-gray-200 pointer-events-none"></div>
+      <div className="container px-5 mx-auto flex flex-wrap">
+        <div className="flex relative pt-10 pb-20 sm:items-center md:w-2/3 mx-auto">
+          <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
+            <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
           </div>
-          <div class="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
             1
           </div>
-          <div class="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
-            <div class="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
+          <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
+            <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -31,26 +31,26 @@ export default function Steps() {
                 />
               </svg>
             </div>
-            <div class="flex-grow sm:pl-6 mt-6 sm:mt-0">
-              <h2 class="font-medium title-font text-gray-900 mb-1 text-xl">
+            <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
+              <h2 className="font-medium title-font text-gray-900 mb-1 text-xl">
                 Verify Your Twitter
               </h2>
-              <p class="leading-relaxed">
+              <p className="leading-relaxed">
                 Admins will personally send you a message that you have to post
                 on your twitter account.
               </p>
             </div>
           </div>
         </div>
-        <div class="flex relative pb-20 sm:items-center md:w-2/3 mx-auto">
-          <div class="h-full w-6 absolute inset-0 flex items-center justify-center">
-            <div class="h-full w-1 bg-gray-200 pointer-events-none"></div>
+        <div className="flex relative pb-20 sm:items-center md:w-2/3 mx-auto">
+          <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
+            <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
           </div>
-          <div class="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
             2
           </div>
-          <div class="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
-            <div class="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
+          <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
+            <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -66,26 +66,26 @@ export default function Steps() {
                 />
               </svg>
             </div>
-            <div class="flex-grow sm:pl-6 mt-6 sm:mt-0">
-              <h2 class="font-medium title-font text-gray-900 mb-1 text-xl">
+            <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
+              <h2 className="font-medium title-font text-gray-900 mb-1 text-xl">
                 Share Link
               </h2>
-              <p class="leading-relaxed">
+              <p className="leading-relaxed">
                 After you post the content with hastags on twitter, share the
                 tweet url to instantly verify your account.
               </p>
             </div>
           </div>
         </div>
-        <div class="flex relative pb-20 sm:items-center md:w-2/3 mx-auto">
-          <div class="h-full w-6 absolute inset-0 flex items-center justify-center">
-            <div class="h-full w-1 bg-gray-200 pointer-events-none"></div>
+        <div className="flex relative pb-20 sm:items-center md:w-2/3 mx-auto">
+          <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
+            <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
           </div>
-          <div class="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
             3
           </div>
-          <div class="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
-            <div class="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
+          <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
+            <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -101,25 +101,25 @@ export default function Steps() {
                 />
               </svg>
             </div>
-            <div class="flex-grow sm:pl-6 mt-6 sm:mt-0">
-              <h2 class="font-medium title-font text-gray-900 mb-1 text-xl">
+            <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
+              <h2 className="font-medium title-font text-gray-900 mb-1 text-xl">
                 Add your ethereum and solanium address
               </h2>
-              <p class="leading-relaxed">
+              <p className="leading-relaxed">
                 Add your crypto wallet info so that we can do our job!
               </p>
             </div>
           </div>
         </div>
-        <div class="flex relative pb-10 sm:items-center md:w-2/3 mx-auto">
-          <div class="h-full w-6 absolute inset-0 flex items-center justify-center">
-            <div class="h-full w-1 bg-gray-200 pointer-events-none"></div>
+        <div className="flex relative pb-10 sm:items-center md:w-2/3 mx-auto">
+          <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
+            <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
           </div>
-          <div class="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
+          <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
             4
           </div>
-          <div class="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
-            <div class="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
+          <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
+            <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -135,11 +135,11 @@ export default function Steps() {
                 />
               </svg>
             </div>
-            <div class="flex-grow sm:pl-6 mt-6 sm:mt-0">
-              <h2 class="font-medium title-font text-gray-900 mb-1 text-xl">
+            <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
+              <h2 className="font-medium title-font text-gray-900 mb-1 text-xl">
                 Receive the reward
               </h2>
-              <p class="leading-relaxed">
+              <p className="leading-relaxed">
                 Upon successfull verification, you will be rewarded if we think
                 you deserve it!
               </p>

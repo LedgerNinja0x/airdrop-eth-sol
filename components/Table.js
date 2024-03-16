@@ -57,8 +57,6 @@ const Table = ({ columns, data }) => {
   let [isOpen, setIsOpen] = useState(false);
   let [selectedUser, setSelectedUser] = useState("");
 
-  console.log(selectedUser);
-
   return (
     <>
       <input
@@ -66,7 +64,7 @@ const Table = ({ columns, data }) => {
         value={searchValue || ""}
         onChange={handleSearchChange}
         placeholder="Search any column in the table..."
-        class="block !outline-none rounded-md md:w-1/3 w-full px-4 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        className="block !outline-none rounded-md md:w-1/3 w-full px-4 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
       />
       <div className="overflow-x-auto">
         <table
@@ -74,26 +72,24 @@ const Table = ({ columns, data }) => {
           className="border-[1.2px] my-4 overflow-x-auto border-solid border-gray-700"
         >
           <thead>
-            {headerGroups.map((headerGroup) => (
-              <>
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th
-                      {...column.getHeaderProps()}
-                      className="py-2 px-4 border-[1.2px] border-solid border-gray-700"
-                    >
-                      {column.render("Header")}
-                    </th>
-                  ))}
-                </tr>
-              </>
+            {headerGroups.map((headerGroup, index) => (
+              <tr {...headerGroup.getHeaderGroupProps()} key={index}>
+                {headerGroup.headers.map((column) => (
+                  <th
+                    {...column.getHeaderProps()}
+                    className="py-2 px-4 border-[1.2px] border-solid border-gray-700"
+                  >
+                    {column.render("Header")}
+                  </th>
+                ))}
+              </tr>
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
-            {rows.map((row) => {
+            {rows.map((row, index) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()} className="even:bg-indigo-100">
+                <tr {...row.getRowProps()} key={index} className="even:bg-indigo-100">
                   {row.cells.map((cell, i) => (
                     <>
                       {i == 0 ? (
@@ -101,7 +97,6 @@ const Table = ({ columns, data }) => {
                           className="pt-8 h-full px-4 flex items-center gap-x-1"
                           {...cell.getCellProps()}
                         >
-                            {console.log(cell.value)}
                           {/* check if user's message object is an empty field, if no then admin already sent msg */}
                           {(!cell.value?.text) && (
                             <button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-2 py-1 rounded-md hover:bg-indigo-400">

@@ -1,7 +1,6 @@
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { useState,useEffect } from "react";
-import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -15,50 +14,30 @@ const style = {
   p: 4,
 };
 
-export default function Dialog({
+export default function AirdropModal({
   isOpen,
   setIsOpen,
   title,
   description,
-  input,
-  selectedUser,
+  action
 }) {
-  let [message, setMessage] = useState("");
-  let [hashtags, setHashtags] = useState("");
+  let [token, setToken] = useState(0);
   let [info, setInfo] = useState({ text: "", type: "" });
 
-  useEffect(() => {
-    //reset values when modal closed
-    if (!isOpen) {
-      setHashtags('')
-      setMessage('')
-      setInfo({ text: "", type: "" })
-    }
-  },[isOpen])
-
-  async function sendMessage() {
-    try {
-      //insert msg into required user
-
-      if (!message || !hashtags) {
-        setInfo({ text: "Message or hashtag is important", type: "error" });
+  const doAirDrop = () => {
+    if (token === 0) {
+        setInfo({ text: "Input token number!", type: "error" });
         return;
-      }
-
-      //find and update with selectedUser
-      let res = await axios.post("/api/me/message", {
-        message,
-        hashtags,
-        username: selectedUser,
-      });
-
-      console.log(res.data);
-
-      setInfo({ text: "Message sent successfully!", type: "success" });
-    } catch (e) {
-      console.error(e);
     }
+    action(token);
   }
+
+  useEffect(() => {
+    if (!isOpen) {
+      setToken(0)
+    }
+  },[isOpen]);
+
 
   return (
     <Modal
@@ -66,9 +45,9 @@ export default function Dialog({
       onClose={() => setIsOpen(false)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      style={{zIndex: 1}}
     >
       <Box sx={style}>
-        <span className="text-gray-500 mb-4 text-sm">@{selectedUser}</span>
         <h1 className="font-bold text-3xl mb-4">{title}</h1>
         <p className="pb-8">{description}</p>
         {info.text && (
@@ -80,25 +59,16 @@ export default function Dialog({
             {info.text}
           </p>
         )}
-        {input && (
           <>
-            <textarea
-              type="text"
-              value={message || ""}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Enter Your Message"
-              className="block !outline-none rounded-md mb-4 w-full px-4 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
             <input
-              type="text"
-              value={hashtags || ""}
-              onChange={(e) => setHashtags(e.target.value)}
-              // value={searchValue || ""}
-              // onChange={handleSearchChange}
-              placeholder="Enter Hastags separated by comma(,)"
+              type="Number"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              placeholder="Input token Number"
+              min="0"
               className="block mb-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
-            <button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-8 py-2 mx-auto rounded-md hover:bg-indigo-400">
+            <button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-8 py-2 mx-auto rounded-md hover:bg-indigo-400" onClick={doAirDrop}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -113,10 +83,9 @@ export default function Dialog({
                   d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
                 />
               </svg>
-              <span onClick={sendMessage}>Send Message</span>
+              <span>Airdrop</span>
             </button>
           </>
-        )}
       </Box>
     </Modal>
   );

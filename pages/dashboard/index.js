@@ -49,8 +49,6 @@ export async function getServerSideProps({ req, res }) {
       return { redirect: { destination: "/" } };
     }
 
-    console.log(session, "session");
-
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
       session?.user?.name == process.env.ADMIN_USERNAME
@@ -69,8 +67,6 @@ export async function getServerSideProps({ req, res }) {
     // Get the visitor name set in the cookie
     var ping = cookies.ping;
 
-    console.log(ping,'ping here')
-
     let isFirstTime = false;
 
     if (!ping) {
@@ -81,25 +77,6 @@ export async function getServerSideProps({ req, res }) {
         "/api/me/details?key=" +
           token.twitter.access_token
       );
-
-      console.log(details, "frontend details");
-
-      // let details = {
-      //   data: {
-      //     id: "1767985969033015296",
-      //     username: "SmediaSas55633",
-      //     public_metrics: {
-      //       followers_count: 0,
-      //       following_count: 1,
-      //       tweet_count: 0,
-      //       listed_count: 0,
-      //       like_count: 0,
-      //     },
-      //     name: "SASSmedia",
-      //   },
-      // };
-
-      //update fields
 
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
@@ -155,7 +132,6 @@ export async function getServerSideProps({ req, res }) {
     }
 
     //check if user is already verified
-    console.log(session.user.name, "name here");
 
     let { data } = await axios.post(
       `${process.env.MONGODB_URI}/action/findOne`,

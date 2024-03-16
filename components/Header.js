@@ -7,19 +7,19 @@ import { usePathname } from 'next/navigation'
 export default function Header({ logged, avatar }) {
   const pathname = usePathname()
   return (
-    <header class="text-gray-600 body-font bg-gray-50 shadow-sm">
-      <div class="container mx-auto flex flex-wrap px-5 py-3 flex-col md:flex-row items-center">
-        <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+    <header className="text-gray-600 body-font bg-gray-50 shadow-sm">
+      <div className="container mx-auto flex flex-wrap px-5 py-3 flex-col md:flex-row items-center">
+        <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
           <img src="/logo.png" className="w-8 h-8"></img>
-          <span class="ml-3 text-xl">Airdrop</span>
+          <span className="ml-3 text-xl">Airdrop</span>
         </a>
-        <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-          <a class="mr-5 hover:text-indigo-400 cursor-pointer">FAQ</a>
-          <a class="mr-5 hover:text-indigo-400 cursor-pointer">Know More</a>
-          <a class="mr-5 hover:text-indigo-400 cursor-pointer">Community</a>
+        <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+          <a className="mr-5 hover:text-indigo-400 cursor-pointer">FAQ</a>
+          <a className="mr-5 hover:text-indigo-400 cursor-pointer">Know More</a>
+          <a className="mr-5 hover:text-indigo-400 cursor-pointer">Community</a>
           {logged && (
             <a
-              class="mr-5 hover:text-indigo-400 cursor-pointer"
+              className="mr-5 hover:text-indigo-400 cursor-pointer"
               onClick={() => signOut()}
             >
               Sign out
