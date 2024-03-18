@@ -5,10 +5,12 @@ import axios from "axios";
 import Header from "@/components/Header";
 import Table from "@/components/Table";
 import AirdropModal from "@/components/AirdropModal";
+import StakingModal from "@/components/StakingModal";
 import NoWalletDetected from "@/components/NoWalletDetected";
 import { ethers, Contract } from "ethers";
 import contractAddress from "@/Contracts/addresses.json";
 import AirDropAbi from "@/Contracts/airDrop.json";
+import StakingAbi from "@/Contracts/Staking.json";
 import TokenAbi from "@/Contracts/erc20.json";
 
 export default function Page({users}) {
@@ -85,9 +87,11 @@ export default function Page({users}) {
     // Add more columns as needed
   ]
   const [isOpen, setIsOpen] = useState(false);
+  const [isStakingOpen, setIsStakingOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [ airDropContract, setAirDropContract ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
+  const [ stakingContract, setStakingContract ] = useState(false);
 
   const connectWallet = async () => {
     const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -121,6 +125,16 @@ export default function Page({users}) {
     setTokenContract(_TokenContract);
   }
 
+  const initializeStakingContract = async () => {
+    const _provider = new ethers.providers.Web3Provider(window.ethereum);
+    const _StakingContract = new Contract(
+      contractAddress.Staking,
+      StakingAbi.abi,
+      _provider.getSigner(0)
+    );
+    setStakingContract(_StakingContract);
+  }
+
   const doAirDrop = async (token) => {
     if (walletAddress === "") {
       connectWallet();
@@ -144,12 +158,49 @@ export default function Page({users}) {
     }
   }
 
+  const doStaking = async (token, reward, period, periodType) => {
+    if (walletAddress === "") {
+      connectWallet();
+    }
+    const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
+    const rewardToWei = Number(ethers.utils.parseEther(reward.toString(), 18).toString());
+    const userAddress = users.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
+    try {
+      const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(tokenToWei * userAddress.length));
+      const receipt = await approveTx.wait();
+      let stakingPeriod;
+      if (periodType == 1) {
+        const secondsInDay = ethers.BigNumber.from(60 * 60 * 24);
+        stakingPeriod = secondsInDay.mul(period);
+      } else if( periodType == 2) {
+        const secondsInMonth = ethers.BigNumber.from(60 * 60 * 24 * 30);
+        stakingPeriod = secondsInMonth.mul(period);
+      } else {
+        const secondsInYear = ethers.BigNumber.from(60 * 60 * 24 * 365);
+        stakingPeriod = secondsInYear.mul(period);
+      }
+      if (receipt.status === 0) {
+        console.log("transaction failed");
+      } else {
+        const stakingTx = await stakingContract.stake(userAddress, BigInt(tokenToWei), BigInt(stakingPeriod), BigInt(rewardToWei));
+        const stakingReceipt = await stakingTx.wait();
+        if (stakingReceipt.status === 0) {
+          console.log("transaction failed");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+
   useEffect(() => {
     if(!window.ethereum) {
       return NoWalletDetected;
     }
     initializeContract();
     initializeTokenContract();
+    initializeStakingContract();
   }, []);
 
   return (
@@ -162,7 +213,7 @@ export default function Page({users}) {
             <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2" onClick={() => setIsOpen(true)}>
               Airdrop
             </button>
-            <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2">
+            <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2" onClick={() => setIsStakingOpen(true)}>
               Staking
             </button>
           </div>
@@ -176,6 +227,15 @@ export default function Page({users}) {
           "Please inpurt token number for airdrop"
         }
         action={doAirDrop}
+        />
+        <StakingModal 
+        isOpen={isStakingOpen}
+        setIsOpen={setIsStakingOpen}
+        title={"Staking Manager"}
+        description={
+          "Please input information about staking"
+        }
+        action={doStaking}
         />
       </div>
     </>

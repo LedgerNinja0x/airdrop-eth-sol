@@ -7,12 +7,46 @@ export default function Steps() {
         How It Works
       </h2>
       <div className="container px-5 mx-auto flex flex-wrap">
-        <div className="flex relative pt-10 pb-20 sm:items-center md:w-2/3 mx-auto">
+      <div className="flex relative pb-20 sm:items-center md:w-2/3 mx-auto">
           <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
             <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
           </div>
           <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
             1
+          </div>
+          <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
+            <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-12 h-12"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+            </div>
+            <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
+              <h2 className="font-medium title-font text-gray-900 mb-1 text-xl">
+                Add your ethereum and solanium address
+              </h2>
+              <p className="leading-relaxed">
+                Add your crypto wallet info so that we can do our job!
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="flex relative pt-10 pb-20 sm:items-center md:w-2/3 mx-auto">
+          <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
+            <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
+          </div>
+          <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
+            2
           </div>
           <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
             <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
@@ -47,7 +81,7 @@ export default function Steps() {
             <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
           </div>
           <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
-            2
+            3
           </div>
           <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
             <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
@@ -73,40 +107,6 @@ export default function Steps() {
               <p className="leading-relaxed">
                 After you post the content with hastags on twitter, share the
                 tweet url to instantly verify your account.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex relative pb-20 sm:items-center md:w-2/3 mx-auto">
-          <div className="h-full w-6 absolute inset-0 flex items-center justify-center">
-            <div className="h-full w-1 bg-gray-200 pointer-events-none"></div>
-          </div>
-          <div className="flex-shrink-0 w-6 h-6 rounded-full mt-10 sm:mt-0 inline-flex items-center justify-center bg-indigo-500 text-white relative z-10 title-font font-medium text-sm">
-            3
-          </div>
-          <div className="flex-grow md:pl-8 pl-6 flex sm:items-center items-start flex-col sm:flex-row">
-            <div className="flex-shrink-0 w-24 h-24 bg-indigo-100 text-indigo-500 rounded-full inline-flex items-center justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-12 h-12"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                />
-              </svg>
-            </div>
-            <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
-              <h2 className="font-medium title-font text-gray-900 mb-1 text-xl">
-                Add your ethereum and solanium address
-              </h2>
-              <p className="leading-relaxed">
-                Add your crypto wallet info so that we can do our job!
               </p>
             </div>
           </div>

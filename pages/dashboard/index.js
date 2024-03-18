@@ -11,6 +11,7 @@ import { getToken } from "next-auth/jwt";
 import Steps from "@/components/Steps";
 import NotificationArea from "./notification";
 import WalletModal from "@/components/WalletModal";
+import StakingContent from "@/components/StakingContent";
 
 export default function Page({ name, avatar, isTwitterVerified,followers,isFirstTime }) {
   console.log(isFirstTime);
@@ -22,6 +23,7 @@ export default function Page({ name, avatar, isTwitterVerified,followers,isFirst
           {!isTwitterVerified
             ? `Hello ${name} 👋`
             : "Your Account Has Been Verified"}
+          <StakingContent />
         </h1>
         <p>
           {!isTwitterVerified

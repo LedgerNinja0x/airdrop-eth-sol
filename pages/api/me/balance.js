@@ -1,4 +1,4 @@
-import { EtherscanProvider, ethers } from "ethers"; //^v6
+import { ethers } from "ethers";
 import {
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -74,25 +74,7 @@ export default async function handler(req, res) {
   }
 }
 
-class MyEtherscanProvider extends EtherscanProvider {
-  constructor(networkish, apiKey) {
-    super(networkish, apiKey);
-  }
-
-  async getHistory(address, startBlock, endBlock) {
-    const params = {
-      action: "txlist",
-      address,
-      startblock: startBlock == null ? 0 : startBlock,
-      endblock: endBlock == null ? 99999999 : endBlock,
-      sort: "asc",
-    };
-
-    return this.fetch("account", params);
-  }
-}
-
-const myEtherScanInstance = new MyEtherscanProvider();
+const myEtherScanInstance = new ethers.providers.MyEtherscanProvider();
 
 const getEtherHistory = (_address) => {
   return myEtherScanInstance
@@ -116,7 +98,6 @@ const getEtherBalance = async (_address) => {
   var balance = await provider.getBalance(_address);
   // convert a currency unit from wei to ether
   const ethBalance = ethers.formatEther(balance);
-  console.log(ethBalance);
   return ethBalance;
 };
 
