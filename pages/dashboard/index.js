@@ -160,10 +160,14 @@ export async function getServerSideProps({ req, res }) {
     let isTwitterVerified = data.document.twitterVerified == "yes";
 
     //if user is verified then update his balance
-    if (isTwitterVerified) {
-      let {ethAddress, solAddress, username} = data.document
-      await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count})
-    }
+
+    //error: This code causes timeout issue on free hosting tiers
+    //use it only if you absolutely need it
+
+    // if (isTwitterVerified) {
+    //   let {ethAddress, solAddress, username} = data.document
+    //   await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count})
+    // }
 
     console.log(isTwitterVerified);
 
