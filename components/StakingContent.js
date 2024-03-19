@@ -7,6 +7,7 @@ import StakingAbi from "@/Contracts/Staking.json";
 import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
+import NoWalletDetected from './NoWalletDetected';
 
 export default function StakingContent() {
   const [ tokenContract, setTokenContract ] = useState(false);
