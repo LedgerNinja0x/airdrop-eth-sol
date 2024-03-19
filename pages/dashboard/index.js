@@ -51,6 +51,11 @@ export async function getServerSideProps({ req, res }) {
     //   return { redirect: { destination: "/" } };
     // }
 
+    //protect route from unlogged users
+    if (!session) {
+      return { redirect: { destination: "/" } };
+    }
+
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
       session?.user?.name == process.env.ADMIN_USERNAME
@@ -169,7 +174,7 @@ export async function getServerSideProps({ req, res }) {
     //   await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count})
     // }
 
-    console.log(isTwitterVerified);
+    console.log(isTwitterVerified,' twitter verified');
 
     return {
       props: {
@@ -181,7 +186,7 @@ export async function getServerSideProps({ req, res }) {
       },
     };
   } catch (e) {
-    console.log(e?.response?.data || e);
+    console.log("error here ",e);
     return {
       props: {},
     };
