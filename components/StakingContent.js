@@ -38,13 +38,14 @@ export default function StakingContent() {
   }
 
   const doWithDraw = async (id, amount) => {
-    const withdrawAmount = await StakingContract.withdrawableAmount(id);
+    const withdrawAmount = await stakingContract.withdrawableAmount(id);
+    console.log(withdrawAmount);
     if (amount > withdrawAmount) {
       alert("it's greater than your possible withdrawAmount");
       return;
     }
     try {
-      const withDrawTx = await StakingContract.withdraw(id, amount);
+      const withDrawTx = await stakingContract.withdraw(id, amount);
       const receipt = await withDrawTx.wait();
       if (receipt.status === 0) {
         console.log("transaction failed");
@@ -56,7 +57,7 @@ export default function StakingContent() {
 
   const doWithDrawAll = async (id) => {
     try {
-      const withAllTx = await StakingContract.withdrawAll();
+      const withAllTx = await stakingContract.withdrawAll(id);
       const receipt = await withAllTx.wait();
       if (receipt.status === 0) {
         console.log("transaction failed");

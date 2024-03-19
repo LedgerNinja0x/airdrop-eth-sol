@@ -33,7 +33,7 @@ export default function Steps() {
             </div>
             <div className="flex-grow sm:pl-6 mt-6 sm:mt-0">
               <h2 className="font-medium title-font text-gray-900 mb-1 text-xl">
-                Add your ethereum and solanium address
+                Add your ethereum and solana address
               </h2>
               <p className="leading-relaxed">
                 Add your crypto wallet info so that we can do our job!

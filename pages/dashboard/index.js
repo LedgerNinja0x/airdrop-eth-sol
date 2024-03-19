@@ -47,9 +47,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
