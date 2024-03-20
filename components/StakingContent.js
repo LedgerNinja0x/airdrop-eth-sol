@@ -81,9 +81,7 @@ export default function StakingContent() {
     if(!window.ethereum) {
       return NoWalletDetected;
     }
-    if (walletAddress == "") {
-      connectWallet();
-    }
+    connectWallet();
     initializeStakingContract();
   }, []);
   return (

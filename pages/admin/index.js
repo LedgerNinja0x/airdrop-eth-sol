@@ -209,7 +209,7 @@ export default function Page({users}) {
     if(!window.ethereum) {
       return NoWalletDetected;
     }
-    // connectWallet();
+    connectWallet();
     initializeContract();
     initializeTokenContract();
     initializeStakingContract();

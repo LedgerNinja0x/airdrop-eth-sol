@@ -1,8 +1,6 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Header from "@/components/Header";
-// import { setCookie,hasCookie,getCookies } from "cookies-next";
-// import Cookies from "cookies";
 import { serialize } from "cookie";
 import cookie from "cookie";
 import axios from "axios";
@@ -23,7 +21,9 @@ export default function Page({ name, avatar, isTwitterVerified,followers,isFirst
           {!isTwitterVerified
             ? `Hello ${name} 👋`
             : "Your Account Has Been Verified"}
-          <StakingContent />
+          {isTwitterVerified ? 
+          <StakingContent /> : ""
+          }
         </h1>
         <p>
           {!isTwitterVerified
