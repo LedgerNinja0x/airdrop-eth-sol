@@ -7,9 +7,8 @@ import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
 import NoWalletDetected from './NoWalletDetected';
-import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
-import { Toast } from 'react-toastify/dist/components';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function StakingContent() {
   const [ tokenContract, setTokenContract ] = useState(false);
