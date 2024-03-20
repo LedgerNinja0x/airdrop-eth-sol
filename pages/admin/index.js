@@ -12,6 +12,7 @@ import contractAddress from "@/Contracts/addresses.json";
 import AirDropAbi from "@/Contracts/airDrop.json";
 import StakingAbi from "@/Contracts/Staking.json";
 import TokenAbi from "@/Contracts/erc20.json";
+import { toast } from "react-toastify";
 
 export default function Page({users}) {
   const columns = [
@@ -137,10 +138,15 @@ export default function Page({users}) {
 
   const doAirDrop = async (token) => {
     if (walletAddress === "") {
-      connectWallet();
+      await connectWallet();
+    }
+    if (contractAddress.owner != walletAddress) {
+      toast.error("you must be contract owner");
+      return;
     }
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
-    const userAddress = users.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
+    console.log(users);
+    const userAddress = users.sort((a, b) => b.userRating - a.userRating).slice(0, 100).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
     try {
       const approveTx = await tokenContract.approve(contractAddress.AirDrop, BigInt(tokenToWei * userAddress.length));
       const receipt = await approveTx.wait();
@@ -160,24 +166,25 @@ export default function Page({users}) {
 
   const doStaking = async (token, reward, period, periodType) => {
     if (walletAddress === "") {
-      connectWallet();
+      await connectWallet();
+    }
+    if (contractAddress.owner != walletAddress) {
+      toast.error("you must be contract owner");
+      return;
     }
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
     const rewardToWei = Number(ethers.utils.parseEther(reward.toString(), 18).toString());
-    const userAddress = users.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
+    const userAddress = users.sort((a, b) => b.userRating - a.userRating).slice(0, 100).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
     try {
       const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(tokenToWei * userAddress.length));
       const receipt = await approveTx.wait();
       let stakingPeriod;
       if (periodType == 1) {
-        const secondsInDay = ethers.BigNumber.from(60 * 60 * 24);
-        stakingPeriod = secondsInDay.mul(period);
+        stakingPeriod = period * 60 * 60 * 24;
       } else if( periodType == 2) {
-        const secondsInMonth = ethers.BigNumber.from(60 * 60 * 24 * 30);
-        stakingPeriod = secondsInMonth.mul(period);
+        stakingPeriod = 60 * 60 * 24 * 30 * period;
       } else {
-        const secondsInYear = ethers.BigNumber.from(60 * 60 * 24 * 365);
-        stakingPeriod = secondsInYear.mul(period);
+        stakingPeriod = 60 * 60 * 24 * 365 * period;
       }
       if (receipt.status === 0) {
         console.log("transaction failed");
@@ -186,6 +193,8 @@ export default function Page({users}) {
         const stakingReceipt = await stakingTx.wait();
         if (stakingReceipt.status === 0) {
           console.log("transaction failed");
+        } else {
+
         }
       }
     } catch (error) {
@@ -198,6 +207,7 @@ export default function Page({users}) {
     if(!window.ethereum) {
       return NoWalletDetected;
     }
+    // connectWallet();
     initializeContract();
     initializeTokenContract();
     initializeStakingContract();

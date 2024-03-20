@@ -1,6 +1,5 @@
 'use client'
 
-import Box from '@mui/material/Box';
 import { useState, useEffect } from 'react';
 import { ethers, Contract } from 'ethers';
 import StakingAbi from "@/Contracts/Staking.json";
@@ -40,16 +39,20 @@ export default function StakingContent() {
 
   const doWithDraw = async (id, amount) => {
     const withdrawAmount = await stakingContract.withdrawableAmount(id);
-    console.log(withdrawAmount);
-    if (amount > withdrawAmount) {
+    const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
+    console.log(BigInt(tokenToWei));
+    if (tokenToWei > withdrawAmount) {
       alert("it's greater than your possible withdrawAmount");
       return;
     }
     try {
-      const withDrawTx = await stakingContract.withdraw(id, amount);
+      const withDrawTx = await stakingContract.withdraw(id, BigInt(tokenToWei));
       const receipt = await withDrawTx.wait();
       if (receipt.status === 0) {
         console.log("transaction failed");
+      } else {
+        const stakingData = await _StakingContract.getUserStakingInfo();
+        setStakingInfo(stakingData);
       }
     } catch (error) {
       console.log(error);
@@ -62,6 +65,9 @@ export default function StakingContent() {
       const receipt = await withAllTx.wait();
       if (receipt.status === 0) {
         console.log("transaction failed");
+      } else {
+        const stakingData = await _StakingContract.getUserStakingInfo();
+        setStakingInfo(stakingData);
       }
     } catch (error) {
       console.log(error);
@@ -87,7 +93,9 @@ export default function StakingContent() {
           stakingInfo && stakingInfo.length != 0 
           ? 
           stakingInfo.map((stake, index) => 
+            ethers.utils.formatEther(stake.stakedAmount.toString()) != 0 ?
             <StakingBox stake={stake} id={index} doWithDraw={doWithDraw} doWithDrawAll={doWithDrawAll} key={index} />
+            : null
           ) 
           : "You have not staking reward"
         }
