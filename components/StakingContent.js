@@ -7,6 +7,9 @@ import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
 import NoWalletDetected from './NoWalletDetected';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import { Toast } from 'react-toastify/dist/components';
 
 export default function StakingContent() {
   const [ tokenContract, setTokenContract ] = useState(false);
@@ -40,9 +43,8 @@ export default function StakingContent() {
   const doWithDraw = async (id, amount) => {
     const withdrawAmount = await stakingContract.withdrawableAmount(id);
     const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
-    console.log(BigInt(tokenToWei));
     if (tokenToWei > withdrawAmount) {
-      alert("it's greater than your possible withdrawAmount");
+      toast.error("it's greater than your possible withdrawAmount");
       return;
     }
     try {
@@ -53,6 +55,7 @@ export default function StakingContent() {
       } else {
         const stakingData = await _StakingContract.getUserStakingInfo();
         setStakingInfo(stakingData);
+        toast.success("Congratulations!, you get reward.");
       }
     } catch (error) {
       console.log(error);
@@ -68,6 +71,7 @@ export default function StakingContent() {
       } else {
         const stakingData = await _StakingContract.getUserStakingInfo();
         setStakingInfo(stakingData);
+        toast.success("Congratulations!, you get reward.");
       }
     } catch (error) {
       console.log(error);
@@ -85,6 +89,7 @@ export default function StakingContent() {
   }, []);
   return (
     <section className="text-gray-600 body-font py-24">
+      <ToastContainer />
       <h2 className="font-bold text-black text-4xl mb-4 text-center underline">
         Get Rewards from Staking
       </h2>

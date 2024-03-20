@@ -12,7 +12,8 @@ import contractAddress from "@/Contracts/addresses.json";
 import AirDropAbi from "@/Contracts/airDrop.json";
 import StakingAbi from "@/Contracts/Staking.json";
 import TokenAbi from "@/Contracts/erc20.json";
-import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function Page({users}) {
   const columns = [
@@ -141,11 +142,10 @@ export default function Page({users}) {
       await connectWallet();
     }
     if (contractAddress.owner != walletAddress) {
-      toast.error("you must be contract owner");
+      toast.error("You must be contract owner.");
       return;
     }
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
-    console.log(users);
     const userAddress = users.sort((a, b) => b.userRating - a.userRating).slice(0, 100).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
     try {
       const approveTx = await tokenContract.approve(contractAddress.AirDrop, BigInt(tokenToWei * userAddress.length));
@@ -157,6 +157,8 @@ export default function Page({users}) {
         const airdropReceipt = await airdropTx.wait();
         if(airdropReceipt.status === 0) {
           console.log("transaction failed");
+        } else {
+          toast.success("Success AirDrop");
         }
       }
     } catch (error) {
@@ -194,7 +196,7 @@ export default function Page({users}) {
         if (stakingReceipt.status === 0) {
           console.log("transaction failed");
         } else {
-
+          toast.success("staking success");
         }
       }
     } catch (error) {
@@ -216,6 +218,7 @@ export default function Page({users}) {
   return (
     <>
       <Header />
+      <ToastContainer/>
       <div className="p-12 pb-0">
         <div className="flex justify-between">
           <h1 className="font-bold text-3xl mb-12">Admin Dashboard</h1>
