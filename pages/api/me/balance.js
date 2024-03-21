@@ -6,7 +6,7 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 import axios from "axios";
-import { getUserRating } from "@/pages/util";
+import getUserRating from "@/pages/util";
 
 
 const connection = new Connection(clusterApiUrl("mainnet-beta"));
