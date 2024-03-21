@@ -1,5 +1,5 @@
 import axios from "axios";
-import getUserRating from "@/pages/util";
+import { getUserRating } from "@/lib/util";
 
 
 export default async function handler(req, res) {
