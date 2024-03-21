@@ -82,6 +82,8 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
         return () => clearInterval(intervalId); // Clear the interval on component unmount
     }, []);
 
+    const rewardAmount = Number(ethers.utils.formatEther(stake.stakedAmount.toString()).toString()) + Number(ethers.utils.formatEther(stake.reward.toString()).toString()) * stake.stakingPeriod.toNumber();
+
     return (
         <>
         <Box
@@ -92,8 +94,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
         className="text-center"
         >
             <div>Staking Box</div>
-            <div className='text-sm mt-5'>staked Amount: {ethers.utils.formatEther(stake.stakedAmount.toString()).toString()}</div>
-            <div className='text-sm mt-5'>reward/second: {ethers.utils.formatEther(stake.rewardRate.toString()).toString()}</div>
+            <div className='text-sm mt-5'>Total Amount: {rewardAmount}</div>
             <div className='text-sm mt-5'>
                 withdrawl timeline: { convertSecondsToTime(time) }
             </div>

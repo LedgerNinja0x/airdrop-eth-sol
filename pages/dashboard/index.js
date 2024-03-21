@@ -5,6 +5,9 @@ import { serialize } from "cookie";
 import cookie from "cookie";
 import axios from "axios";
 import { getToken } from "next-auth/jwt";
+import { ethers } from "ethers";
+import contractAddress from "@/Contracts/addresses.json";
+import TokenAbi from "@/Contracts/erc20.json";
 
 import Steps from "@/components/Steps";
 import NotificationArea from "./notification";
@@ -22,7 +25,8 @@ export default function Page({ name, avatar, isTwitterVerified,followers,isFirst
             ? `Hello ${name} 👋`
             : "Your Account Has Been Verified"}
           {isTwitterVerified ? 
-          <StakingContent /> : ""
+          <StakingContent name={name} /> 
+          : ""
           }
         </h1>
         <p>
@@ -47,11 +51,6 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
-
-    //protect route from unlogged users
     if (!session) {
       return { redirect: { destination: "/" } };
     }
@@ -160,21 +159,26 @@ export async function getServerSideProps({ req, res }) {
       }
     );
 
-    console.log(data.document);
-
     let isTwitterVerified = data.document.twitterVerified == "yes";
 
     //if user is verified then update his balance
+    if (isTwitterVerified) {
+      let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
+      try {
+        const _provider = new ethers.providers.Web3Provider(window.ethereum);
+        const _TokenContract = new Contract(
+          contractAddress.Token,
+          TokenAbi,
+          _provider.getSigner(0)
+        );
+        tokenValue = await _TokenContract.balanceOf(ethAddress);
+        
+      } catch (error) {
+        console.log(error);
+      }
 
-    //error: This code causes timeout issue on free hosting tiers
-    //use it only if you absolutely need it
-
-    // if (isTwitterVerified) {
-    //   let {ethAddress, solAddress, username} = data.document
-    //   await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count})
-    // }
-
-    console.log(isTwitterVerified,' twitter verified');
+      await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count, tokenBalance, tokenValue});
+    }
 
     return {
       props: {
@@ -182,11 +186,11 @@ export async function getServerSideProps({ req, res }) {
         avatar: session?.user?.image || null,
         isTwitterVerified,
         followers: data.document.followers_count,
-        isFirstTime
+        isFirstTime,
       },
     };
   } catch (e) {
-    console.log("error here ",e);
+    console.log(e?.response?.data || e);
     return {
       props: {},
     };

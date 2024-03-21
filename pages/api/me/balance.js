@@ -6,6 +6,8 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 import axios from "axios";
+import { getUserRating } from "@/pages/util";
+
 
 const connection = new Connection(clusterApiUrl("mainnet-beta"));
 
@@ -18,9 +20,7 @@ export default async function handler(req, res) {
     //POST /api/me/balance
     //After checking the balance update user schema
 
-    let { ethAddress, solAddress, username, followers } = req.body;
-
-    console.log(ethAddress, solAddress);
+    let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue } = req.body;
 
     let ethBalance = await getEtherBalance(ethAddress);
 
@@ -28,13 +28,7 @@ export default async function handler(req, res) {
 
     let ethGas = await getEtherHistory(ethAddress);
 
-    console.log(solBalance,ethBalance,solGas,ethGas,followers," here")
-
-    let userRating = Math.round(
-      Number(solBalance) + Number(ethBalance) + Number(solGas) + Number(ethGas) + Number(followers)
-    );
-
-    console.log('rating',userRating)
+    const userRating = getUserRating(solBalance, ethBalance, tokenBalance, tokenValue, solGas, ethGas, followers);
 
     //update their balance in database
     await axios.post(
@@ -54,7 +48,9 @@ export default async function handler(req, res) {
             solBalance,
             userRating,
             ethGas,
-            solGas
+            solGas,
+            tokenBalance,
+            tokenValue
           },
         },
       },
@@ -119,5 +115,3 @@ const getSolBalance = async (address) => {
   const solBalance = balance / LAMPORTS_PER_SOL;
   return { solBalance, solGas };
 };
-
-// getEtherHistory("#wallet Address#");

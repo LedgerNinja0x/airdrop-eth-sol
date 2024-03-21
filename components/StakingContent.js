@@ -10,33 +10,29 @@ import NoWalletDetected from './NoWalletDetected';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function StakingContent() {
-  const [ tokenContract, setTokenContract ] = useState(false);
+export default function StakingContent({name}) {
   const [ stakingContract, setStakingContract ] = useState(false);
   const [ walletAddress, setWalletAddress ] = useState("");
   const [stakingInfo, setStakingInfo] = useState(false);
   const connectWallet = async () => {
     const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
     setWalletAddress(walletAddress)
-
-    window.ethereum.on("accountsChanged", ([newAddress]) => {
-        if (newAddress === undefined) {
-            return resetState();
-        }
-        setWalletAddress(newAddress);
-    })
   }
 
   const initializeStakingContract = async () => {
-    const _provider = new ethers.providers.Web3Provider(window.ethereum);
-    const _StakingContract = new Contract(
-      contractAddress.Staking,
-      StakingAbi.abi,
-      _provider.getSigner(0)
-    );
-    setStakingContract(_StakingContract);
-    const stakingData = await _StakingContract.getUserStakingInfo();
-    setStakingInfo(stakingData);
+    try {
+      const _provider = new ethers.providers.Web3Provider(window.ethereum);
+      const _StakingContract = new Contract(
+        contractAddress.Staking,
+        StakingAbi.abi,
+        _provider.getSigner(0)
+      );
+      setStakingContract(_StakingContract);
+      const stakingData = await _StakingContract.getUserStakingInfo();
+      setStakingInfo(stakingData); 
+    } catch (error) {
+      toast.error("wallet connect error");
+    }
   }
 
   const doWithDraw = async (id, amount) => {
@@ -49,31 +45,35 @@ export default function StakingContent() {
     try {
       const withDrawTx = await stakingContract.withdraw(id, BigInt(tokenToWei));
       const receipt = await withDrawTx.wait();
-      if (receipt.status === 0) {
-        console.log("transaction failed");
+      if (receipt.status == 0) {
+        toast.error("transaction failed");
       } else {
-        const stakingData = await _StakingContract.getUserStakingInfo();
+        const stakingData = await stakingContract.getUserStakingInfo();
         setStakingInfo(stakingData);
+        const result = await updateUserInfo(name, amount);
         toast.success("Congratulations!, you get reward.");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Oops, something went wrong!");
     }
   }
 
   const doWithDrawAll = async (id) => {
     try {
+      const withdrawAmount = await stakingContract.withdrawableAmount(id);
+      const amount = Number(ethers.utils.formatEther(withdrawAmount).toString());
       const withAllTx = await stakingContract.withdrawAll(id);
       const receipt = await withAllTx.wait();
-      if (receipt.status === 0) {
-        console.log("transaction failed");
+      if (receipt.status == 0) {
+        toast.error("transaction failed");
       } else {
-        const stakingData = await _StakingContract.getUserStakingInfo();
+        const stakingData = await stakingContract.getUserStakingInfo();
         setStakingInfo(stakingData);
+        const result = await updateUserInfo(name, amount);
         toast.success("Congratulations!, you get reward.");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Oops, something went wrong!");
     }
   }
 
@@ -82,8 +82,17 @@ export default function StakingContent() {
       return NoWalletDetected;
     }
     connectWallet();
-    initializeStakingContract();
+    window.ethereum.on("accountsChanged", ([newAddress]) => {
+      if (newAddress === undefined) {
+          return resetState();
+      }
+      setWalletAddress(newAddress);
+    })
   }, []);
+
+  useEffect(() => {
+    initializeStakingContract();
+  }, [walletAddress])
   return (
     <section className="text-gray-600 body-font py-24">
       <ToastContainer />
@@ -104,4 +113,50 @@ export default function StakingContent() {
       </div>
     </section>
   );
+}
+
+const updateUserInfo = async (name, amount) => {
+  try {
+    const { data } = await axios.post(
+      `${process.env.MONGODB_URI}/action/findOne`,
+      {
+        dataSource: "Cluster0",
+        database: "test",
+        collection: "users",
+        filter: {
+          username: name,
+        },
+        projection: {},
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          apiKey: process.env.DATAAPI_KEY,
+        },
+      }
+    );
+    let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
+    try {
+      const _provider = new ethers.providers.Web3Provider(window.ethereum);
+      const _TokenContract = new Contract(
+        contractAddress.Token,
+        TokenAbi,
+        _provider.getSigner(0)
+      );
+      tokenValue = await _TokenContract.balanceOf(ethAddress);
+    } catch (error) {
+      console.log(error);
+    }
+    tokenBalance += amount;
+  
+    const result = await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: data.document.followers_count, tokenBalance, tokenValue});    
+    if (result.status == 201) {
+      return 1;
+    } else {
+      return 0;
+    }
+  } catch (error) {
+    return 0;
+  }
 }

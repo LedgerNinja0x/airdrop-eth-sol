@@ -9,11 +9,17 @@ import StakingModal from "@/components/StakingModal";
 import NoWalletDetected from "@/components/NoWalletDetected";
 import { ethers, Contract } from "ethers";
 import contractAddress from "@/Contracts/addresses.json";
+import TokenAbi from "@/Contracts/erc20.json";
 import AirDropAbi from "@/Contracts/airDrop.json";
 import StakingAbi from "@/Contracts/Staking.json";
-import TokenAbi from "@/Contracts/erc20.json";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { Button } from "@mui/material";
 
 export default function Page({users}) {
   const columns = [
@@ -58,6 +64,10 @@ export default function Page({users}) {
       accessor: 'solBalance',
     },
     {
+      Header: 'Token Balance',
+      accessor: 'tokenBalance'
+    },
+    {
       Header: 'Eth Gas',
       accessor: 'ethGas',
     },
@@ -88,23 +98,20 @@ export default function Page({users}) {
 
     // Add more columns as needed
   ]
-  const [isOpen, setIsOpen] = useState(false);
-  const [isStakingOpen, setIsStakingOpen] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
+  const [ isOpen, setIsOpen ] = useState(false);
+  const [ isStakingOpen, setIsStakingOpen ] = useState(false);
+  const [ walletAddress, setWalletAddress ] = useState("");
   const [ airDropContract, setAirDropContract ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
+  const [ userData, setUserData ] = useState(false);
+  const [ ownerAddress, setOwnerAddress] = useState("");
+  const [ ownerAdd, changeOwnerAdd] = useState("");
+  const [ openOwner, setOpenOwner ] = useState(false);
 
   const connectWallet = async () => {
     const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
     setWalletAddress(walletAddress)
-
-    window.ethereum.on("accountsChanged", ([newAddress]) => {
-        if (newAddress === undefined) {
-            return resetState();
-        }
-        setWalletAddress(newAddress);
-    })
   }
 
   const initializeContract = async () => {
@@ -115,6 +122,8 @@ export default function Page({users}) {
       _provider.getSigner(0)
     );
     setAirDropContract(_AirDropContract);
+    const owner = await _AirDropContract.getOwner();
+    setOwnerAddress(owner);
   }
 
   const initializeTokenContract = async () => {
@@ -138,15 +147,16 @@ export default function Page({users}) {
   }
 
   const doAirDrop = async (token) => {
-    if (walletAddress === "") {
+    if (walletAddress == "") {
       await connectWallet();
     }
-    if (contractAddress.owner != walletAddress) {
+    if (ownerAddress != walletAddress) {
       toast.error("You must be contract owner.");
       return;
     }
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
-    const userAddress = users.sort((a, b) => b.userRating - a.userRating).slice(0, 100).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
+    const userList = userData.sort((a, b) => b.userRating - a.userRating).slice(0, 100).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "");
+    const userAddress = userList.map(entry => entry.ethAddress);
     try {
       const approveTx = await tokenContract.approve(contractAddress.AirDrop, BigInt(tokenToWei * userAddress.length));
       const receipt = await approveTx.wait();
@@ -156,9 +166,14 @@ export default function Page({users}) {
         const airdropTx = await airDropContract.doAirDrop(userAddress, BigInt(tokenToWei));
         const airdropReceipt = await airdropTx.wait();
         if(airdropReceipt.status === 0) {
-          console.log("transaction failed");
+          toast.error("transaction failed");
         } else {
+          const result = await axios.post('/api/me/token',{userList, token})
+          if (result.status == 201) {
+            setUserData(result.data);
+          }
           toast.success("Success AirDrop");
+          setIsOpen(false);
         }
       }
     } catch (error) {
@@ -167,27 +182,28 @@ export default function Page({users}) {
   }
 
   const doStaking = async (token, reward, period, periodType) => {
-    if (walletAddress === "") {
+    if (walletAddress == "") {
       await connectWallet();
     }
-    if (contractAddress.owner != walletAddress) {
+    if (ownerAddress != walletAddress) {
       toast.error("you must be contract owner");
       return;
     }
+    const userAddress = userData.sort((a, b) => b.userRating - a.userRating).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress).slice(0, 100);
+    let stakingPeriod;
+    if (periodType == 1) {
+      stakingPeriod = period * 60 * 60 * 24;
+    } else if( periodType == 2) {
+      stakingPeriod = 60 * 60 * 24 * 30 * period;
+    } else {
+      stakingPeriod = 60 * 60 * 24 * 365 * period;
+    }
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
     const rewardToWei = Number(ethers.utils.parseEther(reward.toString(), 18).toString());
-    const userAddress = users.sort((a, b) => b.userRating - a.userRating).slice(0, 100).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress);
+    const approveAmount = tokenToWei + rewardToWei * stakingPeriod;
     try {
-      const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(tokenToWei * userAddress.length));
+      const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(approveAmount * userAddress.length));
       const receipt = await approveTx.wait();
-      let stakingPeriod;
-      if (periodType == 1) {
-        stakingPeriod = period * 60 * 60 * 24;
-      } else if( periodType == 2) {
-        stakingPeriod = 60 * 60 * 24 * 30 * period;
-      } else {
-        stakingPeriod = 60 * 60 * 24 * 365 * period;
-      }
       if (receipt.status === 0) {
         console.log("transaction failed");
       } else {
@@ -197,23 +213,58 @@ export default function Page({users}) {
           console.log("transaction failed");
         } else {
           toast.success("staking success");
+          setIsStakingOpen(false);
         }
       }
     } catch (error) {
       console.log(error);
     }
+  }
 
+  const changeOwnerAddress = async () => {
+    try {
+      const airdropTx = await airDropContract.changeOwner(ownerAdd);
+      const receipt = await airdropTx.wait();
+      if(receipt.status == 0) {
+        toast.error("transaction failed");
+      }  else {
+        const stakingTx = await stakingContract.changeOwner(ownerAdd);
+        const stakingReceipt = await stakingTx.wait();
+        if (stakingReceipt == 0) {
+          toast.error("transaction failed");
+        } else{
+          toast.success("Congratulations! Set new owner of contract");
+          setOwnerAddress(ownerAdd);
+        }
+      }
+    } catch (error) {
+      
+    }
+    changeOwnerAdd("");
+    setOpenOwner(false);
   }
 
   useEffect(() => {
     if(!window.ethereum) {
       return NoWalletDetected;
     }
-    connectWallet();
+    if (walletAddress == "") {
+        connectWallet();
+    }
+    setUserData(users);
+    window.ethereum.on("accountsChanged", ([newAddress]) => {
+        if (newAddress === undefined) {
+            return resetState();
+        }
+        setWalletAddress(newAddress);
+    })
+  }, []);
+
+  useEffect(() => {
     initializeContract();
     initializeTokenContract();
     initializeStakingContract();
-  }, []);
+  }, [walletAddress])
 
   return (
     <>
@@ -223,6 +274,9 @@ export default function Page({users}) {
         <div className="flex justify-between">
           <h1 className="font-bold text-3xl mb-12">Admin Dashboard</h1>
           <div className="">
+            <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2" onClick={() => setOpenOwner(true)}>
+              Change Owner
+            </button>
             <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2" onClick={() => setIsOpen(true)}>
               Airdrop
             </button>
@@ -231,7 +285,10 @@ export default function Page({users}) {
             </button>
           </div>
         </div>
-        <Table columns={columns} data={users} />
+        {
+          userData ?
+          <Table columns={columns} data={userData} /> : ""
+        }
         <AirdropModal 
         isOpen={isOpen}
         setIsOpen={setIsOpen}
@@ -251,6 +308,34 @@ export default function Page({users}) {
         action={doStaking}
         />
       </div>
+      <Dialog
+        open={openOwner}
+        onClose={() => setOpenOwner(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+    >
+        <DialogTitle id="alert-dialog-title">
+        {"Do you agree?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Do you Change Owner?
+            <input 
+            type='string'
+            className="block mt-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            value={ownerAdd}
+            placeholder="0x0.."
+            onChange={(e) => changeOwnerAdd(e.target.value)} 
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Button onClick={() => {setOpenOwner(false)}}>Disagree</Button>
+        <Button onClick={() => {changeOwnerAddress()}} autoFocus>
+            Agree
+        </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
