@@ -91,6 +91,9 @@ export default function StakingContent({name}) {
   }, []);
 
   useEffect(() => {
+    if (!window.ethereum) {
+      return NoWalletDetected;
+    }
     initializeStakingContract();
   }, [walletAddress])
   return (

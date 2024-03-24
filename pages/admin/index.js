@@ -261,9 +261,11 @@ export default function Page({users}) {
   }, []);
 
   useEffect(() => {
-    initializeContract();
-    initializeTokenContract();
-    initializeStakingContract();
+    if (!window.ethereum) {
+      initializeContract();
+      initializeTokenContract();
+      initializeStakingContract(); 
+    }
   }, [walletAddress])
 
   return (
