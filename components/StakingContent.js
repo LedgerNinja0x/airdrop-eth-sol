@@ -6,7 +6,6 @@ import StakingAbi from "@/Contracts/Staking.json";
 import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
-import NoWalletDetected from './NoWalletDetected';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -79,7 +78,8 @@ export default function StakingContent({name}) {
 
   useEffect(() => {
     if(!window.ethereum) {
-      toast.error("No Ethereum wallet was detected.")
+      toast.error("No Ethereum wallet was detected.");
+      return;
     }
     connectWallet();
     window.ethereum.on("accountsChanged", ([newAddress]) => {
