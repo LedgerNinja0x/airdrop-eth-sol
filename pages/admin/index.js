@@ -261,7 +261,7 @@ export default function Page({users}) {
   }, []);
 
   useEffect(() => {
-    if (!window.ethereum) {
+    if (window.ethereum) {
       initializeContract();
       initializeTokenContract();
       initializeStakingContract(); 

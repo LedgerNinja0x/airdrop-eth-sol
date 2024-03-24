@@ -91,10 +91,9 @@ export default function StakingContent({name}) {
   }, []);
 
   useEffect(() => {
-    if (!window.ethereum) {
-      return NoWalletDetected;
+    if (window.ethereum) {
+      initializeStakingContract(); 
     }
-    initializeStakingContract();
   }, [walletAddress])
   return (
     <section className="text-gray-600 body-font py-24">
