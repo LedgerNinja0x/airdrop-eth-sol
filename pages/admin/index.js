@@ -245,6 +245,7 @@ export default function Page({users}) {
   }
 
   useEffect(() => {
+    setUserData(users);
     if(!window.ethereum) {
       toast.error("No Ethereum wallet was detected.");
       return;
@@ -252,7 +253,6 @@ export default function Page({users}) {
     if (walletAddress == "") {
         connectWallet();
     }
-    setUserData(users);
     window.ethereum.on("accountsChanged", ([newAddress]) => {
         if (newAddress === undefined) {
             return resetState();
