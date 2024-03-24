@@ -79,7 +79,7 @@ export default function StakingContent({name}) {
 
   useEffect(() => {
     if(!window.ethereum) {
-      return NoWalletDetected;
+      toast.error("No Ethereum wallet was detected.")
     }
     connectWallet();
     window.ethereum.on("accountsChanged", ([newAddress]) => {

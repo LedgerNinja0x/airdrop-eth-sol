@@ -246,7 +246,8 @@ export default function Page({users}) {
 
   useEffect(() => {
     if(!window.ethereum) {
-      return NoWalletDetected;
+      toast.error("No Ethereum wallet was detected.")
+      // return NoWalletDetected;
     }
     if (walletAddress == "") {
         connectWallet();
