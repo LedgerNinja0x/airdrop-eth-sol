@@ -9,10 +9,9 @@ import { ethers } from "ethers";
 import contractAddress from "@/Contracts/addresses.json";
 import TokenAbi from "@/Contracts/erc20.json";
 
-import Steps from "@/components/Steps";
 import NotificationArea from "./notification";
 import WalletModal from "@/components/WalletModal";
-import VerifiedModal from "@/components/verifiedModal";
+import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
 
 export default function Page({ name, avatar, isTwitterVerified, followers, isFirstTime, isFirstVerified }) {
