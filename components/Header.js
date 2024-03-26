@@ -7,16 +7,13 @@ import { usePathname } from 'next/navigation'
 export default function Header({ logged, avatar }) {
   const pathname = usePathname()
   return (
-    <header className="text-gray-600 body-font bg-gray-50 shadow-sm">
-      <div className="container mx-auto flex flex-wrap px-5 py-3 flex-col md:flex-row items-center">
-        <a className="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-          <img src="/logo.png" className="w-8 h-8"></img>
-          <span className="ml-3 text-xl">Airdrop</span>
+    <header className="text-gray-600 body-font shadow-sm">
+      <div className="flex flex-wrap md:px-32 sm:px-8 py-8 flex-col md:flex-row items-center w-screen justify-between">
+        <a className="flex title-font font-medium items-center text-gray-900">
+          <img src="/logo.png"></img>
+          <span className="ml-3 text-xl logo-txt">Moose</span>
         </a>
-        <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-          <a className="mr-5 hover:text-indigo-400 cursor-pointer">FAQ</a>
-          <a className="mr-5 hover:text-indigo-400 cursor-pointer">Know More</a>
-          <a className="mr-5 hover:text-indigo-400 cursor-pointer">Community</a>
+        <nav className="flex flex-wrap items-center text-base text-gray-900">
           {logged && (
             <a
               className="mr-5 hover:text-indigo-400 cursor-pointer"
@@ -36,9 +33,9 @@ export default function Header({ logged, avatar }) {
             ) : (
               <Link
                 href="/dashboard"
-                className="bg-[#000] text-white transition-all flex items-center px-8 py-2 rounded-md text-[16px] hover:rounded-none cursor-pointer"
+                className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto text-center"
               >
-                <span className="w-full text-center">Go To Dashboard</span>
+                <span className="leading-7">Go To Dashboard</span>
               </Link>
             )}
           </>
@@ -48,10 +45,10 @@ export default function Header({ logged, avatar }) {
             {!pathname.includes("admin") && (
               <div
                 onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
-                className="bg-[#000] text-white transition-all flex items-center px-8 py-2 rounded-md text-[16px] hover:rounded-none cursor-pointer"
+                className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-64"
               >
-                <img src="/twitter.jpg" className="w-8 h-8" />
-                <span className="w-full text-center">Log In With Twitter</span>
+                <img src="/twitter.png"/>
+                <span className="text-center leading-7">Log In With Twitter</span>
               </div>
             )}
           </>

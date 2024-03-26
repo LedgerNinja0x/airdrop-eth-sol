@@ -9,15 +9,14 @@ export default function Home({ logged,avatar }) {
   return (
     <main className="">
       <Header logged={logged} avatar={avatar}/>
-      <section className="text-gray-600 body-font my-12">
-        <div className="container mx-auto flex px-8 md:flex-row flex-col items-center">
-          <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
-            <h1 className="font-[900] sm:text-5xl text-3xl mb-7 text-gray-900" style={{lineHeight: '3.7rem'}}>
+      <section className="text-gray-600 body-font mt-8">
+        <div className="container mx-auto flex md:flex-row flex-col overflow-none items-center">
+          <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left mb-16 md:mb-0 text-center">
+            <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
               Verify Your Twitter
-              <br className="hidden lg:inline-block" />
-              And Get <span className="text-indigo-500">Rewards</span>
+              And Get Rewards
             </h1>
-            <p className="mb-8 leading-relaxed">
+            <p className="mb-8 leading-relaxed text-lg font-normal">
               Airdrop is the ultimate platform to get rewards in the form of
               crypto currencies for just verifying your account. Sign up now to
               get started quickly.
@@ -25,26 +24,26 @@ export default function Home({ logged,avatar }) {
             {logged ? (
               <Link
                 href="/dashboard"
-                className="bg-[#000] text-white transition-all flex items-center px-8 py-2 mb-6 rounded-md text-[16px] hover:rounded-none cursor-pointer"
+                className="bg-[#241008] text-white transition-all flex items-center justify-center py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-2/4 md:w-auto md:px-6 text-center items-center"
               >
-                <span className="w-full text-center">Go To Dashboard</span>
+                <span className="leading-7">Go To Dashboard</span>
               </Link>
             ) : (
               <div
-                onClick={() => signIn("twitter",{ callbackUrl: '/dashboard' })}
-                className="bg-[#000] text-white transition-all flex items-center px-8 py-2 mb-6 rounded-md text-[16px] hover:rounded-none cursor-pointer"
+                onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
+                className="bg-[#241008] text-white transition-all flex items-center justify-center py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-2/4 md:w-auto md:px-6 text-center items-center"
               >
-                <img src="/twitter.jpg" className="w-8 h-8" />
-                <span className="w-full text-center">Log In With Twitter</span>
+                <img src="/twitter.png"/>
+                <span className="leading-7">Log In With Twitter</span>
               </div>
             )}
           </div>
 
-          <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
+          <div className="md:w-1/2 w-full">
             <img
-              className="object-cover object-center rounded"
+              className="w-full"
               alt="hero"
-              src="https://www.forbesindia.com/media/images/2022/Jul/img_188883_gtabg.jpg"
+              src="./moose.png"
             />
           </div>
         </div>

@@ -12,7 +12,6 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "1px solid #000",
   boxShadow: 24,
   p: 4,
 };
@@ -38,13 +37,11 @@ export default function WalletModal({name,followers}) {
         followers,
       });
       setLoading(false);
-      console.log(data);
 
       //reload the page to reflect that verification is successfull
       router.reload();
     } catch (e) {
       setLoading(false);
-      console.error(e);
     }
   }
 
@@ -54,29 +51,29 @@ export default function WalletModal({name,followers}) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
-        <div>
+      <Box sx={style} className="rounded-3xl">
+        <div className="text-center">
           <h2 className="font-bold text-xl mb-1">
             Enter Your Wallet Information
           </h2>
-          <p>Enter your ethereum and solana wallet address</p>
+          <p className="pt-[15px]">Enter your ethereum and solana <br/> wallet address</p>
           <input
             type="text"
             value={ethAddress}
             onChange={(e) => setEthAddress(e.target.value)}
             placeholder="Ethereum address"
-            className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring focus:ring-[#241008]"
           />
           <input
             type="text"
             value={solAddress}
             onChange={(e) => setSolAddress(e.target.value)}
             placeholder="Solana address"
-            className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring focus:ring-[#241008]"
           />
           <button
             disabled={loading}
-            className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-12 py-2 mx-auto rounded-md hover:bg-indigo-400"
+            className="flex items-center gap-x-1 text-white text-sm justify-center bg-[#241008] py-2 mx-auto rounded-md w-[100%]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -97,6 +94,9 @@ export default function WalletModal({name,followers}) {
               {!loading ? "Check balance" : "Checking..."}
             </span>
           </button>
+          <div className="flex justify-content w-full">
+            <img src="./moose_wallet.png" className="w-3/4 pt-[8px] mx-auto" />
+          </div>          
         </div>
       </Box>
     </Modal>
