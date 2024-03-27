@@ -4,6 +4,14 @@ import { signIn, signOut } from "next-auth/react";
 import Link from "next/link"; 
 import { usePathname } from 'next/navigation'
 
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import { Logout } from '@mui/icons-material';
+
+const actions = [
+  { icon: <Logout />, name: 'SignOut' }
+];
+
 export default function Header({ logged, avatar }) {
   const pathname = usePathname()
   return (
@@ -13,23 +21,29 @@ export default function Header({ logged, avatar }) {
           <img src="/logo.png"></img>
           <span className="ml-3 text-xl logo-txt">Moose</span>
         </a>
-        <nav className="flex flex-wrap items-center text-base text-gray-900">
-          {logged && (
-            <a
-              className="mr-5 hover:text-indigo-400 cursor-pointer"
-              onClick={() => signOut()}
-            >
-              Sign out
-            </a>
-          )}
-        </nav>
         {logged ? (
           <>
             {avatar ? (
-              <img
-                src={avatar}
-                className="w-12 h-12 rounded-full object-cover cursor-pointer transition-all hover:opacity-[0.7]"
-              />
+                <SpeedDial
+                  ariaLabel="SpeedDial basic example"
+                  sx={{ position: 'absolute', top: 30, right: 40 }}
+                  icon={
+                  <img
+                    src={avatar}
+                    className="w-12 h-12 rounded-full object-cover cursor-pointer transition-all hover:opacity-[0.7]"
+                  />
+                  }
+                  direction="down"
+                >
+                  {actions.map((action) => (
+                    <SpeedDialAction
+                      key={action.name}
+                      icon={action.icon}
+                      tooltipTitle={action.name}
+                      onClick={() => signOut()}
+                    />
+                  ))}
+                </SpeedDial>
             ) : (
               <Link
                 href="/dashboard"
@@ -42,14 +56,20 @@ export default function Header({ logged, avatar }) {
         ) : (
           <>
             {/* don't show login to admins */}
-            {!pathname.includes("admin") && (
+            {!pathname.includes("admin") ? (
               <div
                 onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
                 className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-64"
               >
                 <img src="/twitter.png"/>
                 <span className="text-center leading-7">Log In With Twitter</span>
-              </div>
+              </div>) : 
+              (<a
+                className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto cursor-pointer"
+                onClick={() => signOut()}
+              >
+                Sign out
+              </a>
             )}
           </>
         )}

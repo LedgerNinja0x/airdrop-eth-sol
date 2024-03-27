@@ -11,15 +11,22 @@ export default function Page({ providers }) {
 
   const error = errorParams.get("error");
   return (
-    <>
-      <Head>
-        <title>Admin Login</title>
-        <meta name="description" content="Admin" key="desc" />
-        <meta property="og:title" content="Admin" />
-        <meta property="og:description" content="Admin" />{" "}
-      </Head>
-      <Signin providers={providers} error={error} />
-    </>
+    <div className="admin-dashboard overflow-y-hidden">
+      <div className="flex w-screen">
+        <div className="w-1/2">
+          <Head>
+            <title>Admin Login</title>
+            <meta name="description" content="Admin" key="desc" />
+            <meta property="og:title" content="Admin" />
+            <meta property="og:description" content="Admin" />{" "}
+          </Head>
+          <Signin providers={providers} error={error} />
+        </div>
+        <div className="w-1/2">
+          <img src="../mosse_head.png" />
+        </div>
+      </div>
+    </div>
   );
 }
 

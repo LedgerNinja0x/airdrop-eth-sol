@@ -8,6 +8,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
 import { ethers } from 'ethers';
 
@@ -20,7 +22,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
 
     const handleClickOpen = () => {
         if (time > 0) {
-            alert("The current staking period has not ended");
+            toast.error("The current staking period has not ended");
             return;
         }
         setOpen(true);
@@ -32,7 +34,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
 
     const handleWithOpen = () => {
         if (time > 0) {
-            alert("The current staking period has not ended");
+            toast.error("The current staking period has not ended");
             return;
         }
         setWithdrawOpen(true);
@@ -89,18 +91,24 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
         <Box
         my={2}
         gap={1}
-        p={2}
-        sx={{ border: '2px solid grey' }}
+        sx={{ border: '2px solid grey'}}
         className="text-center"
         >
-            <div>Staking Box</div>
-            <div className='text-sm mt-5'>Total Amount: {rewardAmount}</div>
-            <div className='text-sm mt-5'>
-                withdrawl timeline: { convertSecondsToTime(time) }
-            </div>
-            <div className='mt-5 flex gap-2'>
-                <button className='flex items-center bg-indigo-500 text-white text-sm px-8 py-2 mx-auto rounded-md hover:bg-indigo-400' onClick={handleWithOpen}>withdraw</button>
-                <button className='flex items-center bg-indigo-500 text-white text-sm px-8 py-2 mx-auto rounded-md hover:bg-indigo-400' onClick={handleClickOpen}>withdrawAll</button>
+            <div className='flex bg-white'>
+                <div className='p-5'>
+                    <div className='text-[32px]'>Staking Box</div>
+                    <div className='text-sm mt-5'>Total Amount: {rewardAmount}</div>
+                    <div className='text-sm mt-5'>
+                        withdrawl timeline: { convertSecondsToTime(time) }
+                    </div>
+                    <div className='mt-5 flex gap-2'>
+                        <button className='flex items-center bg-[#241008] text-white text-sm px-8 py-2 mx-auto rounded-md' onClick={handleWithOpen}>withdraw</button>
+                        <button className='flex items-center bg-[#241008] text-white text-sm px-8 py-2 mx-auto rounded-md' onClick={handleClickOpen}>withdrawAll</button>
+                    </div>
+                </div>
+                <div>
+                    <img src='./moose-reward.png' />
+                </div>
             </div>
         </Box>
         <Dialog

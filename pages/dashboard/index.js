@@ -13,19 +13,20 @@ import NotificationArea from "./notification";
 import WalletModal from "@/components/WalletModal";
 import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
+import { ToastContainer } from 'react-toastify';
 
 export default function Page({ name, avatar, isTwitterVerified, followers, isFirstTime, isFirstVerified }) {
-  console.log(name);
   return (
     <>
+      <ToastContainer />
       <Header logged={true} avatar={avatar} />
       <div className="container mx-auto flex md:flex-row flex-col overflow-none">
         <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left mb-16 md:mb-0 text-center p-12">
           <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
             Hello {name} 👋
-            {isTwitterVerified &&
+            {/* {isTwitterVerified && */}
             <StakingContent name={name} /> 
-            }
+            {/* } */}
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
           {!isTwitterVerified
@@ -62,9 +63,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&

@@ -19,80 +19,154 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from "@mui/material";
+import React from "react";
+
+const renderSummaryButton = (params) => {
+  return (
+    <div className="flex flex-row w-full mt-[10px]">
+      {params.row.twitterVerified === "no" ?
+      (<button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-2 py-1 rounded-md hover:bg-indigo-400">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-4 h-4 -rotate-45"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+          />
+        </svg>
+        {/* dont show message btn is twitter already verified */}
+
+        <span onClick={() => sendMessage(params.row.usrname)}>
+          Message
+        </span>
+
+        {/* <span>{cell.render("Cell")}</span> */}
+      </button>
+      ) : (
+      <a
+        href={`https://twitter.com/${params.row.twitt_username}`}
+        target="_blank"
+        className="flex items-center gap-x-1 bg-gray-900 text-white text-sm px-2 py-1 rounded-md hover:bg-gray-800"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-4 h-4"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+          />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+        View
+      </a>
+      )
+      }
+    </div>
+  )
+}
 
 export default function Page({users}) {
   const columns = [
-    {
-      Header: 'Actions',
-      accessor: 'message',
+    { 
+      field: 'id', 
+      headerName: 'ID', 
+      width: 90, 
+      sortable: false,
+      filterable: false, 
     },
     {
-      Header: 'Name',
-      accessor: 'username',
+      headerName: 'Actions',
+      field: "",
+      renderCell: renderSummaryButton,
+      sortable: false,
+      filterable: false,
+      closest: false,
+      width: 120
     },
     {
-      Header: 'Twitter Verified',
-      accessor: 'twitterVerified',
+      headerName: 'Name',
+      field: 'username',
     },
     {
-      Header: 'IP',
-      accessor: 'IP',
+      headerName: 'Twitter Verified',
+      field: 'twitterVerified',
     },
     {
-      Header: 'Country',
-      accessor: 'location',
+      headerName: 'IP',
+      field: 'IP',
     },
     {
-      Header: 'User Rating',
-      accessor: 'userRating',
+      headerName: 'Country',
+      field: 'location',
     },
     {
-      Header: 'Sol Address',
-      accessor: 'solAddress',
+      headerName: 'User Rating',
+      field: 'userRating',
+      type: "number"
     },
     {
-      Header: 'Eth Address',
-      accessor: 'ethAddress',
+      headerName: 'Eth Address',
+      field: 'ethAddress',
     },
     {
-      Header: 'Eth Balance',
-      accessor: 'ethBalance',
+      headerName: 'Sol Address',
+      field: 'solAddress',
     },
     {
-      Header: 'Sol Balance',
-      accessor: 'solBalance',
+      headerName: 'Eth Balance',
+      field: 'ethBalance',
     },
     {
-      Header: 'Token Balance',
-      accessor: 'tokenBalance'
+      headerName: 'Sol Balance',
+      field: 'solBalance',
     },
     {
-      Header: 'Eth Gas',
-      accessor: 'ethGas',
+      headerName: 'Token Balance',
+      field: 'tokenValue'
     },
     {
-      Header: 'Sol Gas',
-      accessor: 'solGas',
+      headerName: 'Eth Gas',
+      field: 'ethGas',
     },
     {
-      Header: 'Followers',
-      accessor: 'followers_count',
+      headerName: 'Sol Gas',
+      field: 'solGas',
     },
     {
-      Header: 'Following',
-      accessor: 'following_count',
+      headerName: 'Followers',
+      field: 'followers_count',
     },
     {
-      Header: 'Like Count',
-      accessor: 'like_count',
+      headerName: 'Following',
+      field: 'following_count',
     },
     {
-      Header: 'Twitter Username',
-      accessor: 'twitt_username',
+      headerName: 'Like Count',
+      field: 'like_count',
     },
     {
-      Header: 'Created At',
-      accessor: 'createdAt',
+      headerName: 'Twitter Username',
+      field: 'twitt_username',
+    },
+    {
+      headerName: 'Created At',
+      field: 'createdAt',
     },
 
     // Add more columns as needed
@@ -107,6 +181,22 @@ export default function Page({users}) {
   const [ ownerAddress, setOwnerAddress] = useState("");
   const [ ownerAdd, changeOwnerAdd] = useState("");
   const [ openOwner, setOpenOwner ] = useState(false);
+  const [ isLoading, setLoading ] = useState(false);
+
+  const handleUsers = async (userInfo) => {
+    const result = await axios.post('/api/me/userInfo',{userInfo});
+    if (result.status == 201) {
+      const userList = result.data.map((item, index) => {
+        return {
+          ...item, id: index + 1
+        }
+      })
+      setUserData(userList); 
+    } else {
+      setUserData(userInfo);
+    }
+    setLoading(false);
+  }
 
   const connectWallet = async () => {
     const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -149,18 +239,20 @@ export default function Page({users}) {
     if (walletAddress == "") {
       await connectWallet();
     }
-    if (ownerAddress != walletAddress) {
-      toast.error("You must be contract owner.");
+    if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
+      toast.error(`you must be contract owner: ${ownerAddress}`);
+      setIsOpen(false);
       return;
     }
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
-    const userList = userData.sort((a, b) => b.userRating - a.userRating).slice(0, 100).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "");
+    const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, 100);
     const userAddress = userList.map(entry => entry.ethAddress);
+    setLoading(true);
     try {
       const approveTx = await tokenContract.approve(contractAddress.AirDrop, BigInt(tokenToWei * userAddress.length));
       const receipt = await approveTx.wait();
       if (receipt.status === 0) {
-          console.log("transaction failed");
+        toast.error("transaction failed");
       } else {
         const airdropTx = await airDropContract.doAirDrop(userAddress, BigInt(tokenToWei));
         const airdropReceipt = await airdropTx.wait();
@@ -169,23 +261,25 @@ export default function Page({users}) {
         } else {
           const result = await axios.post('/api/me/token',{userList, token})
           if (result.status == 201) {
-            setUserData(result.data);
+            handleUsers(result.data);
           }
           toast.success("Success AirDrop");
-          setIsOpen(false);
         }
       }
     } catch (error) {
-        console.log(error);
+      toast.error("Oops! Something Wrong");
     }
+    setIsOpen(false);
+    setLoading(false);
   }
 
   const doStaking = async (token, reward, period, periodType) => {
     if (walletAddress == "") {
       await connectWallet();
     }
-    if (ownerAddress != walletAddress) {
-      toast.error("you must be contract owner");
+    if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
+      toast.error(`you must be contract owner: ${ownerAddress}`);
+      setIsStakingOpen(false);
       return;
     }
     const userAddress = userData.sort((a, b) => b.userRating - a.userRating).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress).slice(0, 100);
@@ -200,27 +294,38 @@ export default function Page({users}) {
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
     const rewardToWei = Number(ethers.utils.parseEther(reward.toString(), 18).toString());
     const approveAmount = tokenToWei + rewardToWei * stakingPeriod;
+    setLoading(true);
     try {
       const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(approveAmount * userAddress.length));
       const receipt = await approveTx.wait();
       if (receipt.status === 0) {
-        console.log("transaction failed");
+        toast.error("transaction failed");
       } else {
         const stakingTx = await stakingContract.stake(userAddress, BigInt(tokenToWei), BigInt(stakingPeriod), BigInt(rewardToWei));
         const stakingReceipt = await stakingTx.wait();
         if (stakingReceipt.status === 0) {
-          console.log("transaction failed");
+          toast.error("transaction failed");
         } else {
           toast.success("staking success");
-          setIsStakingOpen(false);
         }
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Oops! Something Wrong.");
     }
+    setIsStakingOpen(false);
+    setLoading(false);
   }
 
   const changeOwnerAddress = async () => {
+    if (ownerAdd == "") {
+      toast.error("Pls input new Ower Address");
+      return;
+    }
+    if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
+      toast.error(`you must be contract owner: ${ownerAddress}`);
+      setOpenOwner(false);
+      return;
+    }
     try {
       const airdropTx = await airDropContract.changeOwner(ownerAdd);
       const receipt = await airdropTx.wait();
@@ -237,14 +342,15 @@ export default function Page({users}) {
         }
       }
     } catch (error) {
-      
+      toast.error("Oops! something wrong");
     }
     changeOwnerAdd("");
     setOpenOwner(false);
   }
 
   useEffect(() => {
-    setUserData(users);
+    setLoading(true);
+    handleUsers(users);
     if(!window.ethereum) {
       toast.error("No Ethereum wallet was detected.");
       return;
@@ -261,7 +367,7 @@ export default function Page({users}) {
   }, []);
 
   useEffect(() => {
-    if (window.ethereum) {
+    if (window.ethereum && walletAddress) {
       initializeContract();
       initializeTokenContract();
       initializeStakingContract(); 
@@ -269,27 +375,31 @@ export default function Page({users}) {
   }, [walletAddress])
 
   return (
-    <>
+    <div className="admin-dashboard">
       <Header />
       <ToastContainer/>
       <div className="p-12 pb-0">
         <div className="flex justify-between">
           <h1 className="font-bold text-3xl mb-12">Admin Dashboard</h1>
           <div className="">
-            <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2" onClick={() => setOpenOwner(true)}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setOpenOwner(true)}>
               Change Owner
             </button>
-            <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2" onClick={() => setIsOpen(true)}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setIsOpen(true)}>
               Airdrop
             </button>
-            <button className="items-center bg-indigo-500 text-white text-lg px-3 py-2 rounded-lg hover:bg-indigo-400 mx-2" onClick={() => setIsStakingOpen(true)}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setIsStakingOpen(true)}>
               Staking
             </button>
           </div>
         </div>
         {
-          userData ?
-          <Table columns={columns} data={userData} /> : ""
+          userData && isLoading ? (
+            <div className="loader-container">
+                <div className="spinner"></div>
+            </div>
+          ) :
+          <Table columns={columns} data={userData} />
         }
         <AirdropModal 
         isOpen={isOpen}
@@ -321,12 +431,12 @@ export default function Page({users}) {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Do you Change Owner?
+            Do you want to change Owner?
             <input 
             type='string'
             className="block mt-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             value={ownerAdd}
-            placeholder="0x0.."
+            placeholder="new address(ex: 0x0..)"
             onChange={(e) => changeOwnerAdd(e.target.value)} 
             />
           </DialogContentText>
@@ -338,7 +448,7 @@ export default function Page({users}) {
         </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }
 

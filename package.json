@@ -14,6 +14,8 @@
     "@fontsource/poppins": "^5.0.12",
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.13",
+    "@mui/x-data-grid": "^7.0.0",
+    "@mui/x-data-grid-generator": "^7.0.0",
     "@solana/web3.js": "^1.91.1",
     "@tanstack/react-query": "^5.28.4",
     "axios": "^1.6.7",

@@ -6,7 +6,7 @@ import StakingAbi from "@/Contracts/Staking.json";
 import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function StakingContent({name}) {
@@ -96,12 +96,12 @@ export default function StakingContent({name}) {
     }
   }, [walletAddress])
   return (
+    <>
     <section className="text-gray-600 body-font py-24">
-      <ToastContainer />
       <h2 className="font-bold text-black text-4xl mb-4 text-center underline">
         Get Rewards from Staking
       </h2>
-      <div className="container px-5 mx-auto flex flex-wrap gap-5">
+      <div className="container items-center mx-auto flex flex-col gap-5 text-[28px]">
         {
           stakingInfo && stakingInfo.length != 0 
           ? 
@@ -109,11 +109,14 @@ export default function StakingContent({name}) {
             ethers.utils.formatEther(stake.stakedAmount.toString()) != 0 ?
             <StakingBox stake={stake} id={index} doWithDraw={doWithDraw} doWithDrawAll={doWithDrawAll} key={index} />
             : null
-          ) 
-          : "You have not staking reward"
+          ) : 
+          <div className='bg-[#EEE0B3] p-5'>
+            You have not staking reward
+          </div>
         }
       </div>
     </section>
+    </>
   );
 }
 
@@ -159,6 +162,7 @@ const updateUserInfo = async (name, amount) => {
       return 0;
     }
   } catch (error) {
+    console.log(error);
     return 0;
   }
 }
