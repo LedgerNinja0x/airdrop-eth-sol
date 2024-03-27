@@ -22,6 +22,23 @@ import { Button } from "@mui/material";
 import React from "react";
 
 const renderSummaryButton = (params) => {
+
+  async function sendMessage(username) {
+    try {
+      //insert msg into required user
+
+      //find and update with selectedUser
+      await axios.post("/api/me/message", {
+        username,
+      });
+
+      toast.success("Message sent successfully");
+    } catch (e) {
+      console.error(e);
+      toast.error("Something went wrong. Check logs.");
+    }
+  }
+
   return (
     <div className="flex flex-row w-full mt-[10px]">
       {params.row.twitterVerified === "no" ?
@@ -42,7 +59,7 @@ const renderSummaryButton = (params) => {
         </svg>
         {/* dont show message btn is twitter already verified */}
 
-        <span onClick={() => sendMessage(params.row.usrname)}>
+        <span onClick={() => sendMessage(params.row.username)}>
           Message
         </span>
 
@@ -81,7 +98,7 @@ const renderSummaryButton = (params) => {
   )
 }
 
-export default function Page({users}) {
+export default function Page({users, topCount}) {
   const columns = [
     { 
       field: 'id', 
@@ -245,7 +262,7 @@ export default function Page({users}) {
       return;
     }
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
-    const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, 100);
+    const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, topCount);
     const userAddress = userList.map(entry => entry.ethAddress);
     setLoading(true);
     try {
@@ -282,7 +299,7 @@ export default function Page({users}) {
       setIsStakingOpen(false);
       return;
     }
-    const userAddress = userData.sort((a, b) => b.userRating - a.userRating).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress).slice(0, 100);
+    const userAddress = userData.sort((a, b) => b.userRating - a.userRating).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress).slice(0, topCount);
     let stakingPeriod;
     if (periodType == 1) {
       stakingPeriod = period * 60 * 60 * 24;
@@ -496,7 +513,7 @@ export async function getServerSideProps(context) {
       }
     );
 
-    return { props: {users: data.documents} };
+    return { props: {users: data.documents, topCount: Number(process.env.TopCount)} };
   } catch (e) {
     console.log(e);
     return {

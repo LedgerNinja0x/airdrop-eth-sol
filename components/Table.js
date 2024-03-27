@@ -42,22 +42,6 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 
 const Table = ({ columns, data }) => {
 
-  async function sendMessage(username) {
-    try {
-      //insert msg into required user
-
-      //find and update with selectedUser
-      await axios.post("/api/me/message", {
-        username,
-      });
-
-      toast.success("Message sent successfully");
-    } catch (e) {
-      console.error(e);
-      toast.error("Something went wrong. Check logs.");
-    }
-  }
-
   let [isOpen, setIsOpen] = useState(false);
   let [selectedUser, setSelectedUser] = useState("");
   return (
