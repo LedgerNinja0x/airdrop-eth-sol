@@ -126,7 +126,7 @@ const updateUserInfo = async (name, amount) => {
       `${process.env.MONGODB_URI}/action/findOne`,
       {
         dataSource: "Cluster0",
-        database: "test",
+        database: process.env.DataBase
         collection: "users",
         filter: {
           username: name,

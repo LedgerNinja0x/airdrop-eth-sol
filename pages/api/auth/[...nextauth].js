@@ -41,7 +41,7 @@ export const authOptions = {
             `${process.env.MONGODB_URI}/action/findOne`,
             {
               dataSource: "Cluster0",
-              database: "test",
+              database: process.env.DataBase
               collection: "users",
               filter: {
                 email: credentials.email,
@@ -97,7 +97,7 @@ export const authOptions = {
             `${process.env.MONGODB_URI}/action/findOne`,
             {
               dataSource: "Cluster0",
-              database: "test",
+              database: process.env.DataBase
               collection: "users",
               filter: {
                 username: user.name,
@@ -121,7 +121,7 @@ export const authOptions = {
               `${process.env.MONGODB_URI}/action/insertOne`,
               {
                 dataSource: "Cluster0",
-                database: "test",
+                database: process.env.DataBase
                 collection: "users",
                 document: {
                   provider: account.provider,
@@ -166,7 +166,7 @@ export const authOptions = {
             `${process.env.MONGODB_URI}/action/findOne`,
             {
               dataSource: "Cluster0",
-              database: "test",
+              database: process.env.DataBase
               collection: "users",
               filter: {
                 email: user.email,

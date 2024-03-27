@@ -110,7 +110,7 @@ export async function getServerSideProps({ req, res }) {
         `${process.env.MONGODB_URI}/action/updateOne`,
         {
           dataSource: "Cluster0",
-          database: "test",
+          database: process.env.DataBase
           collection: "users",
           filter: {
             username: session.user.name,
@@ -155,7 +155,7 @@ export async function getServerSideProps({ req, res }) {
       `${process.env.MONGODB_URI}/action/findOne`,
       {
         dataSource: "Cluster0",
-        database: "test",
+        database: process.env.DataBase
         collection: "users",
         filter: {
           username: session.user.name,

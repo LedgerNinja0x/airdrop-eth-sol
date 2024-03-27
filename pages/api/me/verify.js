@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         `${process.env.MONGODB_URI}/action/updateOne`,
         {
           dataSource: "Cluster0",
-          database: "test",
+          database: process.env.DataBase
           collection: "users",
           filter: {
             username,
