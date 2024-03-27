@@ -194,7 +194,7 @@ export default function Page({users, topCount}) {
   const [ airDropContract, setAirDropContract ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
-  const [ userData, setUserData ] = useState(false);
+  const [ userData, setUserData ] = useState([]);
   const [ ownerAddress, setOwnerAddress] = useState("");
   const [ ownerAdd, changeOwnerAdd] = useState("");
   const [ openOwner, setOpenOwner ] = useState(false);
