@@ -9,7 +9,7 @@ export default async function handler(req, res) {
       `${process.env.MONGODB_URI}/action/updateOne`,
       {
         dataSource: "Cluster0",
-        database: process.env.DataBase
+        database: process.env.DataBase,
         collection: "users",
         filter: {
           twitt_username: req.body.username,
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
         `${process.env.MONGODB_URI}/action/findOne`,
         {
           dataSource: "Cluster0",
-          database: process.env.DataBase
+          database: process.env.DataBase,
           collection: "users",
           filter: {
             username: req.query.username,

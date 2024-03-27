@@ -497,7 +497,7 @@ export async function getServerSideProps(context) {
       `${process.env.MONGODB_URI}/action/find`,
       {
         dataSource: "Cluster0",
-        database: process.env.DataBase
+        database: process.env.DataBase,
         collection: "users",
         filter: {
          provider: "twitter",

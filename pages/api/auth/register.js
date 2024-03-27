@@ -19,7 +19,7 @@ export default async function handler(req, res) {
       `${process.env.MONGODB_URI}/action/findOne`,
       {
         dataSource: "Cluster0",
-        database: process.env.DataBase
+        database: process.env.DataBase,
         collection: "users",
         filter: {
           email: email,
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
         `${process.env.MONGODB_URI}/action/insertOne`,
         {
           dataSource: "Cluster0",
-          database: process.env.DataBase
+          database: process.env.DataBase,
           collection: "users",
           document: {
             ...req.body,
