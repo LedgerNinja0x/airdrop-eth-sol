@@ -3,11 +3,13 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
+import { styled } from '@mui/material/styles';
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { ArrowForward } from '@mui/icons-material';
 
 const steps = ["Post Tweet", "Verify Tweet"];
 
@@ -126,7 +128,7 @@ export default function HorizontalLinearStepper({
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Stepper activeStep={activeStep}>
+      <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => {
           const stepProps = {};
           const labelProps = {};
@@ -170,18 +172,18 @@ export default function HorizontalLinearStepper({
                     </h2>
                     <p>Post this exact tweet on your account</p>
                     <h3 className="font-semibold text-lg my-2">Message</h3>
-                    <p className="bg-gray-100 rounded-md py-2 px-8">
+                    <p className="bg-[#ECF7FC] rounded-md py-2 px-1">
                       {message}
                     </p>
                     <h3 className="font-semibold text-lg my-2">Hashtags</h3>
                     {hashtags.map((tag) => (
-                      <span className="bg-green-200 px-8 py-1 m-1 cursor-pointer">
+                      <span className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer">
                         #{tag}
                       </span>
                     ))}
                   </>
                 ) : (
-                  <div className="bg-red-100 py-2 px-8 mt-4">
+                  <div className="bg-[#DEC470] py-2 px-8 mt-4">
                     Please wait for admin to send message...
                   </div>
                 )}
@@ -203,11 +205,11 @@ export default function HorizontalLinearStepper({
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     placeholder="Enter url of your tweet..."
-                    className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring focus:ring-[#241008] sm:text-sm sm:leading-6"
                   />
                   <button
                     disabled={loading}
-                    className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-12 py-2 mx-auto rounded-md hover:bg-indigo-400"
+                    className="flex gap-x-1 bg-[#241008] text-white text-sm px-12 py-2 ml-1 rounded-md "
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -250,7 +252,7 @@ export default function HorizontalLinearStepper({
 
             {/* only allow next btn for first step */}
             {activeStep == 0 && message && (
-              <Button onClick={handleNext}>Next</Button>
+              <Button onClick={handleNext}>Next <ArrowForward /></Button>
             )}
           </Box>
         </React.Fragment>

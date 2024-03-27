@@ -16,7 +16,7 @@ const style = {
   p: 4,
 };
 
-export default function WalletModal({name,followers}) {
+export default function WalletModal({name, followers}) {
   let [isOpen, setIsOpen] = useState(true);
 
   const router = useRouter();
@@ -35,6 +35,9 @@ export default function WalletModal({name,followers}) {
         solAddress,
         username: name,
         followers,
+        tokenBalance: 0,
+        tokenValue: 0,
+        isTwitterVerified: 0
       });
       setLoading(false);
 

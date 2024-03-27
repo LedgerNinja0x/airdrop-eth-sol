@@ -6,7 +6,6 @@ import Header from "@/components/Header";
 import Table from "@/components/Table";
 import AirdropModal from "@/components/AirdropModal";
 import StakingModal from "@/components/StakingModal";
-import NoWalletDetected from "@/components/NoWalletDetected";
 import { ethers, Contract } from "ethers";
 import contractAddress from "@/Contracts/addresses.json";
 import TokenAbi from "@/Contracts/erc20.json";

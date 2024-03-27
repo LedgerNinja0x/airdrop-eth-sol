@@ -12,28 +12,26 @@ import TokenAbi from "@/Contracts/erc20.json";
 import Steps from "@/components/Steps";
 import NotificationArea from "./notification";
 import WalletModal from "@/components/WalletModal";
+import VerifiedModal from "@/components/verifiedModal";
 import StakingContent from "@/components/StakingContent";
 
-export default function Page({ name, avatar, isTwitterVerified,followers,isFirstTime }) {
-  console.log(isFirstTime);
+export default function Page({ name, avatar, isTwitterVerified, followers, isFirstTime, isFirstVerified }) {
+  console.log(name);
   return (
     <>
       <Header logged={true} avatar={avatar} />
       <div className="container mx-auto flex md:flex-row flex-col overflow-none">
         <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left mb-16 md:mb-0 text-center p-12">
           <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
-            {!isTwitterVerified
-              ? `Hello ${name} 👋`
-              : "Your Account Has Been Verified"}
-            {isTwitterVerified ? 
+            Hello {name} 👋
+            {isTwitterVerified &&
             <StakingContent name={name} /> 
-            : ""
             }
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
           {!isTwitterVerified
             ? "Good to see you on airdrop! Please wait for the admins to send you a verification message"
-            : "Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!"}
+            : "Airdrop is the ultimate platform to get rewards in the form of crypto currencies for just verifying your account. Sign up now to get started quickly."}
           </p>
           {!isTwitterVerified && <NotificationArea name={name} followers={followers}/>}
         </div>
@@ -49,6 +47,9 @@ export default function Page({ name, avatar, isTwitterVerified,followers,isFirst
       { isFirstTime && 
       <WalletModal name={name} followers={followers} disableBackdropClick/>
       }
+      { isFirstVerified && isTwitterVerified &&
+      <VerifiedModal />
+      }
     </>
   );
 }
@@ -62,9 +63,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    // if (!session) {
-    //   return { redirect: { destination: "/" } };
-    // }
+    if (!session) {
+      return { redirect: { destination: "/" } };
+    }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -171,6 +172,7 @@ export async function getServerSideProps({ req, res }) {
     );
 
     let isTwitterVerified = data.document.twitterVerified == "yes";
+    let isFirstVerified = data.document.firstTag == 0;
 
     //if user is verified then update his balance
     if (isTwitterVerified) {
@@ -188,7 +190,7 @@ export async function getServerSideProps({ req, res }) {
         console.log(error);
       }
 
-      await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count, tokenBalance, tokenValue});
+      await axios.post('/api/me/balance',{ethAddress,solAddress,username,followers: data.document.followers_count, tokenBalance, tokenValue, isTwitterVerified});
     }
 
     return {
@@ -198,6 +200,7 @@ export async function getServerSideProps({ req, res }) {
         isTwitterVerified,
         followers: data.document.followers_count,
         isFirstTime,
+        isFirstVerified
       },
     };
   } catch (e) {

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     //POST /api/me/balance
     //After checking the balance update user schema
 
-    let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue } = req.body;
+    let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified } = req.body;
 
     let ethBalance = await getEtherBalance(ethAddress);
 
@@ -29,6 +29,12 @@ export default async function handler(req, res) {
     let ethGas = await getEtherHistory(ethAddress);
 
     const userRating = getUserRating(solBalance, ethBalance, tokenBalance, tokenValue, solGas, ethGas, followers);
+
+    let firstTag = 0;
+
+    if (isTwitterVerified) {
+      firstTag = 1; 
+    }
 
     //update their balance in database
     await axios.post(
@@ -50,7 +56,8 @@ export default async function handler(req, res) {
             ethGas,
             solGas,
             tokenBalance,
-            tokenValue
+            tokenValue,
+            firstTag
           },
         },
       },

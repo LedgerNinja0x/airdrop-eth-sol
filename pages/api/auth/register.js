@@ -62,6 +62,7 @@ export default async function handler(req, res) {
             twitterVerified: false,
             solAddress: "",
             ethAddress: "",
+            firstTag: 0,
             IP: req.socket.localAddress || req.ip,
             createdAt: new Date().getTime()
           },

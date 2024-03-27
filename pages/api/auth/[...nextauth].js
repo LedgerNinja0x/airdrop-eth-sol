@@ -141,6 +141,7 @@ export const authOptions = {
                   following_count: "",
                   like_count: "",
                   twitt_username: "",
+                  firstTag: 0,
                   message: {},
                   // IP: req.socket.localAddress || req.ip,
                   createdAt: new Date(Date.now()).toLocaleString(),

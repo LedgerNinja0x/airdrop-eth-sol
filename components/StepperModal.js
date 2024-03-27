@@ -7,9 +7,8 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "60%",
   bgcolor: "background.paper",
-  border: "1px solid #000",
+  borderRadius: "24px",
   boxShadow: 24,
   p: 4,
 };
@@ -23,12 +22,18 @@ export default function StepperModal({ isOpen, setIsOpen, name,followers }) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <span className="text-gray-500 mb-4 text-sm">Airdrop</span>
-        <h1 className="font-bold text-3xl mb-4">Verify Your Account</h1>
-        <p className="mb-8">
-          Verify your account by posting a tweet and adding your wallet
-        </p>
-        <HorizontalLinearStepper name={name} setIsOpen={setIsOpen} followers={followers}/>
+        <h1 className="font-bold text-[32px] mb-4">Verify Your Account</h1>
+        <div className="flex w-full">
+          <div>
+            <p className="mb-8 text-[18px]">
+              Verify your account by posting a tweet and adding your wallet
+            </p>
+            <HorizontalLinearStepper name={name} setIsOpen={setIsOpen} followers={followers}/>
+          </div>
+          <div>
+            <img src="./moose_verify.png" />
+          </div>
+        </div>
       </Box>
     </Modal>
   );
