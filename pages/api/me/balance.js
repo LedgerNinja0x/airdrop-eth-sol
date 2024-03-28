@@ -6,8 +6,6 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 import axios from "axios";
-import { getUserRating } from "@/lib/util";
-
 
 const connection = new Connection(clusterApiUrl("mainnet-beta"));
 
@@ -22,13 +20,9 @@ export default async function handler(req, res) {
 
     let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified } = req.body;
 
-    let ethBalance = await getEtherBalance(ethAddress);
-
     let { solBalance, solGas } = await getSolBalance(solAddress);
 
     let ethGas = await getEtherHistory(ethAddress);
-
-    const userRating = getUserRating(solBalance, ethBalance, tokenBalance, tokenValue, solGas, ethGas, followers);
 
     let firstTag = 0;
 
@@ -50,13 +44,13 @@ export default async function handler(req, res) {
           $set: {
             ethAddress,
             solAddress,
-            ethBalance,
             solBalance,
             userRating,
             ethGas,
             solGas,
             tokenBalance,
             tokenValue,
+            followers_count: followers,
             firstTag
           },
         },
@@ -93,15 +87,6 @@ const getEtherHistory = (_address) => {
       console.error(e)
       return 0;
     });
-};
-
-const getEtherBalance = async (_address) => {
-  const network = "mainnet";
-  const provider = ethers.getDefaultProvider(network);
-  var balance = await provider.getBalance(_address);
-  // convert a currency unit from wei to ether
-  const ethBalance = ethers.formatEther(balance);
-  return ethBalance;
 };
 
 const getSolBalance = async (address) => {
