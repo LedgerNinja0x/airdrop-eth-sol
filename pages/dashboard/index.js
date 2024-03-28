@@ -24,9 +24,9 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
         <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left mb-16 md:mb-0 text-center p-12">
           <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
             Hello {name} 👋
-            {/* {isTwitterVerified && */}
+            {isTwitterVerified &&
             <StakingContent name={name} /> 
-            {/* } */}
+            }
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
           {!isTwitterVerified
