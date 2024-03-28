@@ -190,6 +190,7 @@ export default function Page({users, topCount}) {
   ]
   const [ isOpen, setIsOpen ] = useState(false);
   const [ isStakingOpen, setIsStakingOpen ] = useState(false);
+  const [ openOwner, setOpenOwner ] = useState(false);
   const [ walletAddress, setWalletAddress ] = useState("");
   const [ airDropContract, setAirDropContract ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
@@ -197,7 +198,6 @@ export default function Page({users, topCount}) {
   const [ userData, setUserData ] = useState([]);
   const [ ownerAddress, setOwnerAddress] = useState("");
   const [ ownerAdd, changeOwnerAdd] = useState("");
-  const [ openOwner, setOpenOwner ] = useState(false);
   const [ isLoading, setLoading ] = useState(false);
 
   const handleUsers = async (userInfo) => {
@@ -216,6 +216,13 @@ export default function Page({users, topCount}) {
   }
 
   const connectWallet = async () => {
+    if (!window.ethereum) {
+      toast.error("pls connect wallet");
+      setIsOpen(false);
+      setIsStakingOpen(false);
+      setOpenOwner(false);
+      return;
+    }
     const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
     setWalletAddress(walletAddress)
   }
@@ -228,8 +235,12 @@ export default function Page({users, topCount}) {
       _provider.getSigner(0)
     );
     setAirDropContract(_AirDropContract);
-    const owner = await _AirDropContract.getOwner();
-    setOwnerAddress(owner);
+    try {
+      const owner = await _AirDropContract.getOwner();
+      setOwnerAddress(owner);
+    } catch(err) {
+      toast.error("!Oops Something Wrong");
+    }
   }
 
   const initializeTokenContract = async () => {
