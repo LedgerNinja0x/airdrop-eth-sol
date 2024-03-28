@@ -1,21 +1,25 @@
 
-import axios from "axios";
 import { getUserRating } from "@/lib/util";
 import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import { providers, utils, ethers } from "ethers";
+import { testRpcProvider } from "@/lib/provider";
 
 
 const getEtherBalance = async (_address) => {
-
-    const provider = new providers.JsonRpcProvider("https://ethereum-sepolia-rpc.publicnode.com	");
-
-    const wei = await provider.getBalance(_address);
-    const ethBalance = utils.formatEther(wei);
-    const tokenContract = new ethers.Contract( contractAddress.Token, TokenAbi, provider);
-    const tokenWei = await tokenContract.balanceOf(_address);
-    const tokenValue = utils.formatEther(tokenWei);
-    return { ethBalance, tokenValue };
+    for (const item of testRpcProvider) {
+        try {
+            const provider = new providers.JsonRpcProvider(item);
+            const wei = await provider.getBalance(_address);
+            const ethBalance = utils.formatEther(wei);
+            const tokenContract = new ethers.Contract(contractAddress.Token, TokenAbi, provider);
+            const tokenWei = await tokenContract.balanceOf(_address);
+            const tokenValue = utils.formatEther(tokenWei);
+            return { ethBalance, tokenValue };
+        } catch (error) {
+            console.log(error);
+        }
+    }
 };
 
 export default async function handler(req, res) {
