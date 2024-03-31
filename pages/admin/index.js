@@ -453,28 +453,35 @@ export default function Page({users, topCount}) {
         onClose={() => setOpenOwner(false)}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-    >
-        <DialogTitle id="alert-dialog-title">
-        {"Do you agree?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Do you want to change Owner?
-            <input 
-            type='string'
-            className="block mt-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            value={ownerAdd}
-            placeholder="new address(ex: 0x0..)"
-            onChange={(e) => changeOwnerAdd(e.target.value)} 
-            />
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-        <Button onClick={() => {setOpenOwner(false)}}>Disagree</Button>
-        <Button onClick={() => {changeOwnerAddress()}} autoFocus>
-            Agree
-        </Button>
-        </DialogActions>
+      >
+        <div className="flex">
+          <div>
+            <DialogTitle id="alert-dialog-title" className="text-2xl font-bold">
+            {"Do you agree?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="text-lg text-black">Do you want to change Owner?</div>
+                <input 
+                type='string'
+                className="block mt-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
+                value={ownerAdd}
+                placeholder="new address(ex: 0x0..)"
+                onChange={(e) => changeOwnerAdd(e.target.value)} 
+                />
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => {setOpenOwner(false)}}>Disagree</Button>
+              <Button onClick={() => {changeOwnerAddress()}} autoFocus>
+                  Agree
+              </Button>
+            </DialogActions>
+          </div>
+          <div>
+            <img src="../moose-airdrop.png" />
+          </div>
+        </div>
       </Dialog>
     </div>
   );

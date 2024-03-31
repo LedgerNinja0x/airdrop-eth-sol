@@ -48,6 +48,14 @@ body {
     background-color: initial !important;    
 }
 
+.css-1t1j96h-MuiPaper-root-MuiDialog-paper {
+    border-radius: 18px;
+}
+
+.css-knqc4i-MuiDialogActions-root {
+    justify-content: flex-start !important;
+}
+
 .admin-dashboard {
     background-image: url("../public/background.png");
     background-size: cover;
