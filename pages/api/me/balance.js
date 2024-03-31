@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     //POST /api/me/balance
     //After checking the balance update user schema
 
-    let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified } = req.body;
+    let { ethAddress, solAddress, twitt_username, followers, tokenBalance, tokenValue, isTwitterVerified } = req.body;
 
     let { solBalance, solGas } = await getSolBalance(solAddress);
 
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         database: process.env.DataBase,
         collection: "users",
         filter: {
-          username,
+          twitt_username,
         },
         update: {
           $set: {
