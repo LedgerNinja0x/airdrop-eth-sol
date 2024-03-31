@@ -117,20 +117,27 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">
-            {"Do you agree?"}
-            </DialogTitle>
-            <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                Do you withdrawAll in this staking?
-            </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={handleClose}>Disagree</Button>
-            <Button onClick={() => {handleClose();withdrawAll();}} autoFocus>
-                Agree
-            </Button>
-            </DialogActions>
+            <div className='flex'>
+                <div>
+                    <DialogTitle id="alert-dialog-title">
+                    {"Do you agree?"}
+                    </DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        <div className="text-lg text-black">Do you withdrawAll in this staking?</div>
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleClose}>Disagree</Button>
+                    <Button onClick={() => {handleClose();withdrawAll();}} autoFocus>
+                        Agree
+                    </Button>
+                    </DialogActions>
+                </div>
+                <div>
+                    <img src="./moose-airdrop.png" />
+                </div>
+            </div>
         </Dialog>
         <Dialog
             open={withdrawOpen}
@@ -138,27 +145,34 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">
-            {"Do you agree?"}
-            </DialogTitle>
-            <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                Do you withdraw in this staking?
-                    <input 
-                    type='number' 
-                    min="0" 
-                    className="block mt-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)} 
-                    />
-            </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={handleWithClose}>Disagree</Button>
-            <Button onClick={() => {handleWithClose();withdraw();}} autoFocus>
-                Agree
-            </Button>
-            </DialogActions>
+            <div className='flex'>
+                <div>
+                    <DialogTitle id="alert-dialog-title">
+                    {"Do you agree?"}
+                    </DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Do you withdraw in this staking?
+                            <input 
+                            type='number' 
+                            min="0" 
+                            className="block mt-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)} 
+                            />
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleWithClose}>Disagree</Button>
+                    <Button onClick={() => {handleWithClose();withdraw();}} autoFocus>
+                        Agree
+                    </Button>
+                    </DialogActions>
+                </div>
+                <div>
+                    <img src="./moose-airdrop.png" />
+                </div>
+            </div>
         </Dialog>
         </>
     );
