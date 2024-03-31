@@ -14,6 +14,10 @@ export default function StakingContent({name}) {
   const [ walletAddress, setWalletAddress ] = useState("");
   const [stakingInfo, setStakingInfo] = useState(false);
   const connectWallet = async () => {
+    if (!window.ethereum) {
+      toast.error("Oops! something wrong");
+      return;
+    }
     const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
     setWalletAddress(walletAddress)
   }
@@ -35,6 +39,9 @@ export default function StakingContent({name}) {
   }
 
   const doWithDraw = async (id, amount) => {
+    if (walletAddress == "") {
+      connectWallet();
+    }
     const withdrawAmount = await stakingContract.withdrawableAmount(id);
     const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
     if (tokenToWei > withdrawAmount) {
@@ -58,6 +65,9 @@ export default function StakingContent({name}) {
   }
 
   const doWithDrawAll = async (id) => {
+    if (walletAddress == "") {
+      connectWallet();
+    }
     try {
       const withdrawAmount = await stakingContract.withdrawableAmount(id);
       const amount = Number(ethers.utils.formatEther(withdrawAmount).toString());
