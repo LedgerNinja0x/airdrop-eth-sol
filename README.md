@@ -23,14 +23,12 @@ A production version of this app is already hosted on airdrop-rewards.netlify.co
 
 All you need to do is:
 - Change NEXTAUTH_URL in .env to the prod one
-- Get new client id and client secret from twitter developer console and add redirect uris correctly https://airdrop-rewards.netlify.com/api/auth/callback/twitter
+- Get new client id and client secret from twitter developer console and add redirect uris correctly https://airdrop-management.vercel.com/api/auth/callback/twitter
 
 Push the code!
 
 That's it everything else will be configured automatically!
 
-Peace
-Saswat
 
 ## Edits
 

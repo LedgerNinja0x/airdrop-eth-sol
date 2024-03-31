@@ -42,7 +42,6 @@ export default async function handler(req, res) {
             ethAddress,
             solAddress,
             solBalance,
-            userRating,
             ethGas,
             solGas,
             tokenBalance,
