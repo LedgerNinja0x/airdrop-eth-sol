@@ -139,7 +139,7 @@ const updateUserInfo = async (name, amount) => {
         database: process.env.DataBase,
         collection: "users",
         filter: {
-          twitt_username: name,
+          username: name,
         },
         projection: {},
       },
@@ -151,7 +151,7 @@ const updateUserInfo = async (name, amount) => {
         },
       }
     );
-    let { ethAddress, solAddress, twitt_username, tokenBalance, tokenValue } = data.document;
+    let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
     try {
       const _provider = new ethers.providers.Web3Provider(window.ethereum);
       const _TokenContract = new Contract(
@@ -165,7 +165,7 @@ const updateUserInfo = async (name, amount) => {
     }
     tokenBalance += amount;
   
-    const result = await axios.post('/api/me/balance',{ethAddress, solAddress, twitt_username, followers: data.document.followers_count, tokenBalance, tokenValue});    
+    const result = await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: data.document.followers_count, tokenBalance, tokenValue});    
     if (result.status == 201) {
       return 1;
     } else {

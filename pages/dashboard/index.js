@@ -15,7 +15,7 @@ import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
 import { ToastContainer } from 'react-toastify';
 
-export default function Page({ name, avatar, isTwitterVerified, followers, isFirstTime, isFirstVerified, twitt_username, ethAddress }) {
+export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress}) {
   return (
     <>
       <ToastContainer />
@@ -25,7 +25,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
           <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
             Hello {name} 👋
             {isTwitterVerified &&
-            <StakingContent name={twitt_username} /> 
+            <StakingContent name={name} /> 
             }
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
@@ -45,7 +45,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
         </div>
       </div>
       { !ethAddress && 
-      <WalletModal name={twitt_username} followers={followers} disableBackdropClick/>
+      <WalletModal name={name} followers={followers} disableBackdropClick/>
       }
       { isFirstVerified && isTwitterVerified &&
       <VerifiedModal />
@@ -176,7 +176,7 @@ export async function getServerSideProps({ req, res }) {
 
     //if user is verified then update his balance
     if (isTwitterVerified) {
-      let { ethAddress, solAddress, tokenBalance, tokenValue, twitt_username } = data.document;
+      let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
       try {
         const _provider = new ethers.providers.Web3Provider(window.ethereum);
         const _TokenContract = new Contract(
@@ -190,7 +190,7 @@ export async function getServerSideProps({ req, res }) {
         console.log(error);
       }
 
-      await axios.post('/api/me/balance',{ethAddress, solAddress, twitt_username, followers: data.document.followers_count, tokenBalance, tokenValue, isTwitterVerified});
+      await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: data.document.followers_count, tokenBalance, tokenValue, isTwitterVerified});
     }
 
     return {
@@ -199,9 +199,7 @@ export async function getServerSideProps({ req, res }) {
         avatar: session?.user?.image || null,
         isTwitterVerified,
         followers: data.document.followers_count,
-        isFirstTime,
         isFirstVerified,
-        twitt_username: data.document.twitt_username,
         ethAddress: data.document.ethAddress
       },
     };
