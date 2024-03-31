@@ -12,7 +12,7 @@ export default async function handler(req, res) {
         database: process.env.DataBase,
         collection: "users",
         filter: {
-          twitt_username: req.body.username,
+          twitt_username: req.body.twitt_username,
         },
         update: {
           $set: {

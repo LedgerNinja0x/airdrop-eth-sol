@@ -23,13 +23,13 @@ import React from "react";
 
 const renderSummaryButton = (params) => {
 
-  async function sendMessage(username) {
+  async function sendMessage(twitt_username) {
     try {
       //insert msg into required user
 
       //find and update with selectedUser
       await axios.post("/api/me/message", {
-        username,
+        twitt_username,
       });
 
       toast.success("Message sent successfully");
@@ -59,7 +59,7 @@ const renderSummaryButton = (params) => {
         </svg>
         {/* dont show message btn is twitter already verified */}
 
-        <span onClick={() => sendMessage(params.row.username)}>
+        <span onClick={() => sendMessage(params.row.twitt_username)}>
           Message
         </span>
 

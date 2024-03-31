@@ -64,7 +64,7 @@ export async function getServerSideProps(context) {
     if (!session) {
       return { props: { logged: false } };
     } else {
-      return { props: { logged: true,avatar: session?.user?.image || null } };
+      return { props: { logged: true, avatar: session?.user?.image || null } };
     }
   } catch (e) {
     console.log(e);
