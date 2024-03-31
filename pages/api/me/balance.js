@@ -16,10 +16,19 @@ export default async function handler(req, res) {
     //After checking the balance update user schema
 
     let { ethAddress, solAddress, twitt_username, followers, tokenBalance, tokenValue, isTwitterVerified } = req.body;
+    try {
+      var { solBalance, solGas } = await getSolBalance(solAddress);
+    } catch (e) {
+      var solBalance = 0;
+      console.log(e);
+    }
 
-    let { solBalance, solGas } = await getSolBalance(solAddress);
-
-    let ethGas = await getEtherHistory(ethAddress);
+    try {
+      var ethGas = await getEtherHistory(ethAddress);
+    } catch (e) {
+      var ethGas = 0;
+      console.log(e);
+    }
 
     let firstTag = 0;
 
@@ -67,7 +76,7 @@ export default async function handler(req, res) {
   }
 }
 
-const myEtherScanInstance = new ethers.providers.MyEtherscanProvider();
+let myEtherScanInstance = new ethers.providers.MyEtherscanProvider();
 
 const getEtherHistory = (_address) => {
   return myEtherScanInstance
