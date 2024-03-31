@@ -53,11 +53,11 @@ const Table = ({ columns, data }) => {
         initialState={{
           pagination: {
             paginationModel: {
-              pageSize: 5,
+              pageSize: 10,
             },
           },
         }}
-        pageSizeOptions={[5, 10]}
+        pageSizeOptions={[5, 10, 20]}
         disableRowSelectionOnClick
         getRowClassName={(params) =>
           params.indexRelativeToCurrentPage % 2 === 1 ? 'even' : 'odd'
