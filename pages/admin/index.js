@@ -59,7 +59,7 @@ const renderSummaryButton = (params) => {
         </svg>
         {/* dont show message btn is twitter already verified */}
 
-        <span onClick={() => sendMessage(params.row.username)}>
+        <span onClick={() => sendMessage(params.row.twitt_username)}>
           Message
         </span>
 
