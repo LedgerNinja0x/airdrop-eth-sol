@@ -25,7 +25,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
           <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
             Hello {name} 👋
             {isTwitterVerified &&
-            <StakingContent name={name} /> 
+            <StakingContent name={twitt_username} /> 
             }
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
