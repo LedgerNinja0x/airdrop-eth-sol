@@ -87,7 +87,33 @@ export async function getServerSideProps({ req, res }) {
 
     let isFirstTime = false;
 
-    if (!ping) {
+    //check if user is already verified
+
+    let { data } = await axios.post(
+      `${process.env.MONGODB_URI}/action/findOne`,
+      {
+        dataSource: "Cluster0",
+        database: process.env.DataBase,
+        collection: "users",
+        filter: {
+          username: session.user.name,
+        },
+        projection: {},
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          apiKey: process.env.DATAAPI_KEY,
+        },
+      }
+    );
+
+    let isTwitterVerified = data.document.twitterVerified == "yes";
+    let isFirstVerified = data.document.firstTag == 0;
+    let followers_count = data.document.followers_count;
+
+    if (!data.document.twitt_username) {
       isFirstTime = true
       const token = await getToken({ req });
 
@@ -146,33 +172,10 @@ export async function getServerSideProps({ req, res }) {
 
       console.log("cookie", cookie);
 
+      followers_count = details?.data?.data?.public_metrics?.followers_count;
+
       res.setHeader("Set-Cookie", cookie);
     }
-
-    //check if user is already verified
-
-    let { data } = await axios.post(
-      `${process.env.MONGODB_URI}/action/findOne`,
-      {
-        dataSource: "Cluster0",
-        database: process.env.DataBase,
-        collection: "users",
-        filter: {
-          username: session.user.name,
-        },
-        projection: {},
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          apiKey: process.env.DATAAPI_KEY,
-        },
-      }
-    );
-
-    let isTwitterVerified = data.document.twitterVerified == "yes";
-    let isFirstVerified = data.document.firstTag == 0;
 
     //if user is verified then update his balance
     if (isTwitterVerified) {
@@ -190,7 +193,7 @@ export async function getServerSideProps({ req, res }) {
         console.log(error);
       }
 
-      await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: data.document.followers_count, tokenBalance, tokenValue, isTwitterVerified});
+      await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: followers_count, tokenBalance, tokenValue, isTwitterVerified});
     }
 
     return {
@@ -198,7 +201,7 @@ export async function getServerSideProps({ req, res }) {
         name: session.user.name,
         avatar: session?.user?.image || null,
         isTwitterVerified,
-        followers: data.document.followers_count,
+        followers: followers_count,
         isFirstVerified,
         ethAddress: data.document.ethAddress
       },
