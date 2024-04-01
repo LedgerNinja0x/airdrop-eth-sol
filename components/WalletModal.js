@@ -39,7 +39,7 @@ export default function WalletModal({name, followers}) {
       let { data } = await axios.post("/api/me/balance", {
         ethAddress,
         solAddress,
-        twitt_username: name,
+        username: name,
         followers,
         tokenBalance: 0,
         tokenValue: 0,
