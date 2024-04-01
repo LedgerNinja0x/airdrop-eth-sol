@@ -20,6 +20,7 @@ export default async function handler(req, res) {
       var { solBalance, solGas } = await getSolBalance(solAddress);
     } catch (e) {
       var solBalance = 0;
+      var solGas = 0;
       console.log(e);
     }
 
