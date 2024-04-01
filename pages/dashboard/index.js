@@ -15,7 +15,7 @@ import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
 import { ToastContainer } from 'react-toastify';
 
-export default function Page({ name, avatar, isTwitterVerified, followers, isFirstTime, isFirstVerified }) {
+export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress}) {
   return (
     <>
       <ToastContainer />
@@ -44,7 +44,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
           />
         </div>
       </div>
-      { isFirstTime && 
+      { !ethAddress && 
       <WalletModal name={name} followers={followers} disableBackdropClick/>
       }
       { isFirstVerified && isTwitterVerified &&
@@ -199,8 +199,8 @@ export async function getServerSideProps({ req, res }) {
         avatar: session?.user?.image || null,
         isTwitterVerified,
         followers: data.document.followers_count,
-        isFirstTime,
-        isFirstVerified
+        isFirstVerified,
+        ethAddress: data.document.ethAddress
       },
     };
   } catch (e) {

@@ -4,6 +4,8 @@ import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const style = {
   position: "absolute",
@@ -28,12 +30,16 @@ export default function WalletModal({name, followers}) {
 
   //call api and check balance on backend, verify
   async function checkBalance() {
+    if (solAddress === "" || ethAddress === "") {
+      toast.error("Please fill out all fields");
+      return;
+    }
     try {
       setLoading(true);
       let { data } = await axios.post("/api/me/balance", {
         ethAddress,
         solAddress,
-        username: name,
+        twitt_username: name,
         followers,
         tokenBalance: 0,
         tokenValue: 0,
