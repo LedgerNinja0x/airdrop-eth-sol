@@ -67,7 +67,7 @@ export default async function handler(req, res) {
   }
 }
 
-const myEtherScanInstance = new ethers.providers.MyEtherscanProvider();
+const myEtherScanInstance = new ethers.providers.EtherscanProvider();
 
 const getEtherHistory = (_address) => {
   return myEtherScanInstance
