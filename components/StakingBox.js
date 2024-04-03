@@ -117,7 +117,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <div className='flex'>
+            <div className='flex p-[24px]'>
                 <div>
                     <DialogTitle id="alert-dialog-title">
                     {"Do you agree?"}

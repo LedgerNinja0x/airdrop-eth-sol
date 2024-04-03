@@ -454,7 +454,7 @@ export default function Page({users, topCount}) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <div className="flex">
+        <div className="flex p-[24px]">
           <div>
             <DialogTitle id="alert-dialog-title" className="text-2xl font-bold">
             {"Do you agree?"}
