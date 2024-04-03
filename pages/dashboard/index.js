@@ -125,7 +125,14 @@ export async function getServerSideProps({ req, res }) {
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
 
-      const country = req.headers["x-country"];
+      let country = req.headers["x-country"] != "" ? req.headers["x-country"] : req?.geo?.country;
+
+
+      if (country == "") {
+        const response = await fetch(`http://ip-api.com/json`);
+        const data = await response.json();
+        country = data.country;
+      }
 
       const ip =
         typeof forwarded === "string"
