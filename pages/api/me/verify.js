@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const needle = require('needle');
+import needle from "needle";
 
 export default async function handler(req, res) {
   try {
