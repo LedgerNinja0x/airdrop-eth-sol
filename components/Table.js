@@ -2,8 +2,6 @@ import { alpha, styled } from '@mui/material/styles';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { useState } from "react";
 import Dialog from "./Modal";
-import axios from "axios";
-import { toast } from "react-toastify";
 
 const ODD_OPACITY = 0.5;
 
@@ -44,10 +42,11 @@ const Table = ({ columns, data }) => {
 
   let [isOpen, setIsOpen] = useState(false);
   let [selectedUser, setSelectedUser] = useState("");
+
   return (
     <>
       <StripedDataGrid
-        sx={{width: '100%'}}
+        sx={{width: '100%', height: "600px"}}
         rows={data}
         columns={columns}
         initialState={{
