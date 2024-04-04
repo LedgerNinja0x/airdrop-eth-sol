@@ -54,6 +54,7 @@ body {
 
 .css-1vskg8q, .css-knqc4i-MuiDialogActions-root {
     justify-content: flex-start !important;
+    padding: 5px 20px;
 }
 
 .admin-dashboard {

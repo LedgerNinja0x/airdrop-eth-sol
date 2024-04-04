@@ -349,6 +349,7 @@ export default function Page({users, topCount}) {
       toast.error("Pls input new Ower Address");
       return;
     }
+    setLoading(true);
     if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
       toast.error(`you must be contract owner: ${ownerAddress}`);
       setOpenOwner(false);
@@ -372,6 +373,7 @@ export default function Page({users, topCount}) {
     } catch (error) {
       toast.error("Oops! something wrong");
     }
+    setLoading(false);
     changeOwnerAdd("");
     setOpenOwner(false);
   }
@@ -456,8 +458,8 @@ export default function Page({users, topCount}) {
       >
         <div className="flex p-[24px]">
           <div>
-            <DialogTitle id="alert-dialog-title" className="text-2xl font-bold">
-            {"Do you agree?"}
+            <DialogTitle id="alert-dialog-title" className="text-3xl font-bold">
+            {"Do You Agree?"}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">

@@ -119,8 +119,8 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
         >
             <div className='flex p-[24px]'>
                 <div>
-                    <DialogTitle id="alert-dialog-title">
-                    {"Do you agree?"}
+                    <DialogTitle id="alert-dialog-title"  className="text-3xl font-bold">
+                    {"Do You Agree?"}
                     </DialogTitle>
                     <DialogContent>
                     <DialogContentText id="alert-dialog-description">
