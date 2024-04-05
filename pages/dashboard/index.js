@@ -183,7 +183,7 @@ export async function getServerSideProps({ req, res }) {
       let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
       try {
         const res = await axios.post(
-          `${process.env.NEXTAUTH_URL}/api/me/balance`,
+          `/api/me/balance`,
           {
             ethAddress,
             solAddress, 
