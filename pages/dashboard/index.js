@@ -181,7 +181,7 @@ export async function getServerSideProps({ req, res }) {
     //if user is verified then update his balance
     if (isTwitterVerified) {
       let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
-      await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: followers_count, tokenBalance, tokenValue, isTwitterVerified});
+      await axios.post(`${process.env.NEXTAUTH_URL}/api/me/balance`,{ethAddress, solAddress, username, followers: followers_count, tokenBalance, tokenValue, isTwitterVerified});
     }
 
     return {
