@@ -76,15 +76,6 @@ export async function getServerSideProps({ req, res }) {
 
     //update user field the first time he lands on dashboard(followers and location)
 
-    //check if user has landed for first time(check ping cookie)
-
-    // Parse the cookies on the request
-
-    var cookies = cookie.parse(req.headers.cookie || "");
-
-    // Get the visitor name set in the cookie
-    var ping = cookies.ping;
-
     let isFirstTime = false;
 
     //check if user is already verified
@@ -185,14 +176,6 @@ export async function getServerSideProps({ req, res }) {
         }
       );
 
-      const cookie = serialize("ping", "true", {
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 7, // 1 week
-      });
-
-      console.log("cookie", cookie);
-
-      res.setHeader("Set-Cookie", cookie);
     }
 
     //if user is verified then update his balance
