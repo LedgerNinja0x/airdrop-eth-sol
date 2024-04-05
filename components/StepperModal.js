@@ -13,7 +13,7 @@ const style = {
   p: 4,
 };
 
-export default function StepperModal({ isOpen, setIsOpen, name,followers }) {
+export default function StepperModal({ isOpen, setIsOpen, name, followers, twittUsername}) {
   return (
     <Modal
       open={isOpen}
@@ -28,7 +28,7 @@ export default function StepperModal({ isOpen, setIsOpen, name,followers }) {
             <p className="mb-8 text-[18px]">
               Verify your account by posting a tweet and adding your wallet
             </p>
-            <HorizontalLinearStepper name={name} setIsOpen={setIsOpen} followers={followers}/>
+            <HorizontalLinearStepper name={name} setIsOpen={setIsOpen} followers={followers} twittUsername={twittUsername}/>
           </div>
           <div>
             <img src="./moose_verify.png" />

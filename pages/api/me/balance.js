@@ -16,20 +16,10 @@ export default async function handler(req, res) {
     //After checking the balance update user schema
 
     let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified } = req.body;
-    try {
-      var { solBalance, solGas } = await getSolBalance(solAddress);
-    } catch (e) {
-      var solBalance = 0;
-      var solGas = 0;
-      console.log(e);
-    }
+    
+    var { solBalance, solGas } = await getSolBalance(solAddress);
 
-    try {
-      var ethGas = await getEtherHistory(ethAddress);
-    } catch (e) {
-      var ethGas = 0;
-      console.log(e);
-    }
+    var ethGas = await getEtherHistory(ethAddress);
 
     let firstTag = 0;
 

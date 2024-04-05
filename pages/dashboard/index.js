@@ -15,7 +15,8 @@ import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
 import { ToastContainer } from 'react-toastify';
 
-export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress}) {
+export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername}) {
+  
   return (
     <>
       <ToastContainer />
@@ -30,10 +31,9 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
           {!isTwitterVerified
-            ? "Good to see you on airdrop! Please wait for the admins to send you a verification message"
-            : "Airdrop is the ultimate platform to get rewards in the form of crypto currencies for just verifying your account. Sign up now to get started quickly."}
+            && "Good to see you on airdrop! Please wait for the admins to send you a verification message"}
           </p>
-          {!isTwitterVerified && <NotificationArea name={name} followers={followers}/>}
+          {!isTwitterVerified && <NotificationArea name={name} followers={followers} twittUsername={twittUsername}/>}
         </div>
 
         <div className="md:w-1/2 w-full">
@@ -62,7 +62,7 @@ export async function getServerSideProps({ req, res }) {
   try {
     const session = await getServerSession(req, res, authOptions);
 
-    // Protect route from unlogged users
+    // // Protect route from unlogged users
     if (!session) {
       return { redirect: { destination: "/" } };
     }
@@ -88,6 +88,8 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
+    let username = session?.user?.name;
+    let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
       `${process.env.MONGODB_URI}/action/findOne`,
@@ -96,7 +98,7 @@ export async function getServerSideProps({ req, res }) {
         database: process.env.DataBase,
         collection: "users",
         filter: {
-          username: session.user.name,
+          username: username
         },
         projection: {},
       },
@@ -117,10 +119,21 @@ export async function getServerSideProps({ req, res }) {
       isFirstTime = true
       const token = await getToken({ req });
 
-      let details = await axios.get(process.env.NEXTAUTH_URL+
-        "/api/me/details?key=" +
-          token.twitter.access_token
-      );
+      let details;
+
+      try {
+        details = await axios.get(process.env.NEXTAUTH_URL+
+          "/api/me/details?key=" +
+            token.twitter.access_token
+        );
+      } catch {
+        details = "";
+      }
+
+      const followersCount = details?.data?.data?.public_metrics?.followers_count || 2;
+      const followingCount = details?.data?.data?.public_metrics?.following_count || 1;
+      const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
+      const twittUsername = details?.data?.data.username || "SmediaSas55633";
 
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
@@ -146,18 +159,18 @@ export async function getServerSideProps({ req, res }) {
           database: process.env.DataBase,
           collection: "users",
           filter: {
-            username: session.user.name,
+            username: username,
           },
           update: {
             $set: {
               IP: ip,
               location: country,
               followers_count:
-                details?.data?.data?.public_metrics?.followers_count,
+                followersCount,
               following_count:
-                details?.data?.data?.public_metrics?.following_count,
-              like_count: details?.data?.data?.public_metrics?.like_count,
-              twitt_username: details?.data?.data.username,
+                followingCount,
+              like_count: likeCount,
+              twitt_username: twittUsername,
             },
           },
         },
@@ -205,12 +218,13 @@ export async function getServerSideProps({ req, res }) {
 
     return {
       props: {
-        name: session.user.name,
-        avatar: session?.user?.image || null,
+        name: username,
+        avatar: userImage,
         isTwitterVerified,
         followers: followers_count,
         isFirstVerified,
-        ethAddress: data.document.ethAddress
+        ethAddress: data.document.ethAddress,
+        twittUsername: data.document.twitt_username
       },
     };
   } catch (e) {

@@ -50,6 +50,7 @@ export default function WalletModal({name, followers}) {
       //reload the page to reflect that verification is successfull
       router.reload();
     } catch (e) {
+      toast.error("Please input correct wallet address!");
       setLoading(false);
     }
   }

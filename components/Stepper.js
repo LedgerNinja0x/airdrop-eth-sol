@@ -17,6 +17,7 @@ export default function HorizontalLinearStepper({
   name,
   setIsOpen,
   followers,
+  twittUsername
 }) {
   const router = useRouter();
 
@@ -41,12 +42,13 @@ export default function HorizontalLinearStepper({
   const verifyTweet = async () => {
     try {
       setLoading(true);
-      console.log("verify called", message, hashtags, url, name);
+      console.log("verify called", message, hashtags, url, name, twittUsername);
       let { data } = await axios.post("/api/me/verify", {
         message: message,
         hashtags: hashtags,
         url,
         username: name,
+        twittUsername: twittUsername
       });
       setLoading(false);
       console.log(data, "response");

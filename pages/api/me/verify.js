@@ -8,16 +8,21 @@ export default async function handler(req, res) {
     //uses twitter graphql and cookies to fetch that particular tweet in the url
     //checks if the content in the tweet includes message and hastags
     //If yes then updates the user document(username) => set twitterVerified: true and return a 201 response else 400
-    const { message, hashtags, username, url } = req.body;
+    const { message, hashtags, username, url, twittUsername } = req.body;
     if (!message || !hashtags || !username || !url) {
       return res.status(401).send("body missing");
     }
 
     let arr = url.split("/");
     let id = arr[arr.length - 1];
+    let tweetUsername = arr[arr.length - 3];
     
     if (!id) {
       return res.status(401).send("Wrong url format");
+    }
+
+    if (!tweetUsername === twittUsername) {
+      return res.status(500).send("wrong user");
     }
 
     const resp = await getTweet(id);
@@ -98,6 +103,8 @@ async function getTweet(id) {
             "authorization": `Bearer ${token}`
         }
     })
+
+    console.log(res.body);
 
     if (res.body) {
         return res.body.data;
