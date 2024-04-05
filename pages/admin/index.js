@@ -353,6 +353,7 @@ export default function Page({users, topCount}) {
     if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
       toast.error(`you must be contract owner: ${ownerAddress}`);
       setOpenOwner(false);
+      setLoading(false);
       return;
     }
     try {
