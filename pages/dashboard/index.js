@@ -14,9 +14,33 @@ import WalletModal from "@/components/WalletModal";
 import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
 import { ToastContainer } from 'react-toastify';
+import { useEffect } from "react";
 
-export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername}) {
+export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername, data}) {
   
+  useEffect(async () => {
+    if (!isFirstVerified && isTwitterVerified) {
+      let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data;
+      try {
+        const res = await axios.post(
+          `/api/me/balance`,
+          {
+            ethAddress,
+            solAddress, 
+            username, 
+            followers: followers_count, 
+            tokenBalance, 
+            tokenValue, 
+            isTwitterVerified: 1
+          }
+        );
+        console.log(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [])  
+
   return (
     <>
       <ToastContainer />
@@ -178,28 +202,6 @@ export async function getServerSideProps({ req, res }) {
 
     }
 
-    //if user is verified then update his balance
-    if (data.document.twitterVerified == "yes") {
-      let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
-      try {
-        const res = await axios.post(
-          `/api/me/balance`,
-          {
-            ethAddress,
-            solAddress, 
-            username, 
-            followers: followers_count, 
-            tokenBalance, 
-            tokenValue, 
-            isTwitterVerified: 1
-          }
-        );
-        console.log(res.data);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
     return {
       props: {
         name: username,
@@ -208,7 +210,8 @@ export async function getServerSideProps({ req, res }) {
         followers: followers_count,
         isFirstVerified,
         ethAddress: data.document.ethAddress,
-        twittUsername: data.document.twitt_username
+        twittUsername: data.document.twitt_username,
+        data: data.document
       },
     };
   } catch (e) {
