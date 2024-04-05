@@ -14,6 +14,7 @@ import WalletModal from "@/components/WalletModal";
 import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
 import { ToastContainer } from 'react-toastify';
+import { Try } from "@mui/icons-material";
 
 export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername}) {
   
@@ -139,13 +140,14 @@ export async function getServerSideProps({ req, res }) {
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
 
-      let country = req.headers["x-country"] != "" ? req.headers["x-country"] : req?.geo?.country;
+      let country;
 
-
-      if (country == "") {
+      try {
         const response = await fetch(`http://ip-api.com/json`);
         const data = await response.json();
         country = data.country;
+      } catch {
+        country = req.headers["x-country"] != "" ? req.headers["x-country"] : req?.geo?.country;
       }
 
       const ip =
@@ -183,8 +185,6 @@ export async function getServerSideProps({ req, res }) {
           },
         }
       );
-
-      // console.log("updated", resp);
 
       const cookie = serialize("ping", "true", {
         httpOnly: true,
