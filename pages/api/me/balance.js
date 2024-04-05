@@ -60,9 +60,7 @@ export default async function handler(req, res) {
       }
     );
 
-    console.log(data);
-
-    res.status(201).send("Balance updated successfully!");
+    res.status(201).send(data);
   } catch (e) {
     console.error(e);
     res.status(500).send("Something went wrong");
