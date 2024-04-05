@@ -14,7 +14,6 @@ import WalletModal from "@/components/WalletModal";
 import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
 import { ToastContainer } from 'react-toastify';
-import { Try } from "@mui/icons-material";
 
 export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername}) {
   
@@ -101,7 +100,7 @@ export async function getServerSideProps({ req, res }) {
         collection: "users",
         filter: {
           username: username
-        },
+        },                   
         projection: {},
       },
       {
@@ -201,19 +200,6 @@ export async function getServerSideProps({ req, res }) {
     //if user is verified then update his balance
     if (isTwitterVerified) {
       let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data.document;
-      try {
-        const _provider = new ethers.providers.Web3Provider(window.ethereum);
-        const _TokenContract = new Contract(
-          contractAddress.Token,
-          TokenAbi,
-          _provider.getSigner(0)
-        );
-        tokenValue = await _TokenContract.balanceOf(ethAddress);
-        
-      } catch (error) {
-        console.log(error);
-      }
-
       await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: followers_count, tokenBalance, tokenValue, isTwitterVerified});
     }
 
