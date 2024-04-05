@@ -191,7 +191,7 @@ export async function getServerSideProps({ req, res }) {
             followers: followers_count, 
             tokenBalance, 
             tokenValue, 
-            isTwitterVerified
+            isTwitterVerified: 1
           }
         );
         console.log(res.data);
