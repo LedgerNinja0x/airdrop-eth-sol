@@ -63,9 +63,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -88,8 +88,9 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name;
+    let username = session?.user?.name || "SASSmedia";
     let userImage = session?.user?.image || null;
+    userImage = "https://pbs.twimg.com/profile_images/1774041056067411968/ZnCvS3fJ_normal.png";
 
     let { data } = await axios.post(
       `${process.env.MONGODB_URI}/action/findOne`,

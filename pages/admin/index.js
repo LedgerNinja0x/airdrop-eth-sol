@@ -437,7 +437,7 @@ export default function Page({users, topCount}) {
         setIsOpen={setIsOpen}
         title={"Airdrop Manager"}
         description={
-          "Please inpurt token number for airdrop"
+          "Please input token number for airdrop"
         }
         action={doAirDrop}
         />
