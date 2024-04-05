@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     }
 
     //update their balance in database
-    await axios.post(
+    const { data } = await axios.post(
       `${process.env.MONGODB_URI}/action/updateOne`,
       {
         dataSource: "Cluster0",
@@ -59,6 +59,8 @@ export default async function handler(req, res) {
         },
       }
     );
+
+    console.log(data);
 
     res.status(201).send("Balance updated successfully!");
   } catch (e) {
