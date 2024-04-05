@@ -192,8 +192,6 @@ export async function getServerSideProps({ req, res }) {
 
       console.log("cookie", cookie);
 
-      followers_count = details?.data?.data?.public_metrics?.followers_count;
-
       res.setHeader("Set-Cookie", cookie);
     }
 
