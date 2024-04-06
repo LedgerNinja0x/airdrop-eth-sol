@@ -129,7 +129,7 @@ export async function getServerSideProps({ req, res }) {
 
     let isTwitterVerified = data.document.twitterVerified == "yes";
     let isFirstVerified = data.document.firstTag == 0;
-    let followers_count = data.document.followers_count;
+    let followersCount = data.document.followers_count;
 
     if (!data.document.twitt_username) {
       isFirstTime = true
@@ -205,7 +205,7 @@ export async function getServerSideProps({ req, res }) {
         name: username,
         avatar: userImage,
         isTwitterVerified,
-        followers: followers_count,
+        followers: followersCount,
         isFirstVerified,
         ethAddress: data.document.ethAddress,
         twittUsername: data.document.twitt_username,
