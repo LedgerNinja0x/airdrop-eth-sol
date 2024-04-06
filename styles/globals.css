@@ -57,6 +57,10 @@ body {
     padding: 5px 20px;
 }
 
+.css-126xj0f, .css-zw3mfo-MuiModal-root-MuiDialog-root {
+    z-index: 7;
+}
+
 .admin-dashboard {
     background-image: url("../public/background.png");
     background-size: cover;
