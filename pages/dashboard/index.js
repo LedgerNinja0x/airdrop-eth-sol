@@ -87,9 +87,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // // Protect route from unlogged users
-    // if (!session) {
-    //   return { redirect: { destination: "/" } };
-    // }
+    if (!session) {
+      return { redirect: { destination: "/" } };
+    }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -103,9 +103,8 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "SASSmedia";
+    let username = session?.user?.name;
     let userImage = session?.user?.image || null;
-    userImage = "https://pbs.twimg.com/profile_images/1774041056067411968/ZnCvS3fJ_normal.png";
 
     let { data } = await axios.post(
       `${process.env.MONGODB_URI}/action/findOne`,
@@ -146,8 +145,8 @@ export async function getServerSideProps({ req, res }) {
         details = "";
       }
 
-      followersCount = details?.data?.data?.public_metrics?.followers_count || 2;
-      const followingCount = details?.data?.data?.public_metrics?.following_count || 1;
+      followersCount = details?.data?.data?.public_metrics?.followers_count || 0;
+      const followingCount = details?.data?.data?.public_metrics?.following_count || 0;
       const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
       const twittUsername = details?.data?.data.username || "SmediaSas55633";
 
