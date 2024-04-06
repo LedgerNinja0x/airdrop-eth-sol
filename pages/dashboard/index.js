@@ -146,7 +146,7 @@ export async function getServerSideProps({ req, res }) {
         details = "";
       }
 
-      const followersCount = details?.data?.data?.public_metrics?.followers_count || 2;
+      followersCount = details?.data?.data?.public_metrics?.followers_count || 2;
       const followingCount = details?.data?.data?.public_metrics?.following_count || 1;
       const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
       const twittUsername = details?.data?.data.username || "SmediaSas55633";
@@ -182,10 +182,8 @@ export async function getServerSideProps({ req, res }) {
             $set: {
               IP: ip,
               location: country,
-              followers_count:
-                followersCount,
-              following_count:
-                followingCount,
+              followers_count: followersCount,
+              following_count: followingCount,
               like_count: likeCount,
               twitt_username: twittUsername,
             },
