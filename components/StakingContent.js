@@ -6,6 +6,7 @@ import StakingAbi from "@/Contracts/Staking.json";
 import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
