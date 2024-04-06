@@ -1,14 +1,8 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Header from "@/components/Header";
-import { serialize } from "cookie";
-import cookie from "cookie";
 import axios from "axios";
 import { getToken } from "next-auth/jwt";
-import { ethers } from "ethers";
-import contractAddress from "@/Contracts/addresses.json";
-import TokenAbi from "@/Contracts/erc20.json";
-
 import NotificationArea from "./notification";
 import WalletModal from "@/components/WalletModal";
 import VerifiedModal from "@/components/VerifiedModal";
@@ -18,8 +12,8 @@ import { useEffect } from "react";
 
 export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername, data}) {
   
-  useEffect(async () => {
-    if (!isFirstVerified && isTwitterVerified) {
+  const updateBalance = async () => {
+    if (isTwitterVerified) {
       let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data;
       try {
         const res = await axios.post(
@@ -28,7 +22,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
             ethAddress,
             solAddress, 
             username, 
-            followers: followers_count, 
+            followers, 
             tokenBalance, 
             tokenValue, 
             isTwitterVerified: 1
@@ -38,6 +32,12 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
       } catch (e) {
         console.log(e);
       }
+    }
+  }
+
+  useEffect(() => {
+    if (isTwitterVerified) {
+      updateBalance();
     }
   }, [])  
 
