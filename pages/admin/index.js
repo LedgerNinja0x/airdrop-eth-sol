@@ -9,7 +9,6 @@ import StakingModal from "@/components/StakingModal";
 import { ethers, Contract } from "ethers";
 import contractAddress from "@/Contracts/addresses.json";
 import TokenAbi from "@/Contracts/erc20.json";
-import AirDropAbi from "@/Contracts/airDrop.json";
 import StakingAbi from "@/Contracts/Staking.json";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
@@ -98,7 +97,7 @@ const renderSummaryButton = (params) => {
   )
 }
 
-export default function Page({users, topCount}) {
+export default function Page({users}) {
   const columns = [
     { 
       field: 'id', 
@@ -192,13 +191,13 @@ export default function Page({users, topCount}) {
   const [ isStakingOpen, setIsStakingOpen ] = useState(false);
   const [ openOwner, setOpenOwner ] = useState(false);
   const [ walletAddress, setWalletAddress ] = useState("");
-  const [ airDropContract, setAirDropContract ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
   const [ userData, setUserData ] = useState([]);
   const [ ownerAddress, setOwnerAddress] = useState("");
   const [ ownerAdd, changeOwnerAdd] = useState("");
   const [ isLoading, setLoading ] = useState(false);
+  const [ topCount, SetTopCount ] = useState(0);
 
   const handleUsers = async (userInfo) => {
     const result = await axios.post('/api/me/userInfo',{userInfo});
@@ -227,22 +226,6 @@ export default function Page({users, topCount}) {
     setWalletAddress(walletAddress)
   }
 
-  const initializeContract = async () => {
-    const _provider = new ethers.providers.Web3Provider(window.ethereum);
-    const _AirDropContract = new Contract(
-      contractAddress.AirDrop,
-      AirDropAbi.abi,
-      _provider.getSigner(0)
-    );
-    setAirDropContract(_AirDropContract);
-    try {
-      const owner = await _AirDropContract.getOwner();
-      setOwnerAddress(owner);
-    } catch(err) {
-      toast.error("!Oops Something Wrong");
-    }
-  }
-
   const initializeTokenContract = async () => {
     const _provider = new ethers.providers.Web3Provider(window.ethereum);
     const _TokenContract = new Contract(
@@ -260,6 +243,10 @@ export default function Page({users, topCount}) {
       StakingAbi.abi,
       _provider.getSigner(0)
     );
+    const topMember =  await _StakingContract.getTopMember();
+    SetTopCount(Number(topMember));
+    const owner = await _StakingContract.getOwner();
+    setOwnerAddress(owner);
     setStakingContract(_StakingContract);
   }
 
@@ -277,12 +264,12 @@ export default function Page({users, topCount}) {
     const userAddress = userList.map(entry => entry.ethAddress);
     setLoading(true);
     try {
-      const approveTx = await tokenContract.approve(contractAddress.AirDrop, BigInt(tokenToWei * userAddress.length));
+      const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(tokenToWei * userAddress.length));
       const receipt = await approveTx.wait();
       if (receipt.status === 0) {
         toast.error("transaction failed");
       } else {
-        const airdropTx = await airDropContract.doAirDrop(userAddress, BigInt(tokenToWei));
+        const airdropTx = await stakingContract.doAirDrop(userAddress, BigInt(tokenToWei));
         const airdropReceipt = await airdropTx.wait();
         if(airdropReceipt.status === 0) {
           toast.error("transaction failed");
@@ -357,19 +344,13 @@ export default function Page({users, topCount}) {
       return;
     }
     try {
-      const airdropTx = await airDropContract.changeOwner(ownerAdd);
-      const receipt = await airdropTx.wait();
-      if(receipt.status == 0) {
+      const stakingTx = await stakingContract.changeOwner(ownerAdd);
+      const stakingReceipt = await stakingTx.wait();
+      if (stakingReceipt == 0) {
         toast.error("transaction failed");
-      }  else {
-        const stakingTx = await stakingContract.changeOwner(ownerAdd);
-        const stakingReceipt = await stakingTx.wait();
-        if (stakingReceipt == 0) {
-          toast.error("transaction failed");
-        } else{
-          toast.success("Congratulations! Set new owner of contract");
-          setOwnerAddress(ownerAdd);
-        }
+      } else{
+        toast.success("Congratulations! Set new owner of contract");
+        setOwnerAddress(ownerAdd);
       }
     } catch (error) {
       toast.error("Oops! something wrong");
@@ -399,7 +380,6 @@ export default function Page({users, topCount}) {
 
   useEffect(() => {
     if (window.ethereum && walletAddress) {
-      initializeContract();
       initializeTokenContract();
       initializeStakingContract(); 
     }
@@ -437,7 +417,7 @@ export default function Page({users, topCount}) {
         setIsOpen={setIsOpen}
         title={"Airdrop Manager"}
         description={
-          "Please input token number for airdrop"
+          "Please inpurt token count for airdrop"
         }
         action={doAirDrop}
         />
@@ -534,7 +514,7 @@ export async function getServerSideProps(context) {
       }
     );
 
-    return { props: {users: data.documents, topCount: Number(process.env.TopCount)} };
+    return { props: {users: data.documents} };
   } catch (e) {
     console.log(e);
     return {
