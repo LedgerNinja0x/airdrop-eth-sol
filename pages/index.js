@@ -29,6 +29,7 @@ export default function Home({ logged,avatar }) {
                 <span className="leading-7">Go To Dashboard</span>
               </Link>
             ) : (
+              <>
               <div
                 onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
                 className="bg-[#241008] text-white transition-all flex items-center justify-center py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-2/4 md:w-auto md:px-6 text-center items-center"
@@ -36,6 +37,14 @@ export default function Home({ logged,avatar }) {
                 <img src="/twitter.png"/>
                 <span className="leading-7">Log In With Twitter</span>
               </div>
+              <div
+                onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
+                className="bg-[#241008] text-white transition-all flex items-center justify-center py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-2/4 md:w-auto md:px-6 text-center items-center"
+              >
+                <img src="/twitter.png"/>
+                <span className="leading-7">Powered by Forward Protocol</span>
+              </div>
+              </>
             )}
           </div>
 
