@@ -191,6 +191,7 @@ export async function getServerSideProps({ req, res }) {
               following_count: followingCount,
               like_count: likeCount,
               twitt_username: twittUsername,
+              userRating: 0
             },
           },
         },

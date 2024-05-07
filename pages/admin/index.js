@@ -18,6 +18,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from "@mui/material";
+import { utils, writeFile } from "xlsx";
 import React from "react";
 
 const renderSummaryButton = (params) => {
@@ -354,6 +355,22 @@ export default function Page({users}) {
     setOpenOwner(false);
   }
 
+  function generateExcelData() {
+    const worksheet = utils.json_to_sheet(userData);
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    const excelData = writeFile(workbook, "products.xlsx", {
+      compression: true,
+    });
+    const blob = new Blob([excelData], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "data.xlsx");
+    document.body.appendChild(link);
+    link.click();
+  }
+
   useEffect(() => {
     setLoading(true);
     handleUsers(users);
@@ -387,6 +404,9 @@ export default function Page({users}) {
         <div className="flex justify-between">
           <h1 className="font-bold text-3xl mb-12">Admin Dashboard</h1>
           <div className="">
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => generateExcelData()}>
+              Export
+            </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setOpenOwner(true)}>
               Change Owner
             </button>
