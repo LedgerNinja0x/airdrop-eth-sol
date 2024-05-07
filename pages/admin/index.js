@@ -407,6 +407,9 @@ export default function Page({users}) {
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => generateExcelData()}>
               Export
             </button>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => location.reload()}>
+              Reload
+            </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setOpenOwner(true)}>
               Change Owner
             </button>

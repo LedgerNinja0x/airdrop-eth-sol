@@ -29,22 +29,16 @@ export default function Home({ logged,avatar }) {
                 <span className="leading-7">Go To Dashboard</span>
               </Link>
             ) : (
-              <>
               <div
-                onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
-                className="bg-[#241008] text-white transition-all flex items-center justify-center py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-2/4 md:w-auto md:px-6 text-center items-center"
+                onClick={() => location.href = "https://forwardprotocol.io/"}
+                className="bg-[#241008] text-white transition-all flex items-center justify-center py-2 px-2 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-auto md:w-auto md:px-6 text-center items-center"
               >
-                <img src="/twitter.png"/>
-                <span className="leading-7">Log In With Twitter</span>
-              </div>
-              <div
-                onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
-                className="bg-[#241008] text-white transition-all flex items-center justify-center py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-2/4 md:w-auto md:px-6 text-center items-center"
-              >
-                <img src="/twitter.png"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 83 83" fill="#241008">
+                  <path d="M82.8322 0H0V82.8322H82.8322V0Z" fill="#241008"/>
+                  <path d="M59.8782 41.2344L27.3016 68.0067V58.9229C27.3012 57.3488 27.6487 55.7942 28.3191 54.37C28.9894 52.9459 29.9662 51.6875 31.1795 50.6847L42.6314 41.225L31.2672 32.0785C30.025 31.0775 29.0228 29.8109 28.3344 28.3717C27.646 26.9325 27.2888 25.3574 27.2891 23.7621V14.8254L59.8782 41.2344Z" fill="#241008" stroke="white" strokeWidth="2px"/>
+                </svg>
                 <span className="leading-7">Powered by Forward Protocol</span>
               </div>
-              </>
             )}
           </div>
 
