@@ -46,18 +46,17 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
   return (
     <>
       <ToastContainer />
-      {isLoading && (
-            <div className="loader-container">
-                <div className="spinner"></div>
-            </div>
-      )}
       <Header logged={true} avatar={avatar} />
       <div className="container mx-auto flex md:flex-row flex-col overflow-none">
-        <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left mb-16 md:mb-0 text-center p-12">
-          <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
+        <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left md:mb-0 text-center p-12">
+          <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
             Hello {name} 👋
             {isTwitterVerified &&
-            <StakingContent name={name} setLoading={setLoading}/> 
+            isLoading ? (
+              <div className="loader-container" style={{height: "100%"}}>
+                  <div className="spinner"></div>
+              </div>
+            ) : <StakingContent name={name} setLoading={setLoading}/> 
             }
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
