@@ -121,9 +121,9 @@
     {
       "inputs": [
         {
-          "internalType": "string",
+          "internalType": "address[]",
           "name": "_address",
-          "type": "string"
+          "type": "address[]"
         },
         {
           "internalType": "uint256",
@@ -236,28 +236,9 @@
     {
       "inputs": [
         {
-          "internalType": "string",
-          "name": "addresses",
-          "type": "string"
-        }
-      ],
-      "name": "splitAddresses",
-      "outputs": [
-        {
           "internalType": "address[]",
-          "name": "",
-          "type": "address[]"
-        }
-      ],
-      "stateMutability": "pure",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
           "name": "_address",
-          "type": "string"
+          "type": "address[]"
         },
         {
           "internalType": "uint256",
@@ -380,7 +361,5 @@
       "stateMutability": "view",
       "type": "function"
     }
-  ],
-  "linkReferences": {},
-  "deployedLinkReferences": {}
+  ]
 }

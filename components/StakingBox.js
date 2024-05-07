@@ -124,7 +124,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
                     </DialogTitle>
                     <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        <div className="text-lg text-black">Do you withdrawAll in this staking?</div>
+                        <div className="text-lg text-black">Do you withdraw All in this staking?</div>
                     </DialogContentText>
                     </DialogContent>
                     <DialogActions>

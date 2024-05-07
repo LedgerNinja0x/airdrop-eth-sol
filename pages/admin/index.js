@@ -243,7 +243,7 @@ export default function Page({users}) {
       StakingAbi.abi,
       _provider.getSigner(0)
     );
-    const topMember =  await _StakingContract.getTopMember();
+    const topMember =  await _StakingContract.getMemberCount();
     SetTopCount(Number(topMember));
     const owner = await _StakingContract.getOwner();
     setOwnerAddress(owner);
@@ -282,13 +282,14 @@ export default function Page({users}) {
         }
       }
     } catch (error) {
+      console.log("airdrop", error);
       toast.error("Oops! Something Wrong");
     }
     setIsOpen(false);
     setLoading(false);
   }
 
-  const doStaking = async (token, reward, period, periodType) => {
+  const doStaking = async (token, reward, period) => {
     if (walletAddress == "") {
       await connectWallet();
     }
@@ -298,14 +299,7 @@ export default function Page({users}) {
       return;
     }
     const userAddress = userData.sort((a, b) => b.userRating - a.userRating).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress).slice(0, topCount);
-    let stakingPeriod;
-    if (periodType == 1) {
-      stakingPeriod = period * 60 * 60 * 24;
-    } else if( periodType == 2) {
-      stakingPeriod = 60 * 60 * 24 * 30 * period;
-    } else {
-      stakingPeriod = 60 * 60 * 24 * 365 * period;
-    }
+    const stakingPeriod = Math.floor(period * 60 * 60 * 24);
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
     const rewardToWei = Number(ethers.utils.parseEther(reward.toString(), 18).toString());
     const approveAmount = tokenToWei + rewardToWei * stakingPeriod;

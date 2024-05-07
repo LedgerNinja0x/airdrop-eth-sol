@@ -87,9 +87,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -103,7 +103,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name;
+    let username = session?.user?.name || "Sassmedia";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
@@ -159,7 +159,7 @@ export async function getServerSideProps({ req, res }) {
         const response = await fetch(`http://ip-api.com/json`);
         const data = await response.json();
         country = data.country;
-      } catch {
+      } catch { 
         country = req.headers["x-country"] != "" ? req.headers["x-country"] : req?.geo?.country;
       }
 

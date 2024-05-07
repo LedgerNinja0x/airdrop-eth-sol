@@ -24,7 +24,6 @@ export default function StakingModal({
   const [token, setToken] = useState(0);
   const [reward, setReward] = useState(0);
   const [period, setPeriod] = useState(0);
-  const [periodType, setPeriodType] = useState(1);
   const [info, setInfo] = useState({ text: "", type: "" });
 
   const doStaking = () => {
@@ -40,15 +39,13 @@ export default function StakingModal({
       setInfo({ text: "Input reward per second!", type: "error" });
       return;
     }
-    action(token, reward, period, periodType);
+    action(token, reward, period);
   }
 
   useEffect(() => {
     if (!isOpen) {
       setToken(0)
       setReward(0)
-      setPeriod(0)
-      setPeriodType(1)
       setInfo("");
     }
   },[isOpen]);
@@ -85,15 +82,6 @@ export default function StakingModal({
                 min="0"
                 className="block mb-4 w-3/5 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                <select 
-                className="block mb-4 w-2/5 !outline-none rounded-md w-full px-1 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-2"
-                value={periodType}
-                onChange={(e) => setPeriodType(e.target.value)}
-                >
-                    <option value={1}>Day</option>
-                    <option value={2}>Month</option>
-                    <option value={3}>Year</option>
-                </select>
             </div>
             <p>Reward Amount: </p>
             <input
