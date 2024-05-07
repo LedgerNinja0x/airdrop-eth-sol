@@ -25,8 +25,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
         stakedPeriod = stake.stakingPeriod.toNumber();
     }
     const [rewardAmount, setRewardAmount] = useState(rewardPerAmount * stakedPeriod - withDrawAmount);
-    const totalReward = Math.floor((Number(ethers.utils.formatEther(stake.reward.toString()).toString()) * stake.stakingPeriod.toNumber() - withDrawAmount) * 10000) / 10000;
-    console.log("rewardPerAmount:", rewardPerAmount, "withDrawAmount:", withDrawAmount, "totalReward", totalReward, "stakedPeriod", stakedPeriod, "rewardAmount", Math.floor(100 * (rewardPerAmount * stakedPeriod - withDrawAmount)) / 100);
+    const totalReward = Math.floor((Number(ethers.utils.formatEther(stake.reward.toString()).toString()) * stake.stakingPeriod.toNumber() - withDrawAmount) * 10000) / 10000;    
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -121,8 +120,8 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
         >
             <div className='flex p-[24px]'>
                 <div>
-                    <DialogTitle id="alert-dialog-title"  className="text-3xl font-bold">
-                    {"Do You Agree?"}
+                    <DialogTitle id="alert-dialog-title">
+                    <span className="text-[30px] font-bold">{"Do You Agree?"}</span>
                     </DialogTitle>
                     <DialogContent>
                     <DialogContentText id="alert-dialog-description">
@@ -130,10 +129,12 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
                     </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={() => {handleClose();withdrawAll(time);}} autoFocus>
-                        Agree
-                    </Button>
+                        <div className='pl-2'>
+                            <Button onClick={handleClose}>Disagree</Button>
+                            <Button onClick={() => {handleClose();withdrawAll(time);}} autoFocus>
+                                Agree
+                            </Button>
+                        </div>
                     </DialogActions>
                 </div>
                 <div>
@@ -147,10 +148,10 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <div className='flex'>
+            <div className='flex p-[24px]'>
                 <div>
-                    <DialogTitle id="alert-dialog-title" className="text-3xl font-bold">
-                    {"Do you agree?"}
+                    <DialogTitle id="alert-dialog-title">
+                    <span className="text-[30px] font-bold">{"Do You Agree?"}</span>
                     </DialogTitle>
                     <DialogContent>
                     <DialogContentText id="alert-dialog-description">
@@ -165,10 +166,12 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
                     </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={handleWithClose}>Disagree</Button>
-                    <Button onClick={() => {handleWithClose();withdraw(time);}} autoFocus>
-                        Agree
-                    </Button>
+                        <div className='pl-2'>
+                        <Button onClick={handleWithClose}>Disagree</Button>
+                        <Button onClick={() => {handleWithClose();withdraw(time);}} autoFocus>
+                            Agree
+                        </Button>
+                        </div>
                     </DialogActions>
                 </div>
                 <div>

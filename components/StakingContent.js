@@ -10,7 +10,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export default function StakingContent({name}) {
+export default function StakingContent({name, setLoading}) {
   const [ stakingContract, setStakingContract ] = useState(false);
   const [ walletAddress, setWalletAddress ] = useState("");
   const [stakingInfo, setStakingInfo] = useState(false);
@@ -43,6 +43,7 @@ export default function StakingContent({name}) {
     if (walletAddress == "") {
       connectWallet();
     }
+    setLoading(true);
     if (time > 0) {
       const withdrawAmount = await stakingContract.withdrawableRewardAmount(id);
       const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
@@ -86,12 +87,14 @@ export default function StakingContent({name}) {
         toast.error("Oops, something went wrong!");
       }
     }
+    setLoading(false);
   }
 
   const doWithDrawAll = async (id, time) => {
     if (walletAddress == "") {
       connectWallet();
     }
+    setLoading(true);
     if (time > 0) {
       try {
         const withdrawAmount = await stakingContract.withdrawableRewardAmount(id);
@@ -127,6 +130,7 @@ export default function StakingContent({name}) {
         toast.error("Oops, something went wrong!");
       }
     }
+    setLoading(false);
   }
 
   useEffect(() => {
