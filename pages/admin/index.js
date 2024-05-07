@@ -298,7 +298,7 @@ export default function Page({users}) {
       setIsStakingOpen(false);
       return;
     }
-    const userAddress = userData.sort((a, b) => b.userRating - a.userRating).filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").map(entry => entry.ethAddress).slice(0, topCount);
+    const userAddress = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).map(entry => entry.ethAddress).slice(0, topCount);
     const stakingPeriod = Math.floor(period * 60 * 60 * 24);
     const tokenToWei = Number(ethers.utils.parseEther(token.toString(), 18).toString());
     const rewardToWei = Number(ethers.utils.parseEther(reward.toString(), 18).toString());
