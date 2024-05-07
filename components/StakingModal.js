@@ -44,8 +44,9 @@ export default function StakingModal({
 
   useEffect(() => {
     if (!isOpen) {
-      setToken(0)
-      setReward(0)
+      setToken(0);
+      setReward(0);
+      setPeriod(0);
       setInfo("");
     }
   },[isOpen]);
@@ -72,7 +73,7 @@ export default function StakingModal({
           </p>
         )}
           <>
-            <p>Staking Period: </p>
+            <p>Staking Period(days): </p>
             <div className="flex gap-3">
                 <input
                 type="Number"

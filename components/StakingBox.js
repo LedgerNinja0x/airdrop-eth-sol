@@ -8,23 +8,27 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
 import { ethers } from 'ethers';
 
 export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
 
+    const rewardPerAmount = Number(ethers.utils.formatEther(stake.reward.toString()).toString());
+    const withDrawAmount = Math.floor(Number(ethers.utils.formatEther(stake.withdrawAmount.toString()).toString()) * 100) / 100;
     const [ time, setTime ] = useState(stake.startTime.toNumber() + stake.stakingPeriod.toNumber() - Math.round(new Date().getTime() / 1000));
     const [open, setOpen] = useState(false);
     const [withdrawOpen, setWithdrawOpen] = useState(false);
     const [amount , setAmount] = useState(0);
+    let stakedPeriod = Math.round(new Date().getTime() / 1000) - stake.startTime.toNumber();
+    if (stakedPeriod  > stake.stakingPeriod.toNumber()) {
+        stakedPeriod = stake.stakingPeriod.toNumber();
+    }
+    const [rewardAmount, setRewardAmount] = useState(rewardPerAmount * stakedPeriod - withDrawAmount);
+    const totalReward = Math.floor((Number(ethers.utils.formatEther(stake.reward.toString()).toString()) * stake.stakingPeriod.toNumber() - withDrawAmount) * 10000) / 10000;
+    console.log("rewardPerAmount:", rewardPerAmount, "withDrawAmount:", withDrawAmount, "totalReward", totalReward, "stakedPeriod", stakedPeriod, "rewardAmount", Math.floor(100 * (rewardPerAmount * stakedPeriod - withDrawAmount)) / 100);
 
     const handleClickOpen = () => {
-        if (time > 0) {
-            toast.error("The current staking period has not ended");
-            return;
-        }
         setOpen(true);
     };
 
@@ -33,10 +37,6 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
     };
 
     const handleWithOpen = () => {
-        if (time > 0) {
-            toast.error("The current staking period has not ended");
-            return;
-        }
         setWithdrawOpen(true);
     };
 
@@ -64,27 +64,28 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
         return timeLeft;
     }
 
-    const withdrawAll = () => {
-        doWithDrawAll(id)
+    const withdrawAll = (time) => {
+        doWithDrawAll(id, time)
     }
 
-    const withdraw = () => {
+    const withdraw = (time) => {
         if(amount <= 0) {
             alert("withdraw mount must be greater than 0");
             return;
         }
-        doWithDraw(id, amount)
+        doWithDraw(id, amount, time)
     }
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-          setTime(prevTime => prevTime - 1); // Discount the number by 1 every second
+            setRewardAmount(prevReward => prevReward + rewardPerAmount);
+            setTime(prevTime => prevTime - 1); // Discount the number by 1 every second
         }, 1000); // Interval set to 1 second (1000 milliseconds)
     
         return () => clearInterval(intervalId); // Clear the interval on component unmount
     }, []);
 
-    const rewardAmount = Number(ethers.utils.formatEther(stake.stakedAmount.toString()).toString()) + Number(ethers.utils.formatEther(stake.reward.toString()).toString()) * stake.stakingPeriod.toNumber();
+    const stakedAmount = Math.floor(Number(ethers.utils.formatEther(stake.stakedAmount.toString()).toString()) * 100) / 100;
 
     return (
         <>
@@ -97,7 +98,8 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
             <div className='flex bg-white'>
                 <div className='p-5'>
                     <div className='text-[32px]'>Staking Box</div>
-                    <div className='text-sm mt-5'>Total Amount: {rewardAmount}</div>
+                    <div className='text-sm mt-5'>Staked Amount: {stakedAmount}</div>
+                    <div className='text-sm mt-5'>Reward Amount: {totalReward < rewardAmount ? totalReward : Math.floor(rewardAmount * 10000) / 10000}</div>
                     <div className='text-sm mt-5'>
                         withdrawl timeline: { convertSecondsToTime(time) }
                     </div>
@@ -129,7 +131,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleClose}>Disagree</Button>
-                    <Button onClick={() => {handleClose();withdrawAll();}} autoFocus>
+                    <Button onClick={() => {handleClose();withdrawAll(time);}} autoFocus>
                         Agree
                     </Button>
                     </DialogActions>
@@ -164,7 +166,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
                     </DialogContent>
                     <DialogActions>
                     <Button onClick={handleWithClose}>Disagree</Button>
-                    <Button onClick={() => {handleWithClose();withdraw();}} autoFocus>
+                    <Button onClick={() => {handleWithClose();withdraw(time);}} autoFocus>
                         Agree
                     </Button>
                     </DialogActions>

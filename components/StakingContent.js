@@ -39,51 +39,93 @@ export default function StakingContent({name}) {
     }
   }
 
-  const doWithDraw = async (id, amount) => {
+  const doWithDraw = async (id, amount, time) => {
     if (walletAddress == "") {
       connectWallet();
     }
-    const withdrawAmount = await stakingContract.withdrawableAmount(id);
-    const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
-    if (tokenToWei > withdrawAmount) {
-      toast.error("it's greater than your possible withdrawAmount");
-      return;
-    }
-    try {
-      const withDrawTx = await stakingContract.withdraw(id, BigInt(tokenToWei));
-      const receipt = await withDrawTx.wait();
-      if (receipt.status == 0) {
-        toast.error("transaction failed");
-      } else {
-        const stakingData = await stakingContract.getUserStakingInfo();
-        setStakingInfo(stakingData);
-        const result = await updateUserInfo(name, amount);
-        toast.success("Congratulations!, you get reward.");
+    if (time > 0) {
+      const withdrawAmount = await stakingContract.withdrawableRewardAmount(id);
+      const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
+      if (tokenToWei > withdrawAmount) {
+        toast.error("it's greater than your possible withdrawAmount");
+        return;
       }
-    } catch (error) {
-      toast.error("Oops, something went wrong!");
+      try {
+        const withDrawTx = await stakingContract.withdrawReward(id, BigInt(tokenToWei));
+        const receipt = await withDrawTx.wait();
+        if (receipt.status == 0) {
+          toast.error("transaction failed");
+        } else {
+          const stakingData = await stakingContract.getUserStakingInfo();
+          setStakingInfo(stakingData);
+          const result = await updateUserInfo(name, amount);
+          toast.success("Congratulations!, you get reward.");
+        }
+      } catch (error) {
+        toast.error("Oops, something went wrong!");
+      }
+    } else {
+      const withdrawAmount = await stakingContract.withdrawableAmount(id);
+      const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
+      if (tokenToWei > withdrawAmount) {
+        toast.error("it's greater than your possible withdrawAmount");
+        return;
+      }
+      try {
+        const withDrawTx = await stakingContract.withdraw(id, BigInt(tokenToWei));
+        const receipt = await withDrawTx.wait();
+        if (receipt.status == 0) {
+          toast.error("transaction failed");
+        } else {
+          const stakingData = await stakingContract.getUserStakingInfo();
+          setStakingInfo(stakingData);
+          const result = await updateUserInfo(name, amount);
+          toast.success("Congratulations!, you get reward.");
+        }
+      } catch (error) {
+        toast.error("Oops, something went wrong!");
+      }
     }
   }
 
-  const doWithDrawAll = async (id) => {
+  const doWithDrawAll = async (id, time) => {
     if (walletAddress == "") {
       connectWallet();
     }
-    try {
-      const withdrawAmount = await stakingContract.withdrawableAmount(id);
-      const amount = Number(ethers.utils.formatEther(withdrawAmount).toString());
-      const withAllTx = await stakingContract.withdrawAll(id);
-      const receipt = await withAllTx.wait();
-      if (receipt.status == 0) {
-        toast.error("transaction failed");
-      } else {
-        const stakingData = await stakingContract.getUserStakingInfo();
-        setStakingInfo(stakingData);
-        const result = await updateUserInfo(name, amount);
-        toast.success("Congratulations!, you get reward.");
+    if (time > 0) {
+      try {
+        const withdrawAmount = await stakingContract.withdrawableRewardAmount(id);
+        const amount = Number(ethers.utils.formatEther(withdrawAmount).toString());
+        const withAllTx = await stakingContract.withdrawRewardAll(id);
+        const receipt = await withAllTx.wait();
+        if (receipt.status == 0) {
+          toast.error("transaction failed");
+        } else {
+          const stakingData = await stakingContract.getUserStakingInfo();
+          setStakingInfo(stakingData);
+          const result = await updateUserInfo(name, amount);
+          toast.success("Congratulations!, you get reward.");
+        }
+      } catch (error) {
+        toast.error("Oops, something went wrong!");
       }
-    } catch (error) {
-      toast.error("Oops, something went wrong!");
+    } else {
+      try {
+        const withdrawAmount = await stakingContract.withdrawableAmount(id);
+        const amount = Number(ethers.utils.formatEther(withdrawAmount).toString());
+        const withAllTx = await stakingContract.withdrawAll(id);
+        const receipt = await withAllTx.wait();
+        if (receipt.status == 0) {
+          toast.error("transaction failed");
+        } else {
+          const stakingData = await stakingContract.getUserStakingInfo();
+          setStakingInfo(stakingData);
+          const result = await updateUserInfo(name, amount);
+          toast.success("Congratulations!, you get reward.");
+        }
+      } catch (error) {
+        toast.error("Oops, something went wrong!");
+      }
     }
   }
 
