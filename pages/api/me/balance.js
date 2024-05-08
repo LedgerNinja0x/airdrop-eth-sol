@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     //POST /api/me/balance
     //After checking the balance update user schema
 
-    let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified } = req.body;
+    let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified, location, ip } = req.body;
     
     var { solBalance, solGas } = await getSolBalance(solAddress);
 
@@ -26,39 +26,75 @@ export default async function handler(req, res) {
     if (isTwitterVerified) {
       firstTag = 1; 
     }
-
+    let data
     //update their balance in database
-    const { data } = await axios.post(
-      `${process.env.MONGODB_URI}/action/updateOne`,
-      {
-        dataSource: "Cluster0",
-        database: process.env.DataBase,
-        collection: "users",
-        filter: {
-          username,
-        },
-        update: {
-          $set: {
-            ethAddress,
-            solAddress,
-            solBalance,
-            ethGas,
-            solGas,
-            tokenBalance,
-            tokenValue,
-            followers_count: followers,
-            firstTag
+    if (location) {
+      ({ data }) = await axios.post(
+        `${process.env.MONGODB_URI}/action/updateOne`,
+        {
+          dataSource: "Cluster0",
+          database: process.env.DataBase,
+          collection: "users",
+          filter: {
+            username,
+          },
+          update: {
+            $set: {
+              ethAddress,
+              solAddress,
+              solBalance,
+              ethGas,
+              solGas,
+              tokenBalance,
+              tokenValue,
+              followers_count: followers,
+              firstTag,
+              IP: ip,
+              location,
+            },
           },
         },
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          apiKey: process.env.DATAAPI_KEY,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            apiKey: process.env.DATAAPI_KEY,
+          },
+        }
+      );
+    } else {
+      ({ data }) = await axios.post(
+        `${process.env.MONGODB_URI}/action/updateOne`,
+        {
+          dataSource: "Cluster0",
+          database: process.env.DataBase,
+          collection: "users",
+          filter: {
+            username,
+          },
+          update: {
+            $set: {
+              ethAddress,
+              solAddress,
+              solBalance,
+              ethGas,
+              solGas,
+              tokenBalance,
+              tokenValue,
+              followers_count: followers,
+              firstTag
+            },
+          },
         },
-      }
-    );
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            apiKey: process.env.DATAAPI_KEY,
+          },
+        }
+      );
+    }
 
     res.status(201).send("Balance Updated");
   } catch (e) {

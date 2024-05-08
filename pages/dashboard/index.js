@@ -14,8 +14,25 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
 
   const [ isLoading, setLoading ] = useState(false);
 
+  const getLocation = async () => {
+    try {
+        const result = await fetch("https://api.geoapify.com/v1/ipinfo?&apiKey=4f695d8c973445459efcaf2918d47bef");
+        const data = await result.json();
+        const location = data.country.name;
+        const ip = data.ip;
+        return {
+            location, ip
+        };
+    }
+    catch (err) {
+        console.log(err);
+        return false;
+    }
+  }
+
   const updateBalance = async () => {
     if (isTwitterVerified) {
+      const { location, ip } = await getLocation();
       let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data;
       try {
         const res = await axios.post(
@@ -27,7 +44,9 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
             followers, 
             tokenBalance, 
             tokenValue, 
-            isTwitterVerified: 1
+            isTwitterVerified: 1,
+            location,
+            ip
           }
         );
         console.log(res.data);
@@ -159,21 +178,6 @@ export async function getServerSideProps({ req, res }) {
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
 
-      let country;
-
-      try {
-        const response = await fetch(`http://ip-api.com/json`);
-        const data = await response.json();
-        country = data.country;
-      } catch { 
-        country = req.headers["x-country"] != "" ? req.headers["x-country"] : req?.geo?.country;
-      }
-
-      const ip =
-        typeof forwarded === "string"
-          ? forwarded.split(/, /)[0]
-          : req.socket.remoteAddress;
-
       await axios.post(
         `${process.env.MONGODB_URI}/action/updateOne`,
         {
@@ -185,8 +189,6 @@ export async function getServerSideProps({ req, res }) {
           },
           update: {
             $set: {
-              IP: ip,
-              location: country,
               followers_count: followersCount,
               following_count: followingCount,
               like_count: likeCount,

@@ -212,7 +212,7 @@ const updateUserInfo = async (name, amount) => {
     }
     tokenBalance += amount;
   
-    const result = await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: data.document.followers_count, tokenBalance, tokenValue});    
+    const result = await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: data.document.followers_count, tokenBalance, tokenValue, isTwitterVerified: 0, location: "", ip: ""});    
     if (result.status == 201) {
       return 1;
     } else {
