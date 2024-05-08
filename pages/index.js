@@ -21,15 +21,7 @@ export default function Home({ logged,avatar }) {
               crypto currencies for just verifying your account. Sign up now to
               get started quickly.
             </p>
-            {logged ? (
-              <Link
-                href="/dashboard"
-                className="bg-[#241008] text-white transition-all flex items-center justify-center py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-2/4 md:w-auto md:px-6 text-center items-center"
-              >
-                <span className="leading-7">Go To Dashboard</span>
-              </Link>
-            ) : (
-              <div
+            <div
                 onClick={() => location.href = "https://forwardprotocol.io/"}
                 className="bg-[#241008] text-white transition-all flex items-center justify-center py-2 px-2 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 lg:w-auto md:w-auto md:px-6 text-center items-center"
               >
@@ -38,8 +30,7 @@ export default function Home({ logged,avatar }) {
                   <path d="M59.8782 41.2344L27.3016 68.0067V58.9229C27.3012 57.3488 27.6487 55.7942 28.3191 54.37C28.9894 52.9459 29.9662 51.6875 31.1795 50.6847L42.6314 41.225L31.2672 32.0785C30.025 31.0775 29.0228 29.8109 28.3344 28.3717C27.646 26.9325 27.2888 25.3574 27.2891 23.7621V14.8254L59.8782 41.2344Z" fill="#241008" stroke="white" strokeWidth="2px"/>
                 </svg>
                 <span className="leading-7">Powered by Forward Protocol</span>
-              </div>
-            )}
+            </div>
           </div>
 
           <div className="md:w-1/2 w-full">
