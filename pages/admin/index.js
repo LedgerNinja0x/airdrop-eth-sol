@@ -325,6 +325,9 @@ export default function Page({users}) {
   }
 
   const changeOwnerAddress = async () => {
+    if (walletAddress == "") {
+      await connectWallet();
+    }
     if (ownerAdd == "") {
       toast.error("Pls input new Ower Address");
       return;
