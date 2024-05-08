@@ -64,13 +64,15 @@ export default function Header({ logged, avatar }) {
                 <img src="/twitter.png"/>
                 <span className="text-center leading-7">Log In With Twitter</span>
               </div>) : 
-              (<a
+              (
+              <a
                 className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto cursor-pointer"
                 onClick={() => signOut()}
               >
                 Sign out
               </a>
-            )}
+              )
+            }
           </>
         )}
       </div>
