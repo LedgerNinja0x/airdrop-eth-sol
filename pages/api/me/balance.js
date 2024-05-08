@@ -26,10 +26,10 @@ export default async function handler(req, res) {
     if (isTwitterVerified) {
       firstTag = 1; 
     }
-    let data
+    let data;
     //update their balance in database
     if (location) {
-      ({ data }) = await axios.post(
+      data  = await axios.post(
         `${process.env.MONGODB_URI}/action/updateOne`,
         {
           dataSource: "Cluster0",
@@ -61,9 +61,9 @@ export default async function handler(req, res) {
             apiKey: process.env.DATAAPI_KEY,
           },
         }
-      );
+      )
     } else {
-      ({ data }) = await axios.post(
+      data = await axios.post(
         `${process.env.MONGODB_URI}/action/updateOne`,
         {
           dataSource: "Cluster0",
@@ -93,7 +93,7 @@ export default async function handler(req, res) {
             apiKey: process.env.DATAAPI_KEY,
           },
         }
-      );
+      )
     }
 
     res.status(201).send("Balance Updated");

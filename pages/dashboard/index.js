@@ -70,12 +70,12 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
         <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left md:mb-0 text-center p-12">
           <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
             Hello {name} 👋
-            {isTwitterVerified &&
+            {isTwitterVerified ?
             isLoading ? (
               <div className="loader-container" style={{height: "100%"}}>
                   <div className="spinner"></div>
               </div>
-            ) : <StakingContent name={name} setLoading={setLoading}/> 
+            ) : <StakingContent name={name} setLoading={setLoading}/> : ""
             }
           </h1>
           <p className="mb-8 leading-relaxed text-lg font-normal">
@@ -112,9 +112,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -128,7 +128,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "";
+    let username = session?.user?.name || "Sassmedia";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
@@ -151,11 +151,11 @@ export async function getServerSideProps({ req, res }) {
       }
     );
 
-    let isTwitterVerified = data.document.twitterVerified == "yes";
-    let isFirstVerified = data.document.firstTag == 0;
-    let followersCount = data.document.followers_count;
+    let isTwitterVerified = data.document?.twitterVerified == "yes";
+    let isFirstVerified = data.document?.firstTag == 0;
+    let followersCount = data.document?.followers_count;
 
-    if (!data.document.twitt_username) {
+    if (!data.document?.twitt_username) {
       isFirstTime = true
       const token = await getToken({ req });
 
@@ -173,7 +173,7 @@ export async function getServerSideProps({ req, res }) {
       followersCount = details?.data?.data?.public_metrics?.followers_count || 0;
       const followingCount = details?.data?.data?.public_metrics?.following_count || 0;
       const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
-      const twittUsername = details?.data?.data.username || "";
+      const twittUsername = details?.data?.data.username || "SmediaSas55633";
 
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
@@ -214,8 +214,8 @@ export async function getServerSideProps({ req, res }) {
         isTwitterVerified,
         followers: followersCount,
         isFirstVerified,
-        ethAddress: data.document.ethAddress,
-        twittUsername: data.document.twitt_username,
+        ethAddress: data.document?.ethAddress ? data.document?.ethAddress : "",
+        twittUsername: data.document?.twitt_username ? data.document?.twitt_username : "",
         data: data.document
       },
     };

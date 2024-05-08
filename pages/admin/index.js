@@ -403,20 +403,20 @@ export default function Page({users}) {
       <div className="p-12 pb-0">
         <div className="flex justify-between">
           <h1 className="font-bold text-3xl mb-12">Admin Dashboard</h1>
-          <div className="">
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => generateExcelData()}>
+          <div className="flex gap-1 flex-wrap">
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => generateExcelData()}>
               Export
             </button>
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => location.reload()}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => location.reload()}>
               Reload
             </button>
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setOpenOwner(true)}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setOpenOwner(true)}>
               Change Owner
             </button>
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setIsOpen(true)}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsOpen(true)}>
               Airdrop
             </button>
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" onClick={() => setIsStakingOpen(true)}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsStakingOpen(true)}>
               Staking
             </button>
           </div>

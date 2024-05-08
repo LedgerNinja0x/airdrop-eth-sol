@@ -63,6 +63,7 @@ export default async function handler(req, res) {
             solAddress: "",
             ethAddress: "",
             firstTag: 0,
+            userRating: 0,
             IP: req.socket.localAddress || req.ip,
             createdAt: new Date().getTime()
           },
