@@ -17,7 +17,7 @@ export default function Header({ logged, avatar }) {
   return (
     <header className="text-gray-600 body-font shadow-sm">
       <div className="flex flex-wrap md:px-32 sm:px-8 py-8 flex-col md:flex-row items-center w-screen justify-between">
-        <a className="flex title-font font-medium items-center text-gray-900">
+        <a className="flex title-font font-medium items-center text-gray-900" href={process.env.NEXTAUTH_URL}>
           <img src="/logo.png"></img>
           <span className="ml-3 text-xl logo-txt">Moose</span>
         </a>
