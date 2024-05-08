@@ -25,7 +25,6 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
         };
     }
     catch (err) {
-        console.log(err);
         return false;
     }
   }
@@ -49,7 +48,6 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
             ip
           }
         );
-        console.log(res.data);
       } catch (e) {
         console.log(e);
       }

@@ -52,8 +52,6 @@ export default function Dialog({
         username: selectedUser,
       });
 
-      console.log(res.data);
-
       setInfo({ text: "Message sent successfully!", type: "success" });
     } catch (e) {
       console.error(e);

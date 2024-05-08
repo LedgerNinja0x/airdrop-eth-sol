@@ -70,7 +70,6 @@ export async function getServerSideProps(context) {
       return { props: { logged: true, avatar: session?.user?.image || null } };
     }
   } catch (e) {
-    console.log(e);
     return { props: { logged: false } };
   }
 }

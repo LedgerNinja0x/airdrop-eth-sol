@@ -12,7 +12,6 @@ const Signup = ({ providers, error }) => {
   });
 
   async function handleSubmit(event) {
-    console.log(event);
     event.preventDefault();
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
@@ -35,7 +34,6 @@ const Signup = ({ providers, error }) => {
     } catch (err) {
       setLoading(false);
       event.preventDefault();
-      console.log(err);
       //user already exists
       if (err?.response?.status == 409) {
         signIn("credentials", {
@@ -44,7 +42,6 @@ const Signup = ({ providers, error }) => {
           password: data.password,
         });
       }
-      console.log(err);
     }
   }
 

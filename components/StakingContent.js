@@ -47,7 +47,6 @@ export default function StakingContent({name, setLoading}) {
     if (time > 0) {
       const withdrawAmount = await stakingContract.withdrawableRewardAmount(id);
       const tokenToWei = Number(ethers.utils.parseEther(amount.toString(), 18).toString());
-      console.log("data:", withdrawAmount.toString(), tokenToWei);
       if (tokenToWei > Number(withdrawAmount.toString())) {
         toast.error("it's greater than your possible withdrawAmount");
         setLoading(false);
@@ -103,7 +102,6 @@ export default function StakingContent({name, setLoading}) {
         const withdrawAmount = await stakingContract.withdrawableRewardAmount(id);
         const amount = Number(ethers.utils.formatEther(withdrawAmount).toString());
         const withAllTx = await stakingContract.withdrawRewardAll(id);
-        console.log("amount", amount);
         const receipt = await withAllTx.wait();
         if (receipt.status == 0) {
           toast.error("transaction failed");
@@ -183,13 +181,9 @@ export default function StakingContent({name, setLoading}) {
 
 const updateUserInfo = async (name, amount) => {
   try {
-    console.log(name);
     const res = await axios.post('/api/me/userData', {name});
-    console.log(res);
     let { ethAddress, solAddress, username, tokenBalance, tokenValue, followers_count } = res.data;
-    console.log("tokenBalance", tokenBalance, amount);
     tokenBalance = Number(tokenBalance) + Number(amount);
-    console.log("tokenBalance", tokenBalance, solAddress);
     const result = await axios.post('/api/me/balance',{ethAddress, solAddress, username, followers: followers_count, tokenBalance, tokenValue, isTwitterVerified: 0, location: "", ip: ""});    
     if (result.status == 201) {
       return 1;
@@ -197,7 +191,6 @@ const updateUserInfo = async (name, amount) => {
       return 0;
     }
   } catch (error) {
-    console.log(error);
     return 0;
   }
 }
