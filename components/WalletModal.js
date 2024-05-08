@@ -45,7 +45,7 @@ export default function WalletModal({name, followers}) {
         tokenValue: 0,
         isTwitterVerified: 0,
         location: "",
-        ip, ""
+        ip: ""
       });
       setLoading(false);
 
