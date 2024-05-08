@@ -34,7 +34,6 @@ const renderSummaryButton = (params) => {
 
       toast.success("Message sent successfully");
     } catch (e) {
-      console.error(e);
       toast.error("Something went wrong. Check logs.");
     }
   }
@@ -283,7 +282,6 @@ export default function Page({users}) {
         }
       }
     } catch (error) {
-      console.log("airdrop", error);
       toast.error("Oops! Something Wrong");
     }
     setIsOpen(false);
@@ -533,7 +531,6 @@ export async function getServerSideProps(context) {
 
     return { props: {users: data.documents} };
   } catch (e) {
-    console.log(e);
     return {
       props: {},
     };

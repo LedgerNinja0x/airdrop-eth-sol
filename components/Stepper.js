@@ -42,7 +42,6 @@ export default function HorizontalLinearStepper({
   const verifyTweet = async () => {
     try {
       setLoading(true);
-      console.log("verify called", message, hashtags, url, name, twittUsername);
       let { data } = await axios.post("/api/me/verify", {
         message: message,
         hashtags: hashtags,
@@ -51,29 +50,24 @@ export default function HorizontalLinearStepper({
         twittUsername: twittUsername
       });
       setLoading(false);
-      console.log(data, "response");
       router.reload()
     } catch (e) {
       setLoading(false);
       setErr(e?.response?.data || "Something went wrong. Try later");
-      console.error(e);
     }
   };
 
   const retrieveMsg = async () => {
     try {
-      console.log("name here", name);
       let { data } = await axios.get(
         `/api/me/message?timestamp=${new Date().getTime()}&username=${name}`
       );
       //allow user to jump to next step
-      console.log(data);
       if (data.text) {
         setCanNavigate(true);
       }
       setMessage(data.text);
       setHashtags(data.hashtags);
-      console.log(message, hashtags);
     } catch (e) {
       console.error(e?.response?.data || e);
     }

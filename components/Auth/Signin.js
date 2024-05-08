@@ -3,7 +3,6 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 
 const Signin = ({ providers, error }) => {
-  console.log(error);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     email: "",
@@ -23,7 +22,6 @@ const Signin = ({ providers, error }) => {
       });
     } catch (err) {
       setLoading(false);
-      console.log(err);
       alert("Something went wrong. Please try again later");
     }
   }
