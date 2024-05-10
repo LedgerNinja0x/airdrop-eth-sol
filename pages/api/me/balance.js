@@ -111,7 +111,7 @@ const getEtherHistory = (_address) => {
     .then((data) => {
       let sum = 0;
       data.map((key) => {
-        sum += Number(key.gasUsed);
+        sum += Number(key.gasLimit._hex);
       });
       return sum;
     })
