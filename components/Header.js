@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation'
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import { Logout } from '@mui/icons-material';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import WalletButton from "./WalletButton";
 
 const actions = [
   { icon: <Logout />, name: 'SignOut' }
@@ -23,8 +23,8 @@ export default function Header({ logged, avatar }) {
           <span className="ml-3 text-xl logo-txt">Moose</span>
         </a>
         {logged ? (
-          <>
-            <ConnectButton chainStatus="none" />
+          <div className="flex flex-col md:flex-row gap-2">
+            <WalletButton />
             {avatar ? (
               <>
                 <SpeedDial
@@ -56,7 +56,7 @@ export default function Header({ logged, avatar }) {
                 <span className="leading-7">Go To Dashboard</span>
               </Link>
             )}
-          </>
+          </div>
         ) : (
           <>
             {/* don't show login to admins */}
@@ -69,15 +69,15 @@ export default function Header({ logged, avatar }) {
                 <span className="text-center leading-7">Log In With Twitter</span>
               </div>) : 
               (
-              <>
-                <ConnectButton chainStatus="none"/>
+              <div className="flex flex-col md:flex-row gap-2">
+                <WalletButton />
                 <a
                   className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto cursor-pointer"
                   onClick={() => signOut()}
                 >
                   Sign out
                 </a>
-              </>
+              </div>
               )
             }
           </>
