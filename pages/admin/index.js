@@ -19,6 +19,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from "@mui/material";
 import { utils, writeFile } from "xlsx";
+import { useAccount } from 'wagmi'
 import React from "react";
 
 const renderSummaryButton = (params) => {
@@ -190,7 +191,6 @@ export default function Page({users}) {
   const [ isOpen, setIsOpen ] = useState(false);
   const [ isStakingOpen, setIsStakingOpen ] = useState(false);
   const [ openOwner, setOpenOwner ] = useState(false);
-  const [ walletAddress, setWalletAddress ] = useState("");
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
   const [ userData, setUserData ] = useState([]);
@@ -198,6 +198,7 @@ export default function Page({users}) {
   const [ ownerAdd, changeOwnerAdd] = useState("");
   const [ isLoading, setLoading ] = useState(false);
   const [ topCount, SetTopCount ] = useState(0);
+  const { address } = useAccount();
 
   const handleUsers = async (userInfo) => {
     const result = await axios.post('/api/me/userInfo',{userInfo});
@@ -212,18 +213,6 @@ export default function Page({users}) {
       setUserData(userInfo);
     }
     setLoading(false);
-  }
-
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      toast.error("pls connect wallet");
-      setIsOpen(false);
-      setIsStakingOpen(false);
-      setOpenOwner(false);
-      return;
-    }
-    const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-    setWalletAddress(walletAddress)
   }
 
   const initializeTokenContract = async () => {
@@ -251,10 +240,11 @@ export default function Page({users}) {
   }
 
   const doAirDrop = async (token) => {
-    if (walletAddress == "") {
-      await connectWallet();
+    if (!address) {
+      toast.error("Please connect wallet");
+      return;
     }
-    if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
+    if (ownerAddress.toLocaleLowerCase() != address.toLocaleLowerCase()) {
       toast.error(`you must be contract owner: ${ownerAddress}`);
       setIsOpen(false);
       return;
@@ -289,10 +279,11 @@ export default function Page({users}) {
   }
 
   const doStaking = async (token, reward, period) => {
-    if (walletAddress == "") {
-      await connectWallet();
+    if (!address) {
+      toast.error("Please connect wallet");
+      return;
     }
-    if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
+    if (ownerAddress.toLocaleLowerCase() != address.toLocaleLowerCase()) {
       toast.error(`you must be contract owner: ${ownerAddress}`);
       setIsStakingOpen(false);
       return;
@@ -325,15 +316,16 @@ export default function Page({users}) {
   }
 
   const changeOwnerAddress = async () => {
-    if (walletAddress == "") {
-      await connectWallet();
+    if (!address) {
+      toast.error("Please connect wallet");
+      return;
     }
     if (ownerAdd == "") {
       toast.error("Pls input new Ower Address");
       return;
     }
     setLoading(true);
-    if (ownerAddress.toLocaleLowerCase() != walletAddress.toLocaleLowerCase()) {
+    if (ownerAddress.toLocaleLowerCase() != address.toLocaleLowerCase()) {
       toast.error(`you must be contract owner: ${ownerAddress}`);
       setOpenOwner(false);
       setLoading(false);
@@ -379,31 +371,22 @@ export default function Page({users}) {
       toast.error("No Ethereum wallet was detected.");
       return;
     }
-    if (walletAddress == "") {
-        connectWallet();
-    }
-    window.ethereum.on("accountsChanged", ([newAddress]) => {
-        if (newAddress === undefined) {
-            return resetState();
-        }
-        setWalletAddress(newAddress);
-    })
   }, []);
 
   useEffect(() => {
-    if (window.ethereum && walletAddress) {
+    if (window.ethereum && address) {
       initializeTokenContract();
       initializeStakingContract(); 
     }
-  }, [walletAddress])
+  }, [address])
 
   return (
     <div className="admin-dashboard">
-      <Header />
+      <Header/>
       <ToastContainer/>
       <div className="p-12 pb-0">
-        <div className="flex justify-between">
-          <h1 className="font-bold text-3xl mb-12">Admin Dashboard</h1>
+        <div className="flex justify-between flex-col md:flex-row mb-6 gap-2">
+          <h1 className="font-bold text-3xl">Admin Dashboard</h1>
           <div className="flex gap-1 flex-wrap">
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => generateExcelData()}>
               Export

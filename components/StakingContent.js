@@ -3,25 +3,19 @@
 import { useState, useEffect } from 'react';
 import { ethers, Contract } from 'ethers';
 import StakingAbi from "@/Contracts/Staking.json";
-import TokenAbi from "@/Contracts/erc20.json";
 import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useAccount } from 'wagmi'
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function StakingContent({name, setLoading}) {
   const [ stakingContract, setStakingContract ] = useState(false);
   const [ walletAddress, setWalletAddress ] = useState("");
   const [stakingInfo, setStakingInfo] = useState(false);
-  const connectWallet = async () => {
-    if (!window.ethereum) {
-      toast.error("Oops! something wrong");
-      return;
-    }
-    const [walletAddress] = await window.ethereum.request({ method: 'eth_requestAccounts' })
-    setWalletAddress(walletAddress)
-  }
+
+  const { address } = useAccount();
 
   const initializeStakingContract = async () => {
     try {
@@ -40,8 +34,9 @@ export default function StakingContent({name, setLoading}) {
   }
 
   const doWithDraw = async (id, amount, time) => {
-    if (walletAddress == "") {
-      connectWallet();
+    if (!address) {
+      toast.error("Please connect wallet");
+      return;
     }
     setLoading(true);
     if (time > 0) {
@@ -93,8 +88,9 @@ export default function StakingContent({name, setLoading}) {
   }
 
   const doWithDrawAll = async (id, time) => {
-    if (walletAddress == "") {
-      connectWallet();
+    if (!address) {
+      toast.error("Please connect wallet");
+      return;
     }
     setLoading(true);
     if (time > 0) {
@@ -140,17 +136,10 @@ export default function StakingContent({name, setLoading}) {
       toast.error("No Ethereum wallet was detected.");
       return;
     }
-    connectWallet();
-    window.ethereum.on("accountsChanged", ([newAddress]) => {
-      if (newAddress === undefined) {
-          return resetState();
-      }
-      setWalletAddress(newAddress);
-    })
   }, []);
 
   useEffect(() => {
-    if (window.ethereum) {
+    if (window.ethereum && address) {
       initializeStakingContract(); 
     }
   }, [walletAddress])
