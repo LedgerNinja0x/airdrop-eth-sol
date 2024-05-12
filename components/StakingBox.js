@@ -102,7 +102,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
                     <div className='text-sm mt-5'>
                         withdrawl timeline: { convertSecondsToTime(time) }
                     </div>
-                    <div className='mt-5 flex gap-2'>
+                    <div className='mt-5 flex gap-2 flex-col md:flex-row'>
                         <button className='flex items-center bg-[#241008] text-white text-sm px-8 py-2 mx-auto rounded-md' onClick={handleWithOpen}>withdraw</button>
                         <button className='flex items-center bg-[#241008] text-white text-sm px-8 py-2 mx-auto rounded-md' onClick={handleClickOpen}>withdrawAll</button>
                     </div>

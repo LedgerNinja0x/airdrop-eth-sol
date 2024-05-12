@@ -12,7 +12,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function StakingContent({name, setLoading}) {
   const [ stakingContract, setStakingContract ] = useState(false);
-  const [ walletAddress, setWalletAddress ] = useState("");
   const [stakingInfo, setStakingInfo] = useState(false);
 
   const { address } = useAccount();
@@ -142,10 +141,10 @@ export default function StakingContent({name, setLoading}) {
     if (window.ethereum && address) {
       initializeStakingContract(); 
     }
-  }, [walletAddress])
+  }, [address])
   return (
     <>
-    <section className="text-gray-600 body-font py-24">
+    <section className="text-gray-600 body-font pt-12 md:pt-24">
       <h2 className="font-bold text-black text-4xl mb-4 text-center underline">
         Get Rewards from Staking
       </h2>
