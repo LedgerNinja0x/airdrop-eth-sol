@@ -32,6 +32,7 @@ const renderSummaryButton = (params) => {
       await axios.post("/api/me/message", {
         twitt_username,
       });
+      document.location.reload();
 
       toast.success("Message sent successfully");
     } catch (e) {
@@ -41,7 +42,7 @@ const renderSummaryButton = (params) => {
 
   return (
     <div className="flex flex-row w-full mt-[10px]">
-      {params.row.twitterVerified === "no" ?
+      {!params.row.message.text ?
       (<button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-2 py-1 rounded-md hover:bg-indigo-400">
         <svg
           xmlns="http://www.w3.org/2000/svg"

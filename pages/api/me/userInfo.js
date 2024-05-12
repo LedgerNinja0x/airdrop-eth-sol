@@ -15,6 +15,7 @@ const getEtherBalance = async (_address) => {
             const tokenContract = new ethers.Contract(contractAddress.Token, TokenAbi, provider);
             const tokenWei = await tokenContract.balanceOf(_address);
             const tokenValue = utils.formatEther(tokenWei);
+            console.log(ethBalance);
             return { ethBalance, tokenValue };
         } catch (error) {
             console.log(error);
