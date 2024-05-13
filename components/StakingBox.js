@@ -10,6 +10,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
+import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 
 export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
@@ -69,7 +70,7 @@ export default function StakingBox({stake, id, doWithDraw, doWithDrawAll}) {
 
     const withdraw = (time) => {
         if(amount <= 0) {
-            alert("withdraw mount must be greater than 0");
+            toast.error("withdraw amount must be greater than 0");
             return;
         }
         doWithDraw(id, amount, time)

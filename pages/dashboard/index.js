@@ -7,8 +7,9 @@ import NotificationArea from "./notification";
 import WalletModal from "@/components/WalletModal";
 import VerifiedModal from "@/components/VerifiedModal";
 import StakingContent from "@/components/StakingContent";
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react";
 
 export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername, data}) {
 
@@ -55,6 +56,10 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
   }
 
   useEffect(() => {
+    if (!twittUsername) {
+      toast.error("Oops! Something wrong. Please login again after few mins!");
+      signOut();
+    }
     if (isTwitterVerified) {
       updateBalance();
     }
@@ -126,7 +131,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "";
+    let username = session?.user?.name || "Sassmedia";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
@@ -152,8 +157,9 @@ export async function getServerSideProps({ req, res }) {
     let isTwitterVerified = data.document?.twitterVerified == "yes";
     let isFirstVerified = data.document?.firstTag == 0;
     let followersCount = data.document?.followers_count;
+    let twittUsername = data.document?.twitt_username || "";
 
-    if (!data.document?.twitt_username) {
+    if (!twittUsername) {
       isFirstTime = true
       const token = await getToken({ req });
 
@@ -171,7 +177,7 @@ export async function getServerSideProps({ req, res }) {
       followersCount = details?.data?.data?.public_metrics?.followers_count || 0;
       const followingCount = details?.data?.data?.public_metrics?.following_count || 0;
       const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
-      const twittUsername = details?.data?.data.username || "";
+      twittUsername = details?.data?.data.username || "";
 
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
@@ -213,7 +219,7 @@ export async function getServerSideProps({ req, res }) {
         followers: followersCount,
         isFirstVerified,
         ethAddress: data.document?.ethAddress ? data.document?.ethAddress : "",
-        twittUsername: data.document?.twitt_username ? data.document?.twitt_username : "",
+        twittUsername: twittUsername,
         data: data.document
       },
     };
