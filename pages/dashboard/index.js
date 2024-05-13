@@ -131,7 +131,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "Sassmedia";
+    let username = session?.user?.name || "";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
