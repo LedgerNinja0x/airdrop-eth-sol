@@ -8,6 +8,8 @@ import Table from "@/components/Table";
 import AirdropModal from "@/components/AirdropModal";
 import StakingModal from "@/components/StakingModal";
 import AirdropMessage from "@/components/AirdropMessage";
+import SetBtn from "@/components/SetBtn";
+import TweetMessage from "@/components/Modal";
 import { ethers, Contract } from "ethers";
 import contractAddress from "@/Contracts/addresses.json";
 import TokenAbi from "@/Contracts/erc20.json";
@@ -31,12 +33,17 @@ const renderSummaryButton = (params) => {
       //insert msg into required user
 
       //find and update with selectedUser
-      await axios.post("/api/me/message", {
+      const res = await axios.post("/api/me/message", {
         twitt_username,
       });
-      document.location.reload();
-
-      toast.success("Message sent successfully");
+      if (res.status == 201) {
+        toast.success("Message sent successfully");
+        document.location.reload();
+      } else if (res.status == 400){
+        toast.error("Please set Tweet Message");
+      } else {
+        toast.error("Oops! Something Wrong");
+      }
     } catch (e) {
       toast.error("Something went wrong. Check logs.");
     }
@@ -44,7 +51,7 @@ const renderSummaryButton = (params) => {
 
   return (
     <div className="flex flex-row w-full mt-[10px]">
-      {!params.row.message.text ?
+      {!params.row.message?.text ?
       (<button className="flex items-center gap-x-1 bg-indigo-500 text-white text-sm px-2 py-1 rounded-md hover:bg-indigo-400">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -195,6 +202,7 @@ export default function Page({users}) {
   const [ isOpen, setIsOpen ] = useState(false);
   const [ isStakingOpen, setIsStakingOpen ] = useState(false);
   const [ isAirMsgOpen, setIsAirMsgOpen ] = useState(false);
+  const [ isTweetOpen, setIsTweetOpen ] = useState(false);
   const [ openOwner, setOpenOwner ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
@@ -205,6 +213,8 @@ export default function Page({users}) {
   const [ topCount, setTopCount ] = useState(0);
   const [ adminId, setAdminId ] = useState("");
   const [ airdropMessage, setAirdropMessage ] = useState("");
+  const [ tweetMessage, setTweetMessage ] = useState("");
+  const [ hashtag, setHashTag ] = useState("");
   const { address } = useAccount();
 
   const handleUsers = async (userInfo) => {
@@ -227,10 +237,11 @@ export default function Page({users}) {
     if (result.status == 201) {
       const adminData = result.data[0];
       if (adminData) {
-        setTopCount(adminData.topCount);
-        setAdminId(adminData._id);
-        setAirdropMessage(adminData.airdropMessage);
-        console.log("airmsg", adminData.airdropMessage);
+        setTopCount(adminData?.topCount ? adminData.topCount : 0);
+        setAdminId(adminData._id ? adminData._id : "");
+        setAirdropMessage(adminData?.airdropMessage ? adminData.airdropMessage : "");
+        setTweetMessage(adminData?.tweetMessage ? adminData.tweetMessage : "");
+        setHashTag(adminData?.hashtag ? adminData.hashtag : "");
       }
     }
   }
@@ -382,18 +393,20 @@ export default function Page({users}) {
     link.click();
   }
 
-  const changeTopCount = async (count) => {
+  const changeAirMsg = async (msg) => {
     try {
-      const result = await axios.post('/api/me/topCount',{id: adminId, count});
-      setTopCount(count);
+      const result = await axios.post('/api/me/airdropMsg',{id: adminId, msg});
+      setAirdropMessage(msg);
+      toast.success("Message Changed");
+      setIsAirMsgOpen(false);
     } catch (err) {
       toast.error("Oops, something wrong!");
     }
   }
 
-  const changeAirMsg = async (msg) => {
+  const changeTweetMsg = async (msg, hashtag) => {
     try {
-      const result = await axios.post('/api/me/airdropMsg',{id: adminId, msg});
+      const result = await axios.post('/api/me/tweetMessage',{id: adminId, msg, hashtag});
       setAirdropMessage(msg);
       toast.success("Message Changed");
       setIsAirMsgOpen(false);
@@ -427,21 +440,14 @@ export default function Page({users}) {
         <div className="flex justify-between flex-col md:flex-row mb-6 gap-2">
           <div className="flex justify-center items-center lg:flex-row flex-col gap-3">
             <h1 className="font-bold text-2xl">Admin Dashboard</h1>
-            <div className="text-nowrap">(Twitter Verified Accounts: {userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").length},</div>
-            <div className="text-nowrap">Wallets to Airdrop:Top <input type="text" value={topCount} className="w-8 bg-inherit border-b-2 ml-2 border-black" onChange={(e) => changeTopCount(e.target.value)} /> )</div>
+            <div className="text-nowrap">(Twitter Verified Accounts: {userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").length})</div>
           </div>
           <div className="flex gap-1 flex-wrap">
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsAirMsgOpen(true)}>
-              AirdropMessage
-            </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => generateExcelData()}>
               Export
             </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => location.reload()}>
               Reload
-            </button>
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setOpenOwner(true)}>
-              Change Owner
             </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsOpen(true)}>
               Airdrop
@@ -449,6 +455,7 @@ export default function Page({users}) {
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsStakingOpen(true)}>
               Staking
             </button>
+            <SetBtn setIsAirMsgOpen={setIsAirMsgOpen} setOpenOwner={setOpenOwner} setIsTweetOpen={setIsTweetOpen}/>
           </div>
         </div>
         {
@@ -478,11 +485,22 @@ export default function Page({users}) {
         action={doStaking}
         />
         <AirdropMessage 
-        isOpen={isAirMsgOpen}
-        setIsOpen={setIsAirMsgOpen}
-        title={"Airdrop Message Manager"}
-        action={changeAirMsg}
-        message={airdropMessage}
+          isOpen={isAirMsgOpen}
+          setIsOpen={setIsAirMsgOpen}
+          title={"Airdrop Message Manager"}
+          action={changeAirMsg}
+          message={airdropMessage}
+        />
+        <TweetMessage 
+          isOpen={isTweetOpen}
+          setIsOpen={setIsTweetOpen}
+          title={"Tweet Message Manager"}
+          description={
+            "Please Change Tweet Message"
+          }
+          action={changeTweetMsg}
+          message={tweetMessage}
+          hashtag={hashtag}
         />
       </div>
       <Footer />
