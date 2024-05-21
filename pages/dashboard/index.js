@@ -102,7 +102,10 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
       <WalletModal name={name} followers={followers} disableBackdropClick/>
       }
       { isFirstVerified && isTwitterVerified &&
-      <VerifiedModal />
+      <VerifiedModal title="Your account has been verified" text="Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!" />
+      }
+      { data.airdropMessage && data.isAirMsgRead == 0 && 
+      <VerifiedModal title="Airdrop Success" text={data.airdropMessage}/>
       }
     </div>
   );

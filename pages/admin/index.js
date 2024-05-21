@@ -101,6 +101,7 @@ const renderSummaryButton = (params) => {
 }
 
 export default function Page({users}) {
+  
   const columns = [
     { 
       field: 'id', 
@@ -199,7 +200,9 @@ export default function Page({users}) {
   const [ ownerAddress, setOwnerAddress] = useState("");
   const [ ownerAdd, changeOwnerAdd] = useState("");
   const [ isLoading, setLoading ] = useState(false);
-  const [ topCount, SetTopCount ] = useState(0);
+  const [ topCount, setTopCount ] = useState(0);
+  const [ adminId, setAdminId ] = useState("");
+  const [ airdropMessage, setAirdropMessage ] = useState("");
   const { address } = useAccount();
 
   const handleUsers = async (userInfo) => {
@@ -215,6 +218,18 @@ export default function Page({users}) {
       setUserData(userInfo);
     }
     setLoading(false);
+  }
+
+  const getAdminData = async () => {
+    const result = await axios.post('/api/me/getAdminData');
+    if (result.status == 201) {
+      const adminData = result.data[0];
+      if (adminData) {
+        setTopCount(adminData.topCount);
+        setAdminId(adminData._id);
+        setAirdropMessage(adminData.airdropMessage);
+      }
+    }
   }
 
   const initializeTokenContract = async () => {
@@ -234,8 +249,6 @@ export default function Page({users}) {
       StakingAbi.abi,
       _provider.getSigner(0)
     );
-    const topMember =  await _StakingContract.getMemberCount();
-    SetTopCount(Number(topMember));
     const owner = await _StakingContract.getOwner();
     setOwnerAddress(owner);
     setStakingContract(_StakingContract);
@@ -266,7 +279,7 @@ export default function Page({users}) {
         if(airdropReceipt.status === 0) {
           toast.error("transaction failed");
         } else {
-          const result = await axios.post('/api/me/token',{userList, token})
+          const result = await axios.post('/api/me/token',{userList, token, airdropMessage})
           if (result.status == 201) {
             handleUsers(result.data);
           }
@@ -366,9 +379,15 @@ export default function Page({users}) {
     link.click();
   }
 
+  const changeTopCount = async (count) => {
+    const result = await axios.post('/api/me/topCount',{id: adminId, count}) 
+    setTopCount(count);
+  }
+
   useEffect(() => {
     setLoading(true);
     handleUsers(users);
+    getAdminData();
     if(!window.ethereum) {
       toast.error("No Ethereum wallet was detected.");
       return;
@@ -388,7 +407,11 @@ export default function Page({users}) {
       <ToastContainer/>
       <div className="p-12 pb-0">
         <div className="flex justify-between flex-col md:flex-row mb-6 gap-2">
-          <h1 className="font-bold text-3xl">Admin Dashboard</h1>
+          <div className="flex justify-center items-center lg:flex-row flex-col gap-3">
+            <h1 className="font-bold text-2xl">Admin Dashboard</h1>
+            <div className="text-nowrap">(Twitter Verified Accounts: {userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").length},</div>
+            <div className="text-nowrap">Wallets to Airdrop:Top <input type="text" value={topCount} className="w-8 bg-inherit border-b-2 ml-2 border-black" onChange={(e) => changeTopCount(e.target.value)} /> )</div>
+          </div>
           <div className="flex gap-1 flex-wrap">
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => generateExcelData()}>
               Export
@@ -498,7 +521,7 @@ export async function getServerSideProps(context) {
     }
 
     //get all user data and pass it as props
-    let {data} = await axios.post(
+    let { data } = await axios.post(
       `${process.env.MONGODB_URI}/action/find`,
       {
         dataSource: "Cluster0",
@@ -518,8 +541,9 @@ export async function getServerSideProps(context) {
       }
     );
 
-    return { props: {users: data.documents} };
+    return { props: {users: data.documents}};
   } catch (e) {
+    console.log(e);
     return {
       props: {},
     };
