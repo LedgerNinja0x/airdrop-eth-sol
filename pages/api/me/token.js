@@ -8,6 +8,7 @@ export default async function handler(req, res) {
     users.map(async user => {
         const tokenBalance = Number(user.tokenBalance) + Number(req.body.token);
         const tokenValue = Number(user.tokenValue) + Number(req.body.token);
+        const airdropMsg = req.body?.airdropMessage ? req.body.airdropMessage : "";
 
         const userRating = getUserRating(user.solBalance, user.ethBalance, tokenBalance, tokenValue, user.solGas, user.ethGas, user.followers);
         await axios.post(
@@ -23,7 +24,9 @@ export default async function handler(req, res) {
                 $set: {
                     tokenBalance: tokenBalance.toString(),
                     tokenValue: tokenValue.toString(),
-                    userRating: userRating
+                    userRating: userRating,
+                    airdropMessage: airdropMsg,
+                    isAirMsgRead: 0
                 },
               },
             },
