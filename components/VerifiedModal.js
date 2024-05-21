@@ -2,7 +2,6 @@
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
-import { useRouter } from "next/router";
 
 const style = {
   position: "absolute",
@@ -17,8 +16,6 @@ const style = {
 
 export default function VerifiedModal({title, text}) {
   let [isOpen, setIsOpen] = useState(true);
-
-  const router = useRouter();
 
   return (
     <Modal
