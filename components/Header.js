@@ -72,7 +72,7 @@ export default function Header({ logged, avatar }) {
               <div className="flex flex-col md:flex-row gap-2">
                 <WalletButton />
                 <a
-                  className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto cursor-pointer"
+                  className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto"
                   onClick={() => signOut()}
                 >
                   Sign out

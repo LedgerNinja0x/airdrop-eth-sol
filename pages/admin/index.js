@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import Table from "@/components/Table";
 import AirdropModal from "@/components/AirdropModal";
 import StakingModal from "@/components/StakingModal";
+import AirdropMessage from "@/components/AirdropMessage";
 import { ethers, Contract } from "ethers";
 import contractAddress from "@/Contracts/addresses.json";
 import TokenAbi from "@/Contracts/erc20.json";
@@ -193,6 +194,7 @@ export default function Page({users}) {
   ]
   const [ isOpen, setIsOpen ] = useState(false);
   const [ isStakingOpen, setIsStakingOpen ] = useState(false);
+  const [ isAirMsgOpen, setIsAirMsgOpen ] = useState(false);
   const [ openOwner, setOpenOwner ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
@@ -228,6 +230,7 @@ export default function Page({users}) {
         setTopCount(adminData.topCount);
         setAdminId(adminData._id);
         setAirdropMessage(adminData.airdropMessage);
+        console.log("airmsg", adminData.airdropMessage);
       }
     }
   }
@@ -380,8 +383,23 @@ export default function Page({users}) {
   }
 
   const changeTopCount = async (count) => {
-    const result = await axios.post('/api/me/topCount',{id: adminId, count}) 
-    setTopCount(count);
+    try {
+      const result = await axios.post('/api/me/topCount',{id: adminId, count});
+      setTopCount(count);
+    } catch (err) {
+      toast.error("Oops, something wrong!");
+    }
+  }
+
+  const changeAirMsg = async (msg) => {
+    try {
+      const result = await axios.post('/api/me/airdropMsg',{id: adminId, msg});
+      setAirdropMessage(msg);
+      toast.success("Message Changed");
+      setIsAirMsgOpen(false);
+    } catch (err) {
+      toast.error("Oops, something wrong!");
+    }
   }
 
   useEffect(() => {
@@ -413,6 +431,9 @@ export default function Page({users}) {
             <div className="text-nowrap">Wallets to Airdrop:Top <input type="text" value={topCount} className="w-8 bg-inherit border-b-2 ml-2 border-black" onChange={(e) => changeTopCount(e.target.value)} /> )</div>
           </div>
           <div className="flex gap-1 flex-wrap">
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsAirMsgOpen(true)}>
+              AirdropMessage
+            </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => generateExcelData()}>
               Export
             </button>
@@ -455,6 +476,13 @@ export default function Page({users}) {
           "Please input information about staking"
         }
         action={doStaking}
+        />
+        <AirdropMessage 
+        isOpen={isAirMsgOpen}
+        setIsOpen={setIsAirMsgOpen}
+        title={"Airdrop Message Manager"}
+        action={changeAirMsg}
+        message={airdropMessage}
         />
       </div>
       <Footer />
