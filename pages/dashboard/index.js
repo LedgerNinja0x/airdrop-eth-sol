@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../api/auth/[...nextauth]";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import axios from "axios";
 import { getToken } from "next-auth/jwt";
 import NotificationArea from "./notification";
@@ -66,10 +67,10 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
   }, [])  
 
   return (
-    <>
+    <div className="min-h-screen h-fit flex flex-col justify-between">
       <ToastContainer />
       <Header logged={true} avatar={avatar} />
-      <div className="container mx-auto flex md:flex-row flex-col overflow-none">
+      <div className="container mx-auto mt-8 flex md:flex-row flex-col overflow-none">
         <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left md:mb-0 text-center p-12">
           <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
             Hello {name} 👋
@@ -88,7 +89,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
           {!isTwitterVerified && <NotificationArea name={name} followers={followers} twittUsername={twittUsername}/>}
         </div>
 
-        <div className="md:w-1/2 w-full">
+        <div className="md:w-2/5 w-full">
           <img
             className="w-full"
             alt="hero"
@@ -96,13 +97,14 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
           />
         </div>
       </div>
+      <Footer />
       { !ethAddress && 
       <WalletModal name={name} followers={followers} disableBackdropClick/>
       }
       { isFirstVerified && isTwitterVerified &&
       <VerifiedModal />
       }
-    </>
+    </div>
   );
 }
 
@@ -115,9 +117,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -131,7 +133,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "";
+    let username = session?.user?.name || "Sassmedia";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
