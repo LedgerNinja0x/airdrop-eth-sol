@@ -54,6 +54,7 @@ export default async function handler(req, res) {
               firstTag,
               IP: ip,
               location,
+              isAirMsgRead: 1
             },
           },
         },
