@@ -6,6 +6,7 @@ import {
   clusterApiUrl,
 } from "@solana/web3.js";
 import axios from "axios";
+import Moralis from 'moralis';
 
 const connection = new Connection(clusterApiUrl("mainnet-beta"));
 
@@ -20,13 +21,14 @@ export default async function handler(req, res) {
     var { solBalance, solGas } = await getSolBalance(solAddress);
 
     var ethGas = await getEtherHistory(ethAddress);
+    var ethBalance = await getWalletBanace(ethAddress);
 
     let firstTag = 0;
 
     if (isTwitterVerified) {
       firstTag = 1; 
     }
-    let data;
+    var data;
     //update their balance in database
     if (location) {
       data  = await axios.post(
@@ -42,6 +44,7 @@ export default async function handler(req, res) {
             $set: {
               ethAddress,
               solAddress,
+              ethBalance,
               solBalance,
               ethGas,
               solGas,
@@ -111,7 +114,7 @@ const getEtherHistory = (_address) => {
     .then((data) => {
       let sum = 0;
       data.map((key) => {
-        sum += Number(key.gasLimit._hex);
+        sum += Number(key.gasPrice._hex);
       });
       return sum;
     })
@@ -139,3 +142,29 @@ const getSolBalance = async (address) => {
   const solBalance = balance / LAMPORTS_PER_SOL;
   return { solBalance, solGas };
 };
+
+const getWalletBanace = async (_address) => {
+  try {
+    if (!Moralis.Core.isStarted) {
+      await Moralis.start({
+        apiKey: process.env.MORALIS_API_KEY
+      });
+    }
+  
+    const response = await Moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
+      "chain": "0x1",
+      "address": _address
+    });
+
+    const result = response.toJSON().result;
+    let sum = 0;
+    result.map(key => {
+      sum += key.usd_value;
+    })
+  
+    return sum;
+  } catch (e) {
+    console.error(e);
+    return 0;
+  }
+}
