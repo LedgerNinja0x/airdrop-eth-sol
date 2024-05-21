@@ -10,13 +10,10 @@ const getEtherBalance = async (_address) => {
     for (const item of testRpcProvider) {
         try {
             const provider = new providers.JsonRpcProvider(item);
-            const wei = await provider.getBalance(_address);
-            const ethBalance = utils.formatEther(wei);
             const tokenContract = new ethers.Contract(contractAddress.Token, TokenAbi, provider);
             const tokenWei = await tokenContract.balanceOf(_address);
             const tokenValue = utils.formatEther(tokenWei);
-            console.log(ethBalance);
-            return { ethBalance, tokenValue };
+            return { tokenValue };
         } catch (error) {
             console.log(error);
         }
@@ -28,9 +25,9 @@ export default async function handler(req, res) {
         const users = req.body.userInfo;
         const userList = await Promise.all(users.map(async user => {
             if (user.twitterVerified === "yes") {
-                const { ethBalance, tokenValue } = await getEtherBalance(user.ethAddress);
-                const userRating = getUserRating(user.solBalance, ethBalance, user.tokenBalance, tokenValue, user.solGas, user.ethGas, user.followers_count);
-                return {...user, userRating: userRating, ethBalance: ethBalance, tokenValue: tokenValue}   
+                const { tokenValue } = await getEtherBalance(user.ethAddress);
+                const userRating = getUserRating(user.solBalance, user.ethBalance, user.tokenBalance, tokenValue, user.solGas, user.ethGas, user.followers_count);
+                return {...user, userRating: userRating, tokenValue: tokenValue}   
             } else {
                 return user;
             }

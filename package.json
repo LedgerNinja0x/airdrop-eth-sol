@@ -31,6 +31,7 @@
     "fs": "^0.0.1-security",
     "mongodb": "^6.6.2",
     "mongoose": "^8.4.0",
+    "moralis": "^2.26.2",
     "needle": "^3.3.1",
     "next": "13.4.8",
     "next-auth": "^4.24.7",
