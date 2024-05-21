@@ -47,7 +47,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
             tokenValue, 
             isTwitterVerified: 1,
             location,
-            ip
+            ip,
           }
         );
       } catch (e) {
@@ -203,7 +203,6 @@ export async function getServerSideProps({ req, res }) {
               like_count: likeCount,
               twitt_username: twittUsername,
               userRating: 0,
-              isAirMsgRead: 1
             },
           },
         },
