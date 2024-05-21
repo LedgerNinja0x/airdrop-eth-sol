@@ -20,7 +20,9 @@ export default function StakingModal({
   setIsOpen,
   title,
   description,
-  action
+  action,
+  setTopCount,
+  topCount
 }) {
   const [token, setToken] = useState(0);
   const [reward, setReward] = useState(0);
@@ -74,16 +76,29 @@ export default function StakingModal({
           </p>
         )}
           <>
-            <p>Staking Period(days): </p>
-            <div className="flex gap-3">
+            <div className="flex flex-col md:flex-row gap-2">
+              <div className="flex-1">
+                <p>Staking Period(days): </p>
                 <input
-                type="Number"
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-                placeholder="Input Staking Period"
-                min="0"
-                className="block mb-4 w-3/5 !outline-none rounded-md px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  type="Number"
+                  value={period}
+                  onChange={(e) => setPeriod(e.target.value)}
+                  placeholder="Input Staking Period"
+                  min="0"
+                  className="block mb-4 w-full !outline-none rounded-md px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
+              </div>
+              <div className="flex-1">
+                <p>Top Members: </p>
+                <input
+                  type="Number"
+                  value={topCount}
+                  onChange={(e) => setTopCount(e.target.value)}
+                  placeholder="Input top Member"
+                  min="0"
+                  className="block mb-4 w-full !outline-none rounded-md px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+              </div>
             </div>
             <p>Reward Amount: </p>
             <input

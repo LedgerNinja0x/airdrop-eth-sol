@@ -28,7 +28,7 @@ export default function StakingContent({name, setLoading}) {
       const stakingData = await _StakingContract.getUserStakingInfo();
       setStakingInfo(stakingData); 
     } catch (error) {
-      toast.error("wallet connect error");
+      toast.error("Contract Connection Error");
     }
   }
 

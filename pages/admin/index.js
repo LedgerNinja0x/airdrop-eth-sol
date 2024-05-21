@@ -237,7 +237,6 @@ export default function Page({users}) {
     if (result.status == 201) {
       const adminData = result.data[0];
       if (adminData) {
-        setTopCount(adminData?.topCount ? adminData.topCount : 0);
         setAdminId(adminData._id ? adminData._id : "");
         setAirdropMessage(adminData?.airdropMessage ? adminData.airdropMessage : "");
         setTweetMessage(adminData?.tweetMessage ? adminData.tweetMessage : "");
@@ -467,22 +466,26 @@ export default function Page({users}) {
           <Table columns={columns} data={userData} />
         }
         <AirdropModal 
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        title={"Airdrop Manager"}
-        description={
-          "Please inpurt token count for airdrop"
-        }
-        action={doAirDrop}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          title={"Airdrop Manager"}
+          description={
+            "Please input information for airdrop"
+          }
+          action={doAirDrop}
+          setTopCount={setTopCount}
+          topCount={topCount}
         />
         <StakingModal 
-        isOpen={isStakingOpen}
-        setIsOpen={setIsStakingOpen}
-        title={"Staking Manager"}
-        description={
-          "Please input information about staking"
-        }
-        action={doStaking}
+          isOpen={isStakingOpen}
+          setIsOpen={setIsStakingOpen}
+          title={"Staking Manager"}
+          description={
+            "Please input information about staking"
+          }
+          action={doStaking}
+          setTopCount={setTopCount}
+          topCount={topCount}
         />
         <AirdropMessage 
           isOpen={isAirMsgOpen}

@@ -18,7 +18,9 @@ export default function AirdropModal({
   setIsOpen,
   title,
   description,
-  action
+  action,
+  setTopCount,
+  topCount
 }) {
   let [token, setToken] = useState(0);
   let [info, setInfo] = useState({ text: "", type: "" });
@@ -47,10 +49,10 @@ export default function AirdropModal({
       sx={{zIndex: 7}}
     >
       <Box sx={style}>
-        <div className="flex">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-2">
           <div>
-          <h1 className="font-bold text-3xl mb-4">{title}</h1>
-            <p className="pb-8">{description}</p>
+          <h1 className="font-bold text-3xl mb-4 text-center">{title}</h1>
+            <p className="pb-8 text-center">{description}</p>
             {info.text && (
               <p
                 className={`${
@@ -61,6 +63,16 @@ export default function AirdropModal({
               </p>
             )}
               <>
+                <p>Top Members: </p>
+                <input
+                  type="Number"
+                  value={topCount}
+                  onChange={(e) => setTopCount(e.target.value)}
+                  placeholder="Input token Number"
+                  min="0"
+                  className="block mb-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
+                />
+                <p>Token Amount: </p>
                 <input
                   type="Number"
                   value={token}
