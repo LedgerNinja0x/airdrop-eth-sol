@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { ethers, Contract } from 'ethers';
 import StakingAbi from "@/Contracts/Staking.json";
-import contractAddress from "@/Contracts/addresses.json";
 import StakingBox from './StakingBox';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -12,15 +11,28 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function StakingContent({name, setLoading}) {
   const [ stakingContract, setStakingContract ] = useState(false);
-  const [stakingInfo, setStakingInfo] = useState(false);
+  const [ stakingInfo, setStakingInfo ] = useState(false);
+  const [ contractAddress, setContractAddress ] = useState("");
+  const [ tokenAddress, setTokenAddress ] = useState("");
 
   const { address } = useAccount();
+
+  const getAdminData = async () => {
+    const result = await axios.post('/api/me/getAdminData');
+    if (result.status == 201) {
+      const adminData = result.data[0];
+      if (adminData) {
+        setContractAddress(adminData?.contractAddress ? adminData?.contractAddress : "");
+        setTokenAddress(adminData?.tokenAddress ? adminData?.tokenAddress : "");
+      }
+    }
+  }
 
   const initializeStakingContract = async () => {
     try {
       const _provider = new ethers.providers.Web3Provider(window.ethereum);
       const _StakingContract = new Contract(
-        contractAddress.Staking,
+        contractAddress,
         StakingAbi.abi,
         _provider.getSigner(0)
       );
@@ -131,6 +143,7 @@ export default function StakingContent({name, setLoading}) {
   }
 
   useEffect(() => {
+    getAdminData();
     if(!window.ethereum) {
       toast.error("No Ethereum wallet was detected.");
       return;
@@ -138,10 +151,10 @@ export default function StakingContent({name, setLoading}) {
   }, []);
 
   useEffect(() => {
-    if (window.ethereum && address) {
+    if (window.ethereum && address && contractAddress && tokenAddress) {
       initializeStakingContract(); 
     }
-  }, [address])
+  }, [address, tokenAddress, contractAddress])
   return (
     <>
     <section className="text-gray-600 body-font pt-12 md:pt-24">

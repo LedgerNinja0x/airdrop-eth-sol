@@ -8,10 +8,10 @@ import Table from "@/components/Table";
 import AirdropModal from "@/components/AirdropModal";
 import StakingModal from "@/components/StakingModal";
 import AirdropMessage from "@/components/AirdropMessage";
+import ContractModal from "@/components/ContractModal";
 import SetBtn from "@/components/SetBtn";
 import TweetMessage from "@/components/Modal";
 import { ethers, Contract } from "ethers";
-import contractAddress from "@/Contracts/addresses.json";
 import TokenAbi from "@/Contracts/erc20.json";
 import StakingAbi from "@/Contracts/Staking.json";
 import 'react-toastify/dist/ReactToastify.css';
@@ -203,6 +203,7 @@ export default function Page({users}) {
   const [ isStakingOpen, setIsStakingOpen ] = useState(false);
   const [ isAirMsgOpen, setIsAirMsgOpen ] = useState(false);
   const [ isTweetOpen, setIsTweetOpen ] = useState(false);
+  const [ isContractOpen, setIsContractOpen ] = useState(false);
   const [ openOwner, setOpenOwner ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
@@ -214,6 +215,8 @@ export default function Page({users}) {
   const [ adminId, setAdminId ] = useState("");
   const [ airdropMessage, setAirdropMessage ] = useState("");
   const [ tweetMessage, setTweetMessage ] = useState("");
+  const [ contractAddress, setContractAddress ] = useState("");
+  const [ tokenAddress, setTokenAddress ] = useState("");
   const [ hashtag, setHashTag ] = useState("");
   const { address } = useAccount();
 
@@ -241,6 +244,8 @@ export default function Page({users}) {
         setAirdropMessage(adminData?.airdropMessage ? adminData.airdropMessage : "");
         setTweetMessage(adminData?.tweetMessage ? adminData.tweetMessage : "");
         setHashTag(adminData?.hashtag ? adminData.hashtag : "");
+        setContractAddress(adminData?.contractAddress ? adminData?.contractAddress : "");
+        setTokenAddress(adminData?.tokenAddress ? adminData?.tokenAddress : "");
       }
     }
   }
@@ -248,7 +253,7 @@ export default function Page({users}) {
   const initializeTokenContract = async () => {
     const _provider = new ethers.providers.Web3Provider(window.ethereum);
     const _TokenContract = new Contract(
-      contractAddress.Token,
+      tokenAddress,
       TokenAbi,
       _provider.getSigner(0)
     );
@@ -258,7 +263,7 @@ export default function Page({users}) {
   const initializeStakingContract = async () => {
     const _provider = new ethers.providers.Web3Provider(window.ethereum);
     const _StakingContract = new Contract(
-      contractAddress.Staking,
+      contractAddress,
       StakingAbi.abi,
       _provider.getSigner(0)
     );
@@ -282,7 +287,7 @@ export default function Page({users}) {
     const userAddress = userList.map(entry => entry.ethAddress);
     setLoading(true);
     try {
-      const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(tokenToWei * userAddress.length));
+      const approveTx = await tokenContract.approve(contractAddress, BigInt(tokenToWei * userAddress.length));
       const receipt = await approveTx.wait();
       if (receipt.status === 0) {
         toast.error("transaction failed");
@@ -323,7 +328,7 @@ export default function Page({users}) {
     const approveAmount = tokenToWei + rewardToWei * stakingPeriod;
     setLoading(true);
     try {
-      const approveTx = await tokenContract.approve(contractAddress.Staking, BigInt(approveAmount * userAddress.length));
+      const approveTx = await tokenContract.approve(contractAddress, BigInt(approveAmount * userAddress.length));
       const receipt = await approveTx.wait();
       if (receipt.status === 0) {
         toast.error("transaction failed");
@@ -408,7 +413,19 @@ export default function Page({users}) {
       const result = await axios.post('/api/me/tweetMessage',{id: adminId, msg, hashtag});
       setAirdropMessage(msg);
       toast.success("Message Changed");
-      setIsAirMsgOpen(false);
+      setIsTweetOpen(false);
+    } catch (err) {
+      toast.error("Oops, something wrong!");
+    }
+  }
+
+  const changeContractAddress = async (contract, token) => {
+    try {
+      const result = await axios.post('/api/me/setContract',{id: adminId, contract, token});
+      setContractAddress(contract);
+      setTokenAddress(token);
+      toast.success("Message Changed");
+      setIsContractOpen(false);
     } catch (err) {
       toast.error("Oops, something wrong!");
     }
@@ -425,11 +442,11 @@ export default function Page({users}) {
   }, []);
 
   useEffect(() => {
-    if (window.ethereum && address) {
+    if (window.ethereum && address && contractAddress && tokenAddress) {
       initializeTokenContract();
       initializeStakingContract(); 
     }
-  }, [address])
+  }, [address, contractAddress, tokenAddress])
 
   return (
     <div className="admin-dashboard min-h-screen h-fit flex flex-col justify-between">
@@ -454,7 +471,7 @@ export default function Page({users}) {
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsStakingOpen(true)}>
               Staking
             </button>
-            <SetBtn setIsAirMsgOpen={setIsAirMsgOpen} setOpenOwner={setOpenOwner} setIsTweetOpen={setIsTweetOpen}/>
+            <SetBtn setIsAirMsgOpen={setIsAirMsgOpen} setOpenOwner={setOpenOwner} setIsTweetOpen={setIsTweetOpen} setIsContractOpen={setIsContractOpen}/>
           </div>
         </div>
         {
@@ -504,6 +521,17 @@ export default function Page({users}) {
           action={changeTweetMsg}
           message={tweetMessage}
           hashtag={hashtag}
+        />
+        <ContractModal 
+          isOpen={isContractOpen}
+          setIsOpen={setIsContractOpen}
+          title={"Contract Manager"}
+          description={
+            "Please Set Contract Address"
+          }
+          action={changeContractAddress}
+          contractAddress={contractAddress}
+          tokenAddress={tokenAddress}
         />
       </div>
       <Footer />
