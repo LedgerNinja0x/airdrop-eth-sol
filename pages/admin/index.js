@@ -3,6 +3,7 @@ import { authOptions } from "../api/auth/[...nextauth]";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Table from "@/components/Table";
 import AirdropModal from "@/components/AirdropModal";
 import StakingModal from "@/components/StakingModal";
@@ -382,7 +383,7 @@ export default function Page({users}) {
   }, [address])
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-dashboard min-h-screen h-fit flex flex-col justify-between">
       <Header/>
       <ToastContainer/>
       <div className="p-12 pb-0">
@@ -433,6 +434,7 @@ export default function Page({users}) {
         action={doStaking}
         />
       </div>
+      <Footer />
       <Dialog
         open={openOwner}
         onClose={() => setOpenOwner(false)}

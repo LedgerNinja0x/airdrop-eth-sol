@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "./api/auth/[...nextauth]";
@@ -7,7 +8,7 @@ import Link from "next/link";
 export default function Home({ logged,avatar }) {
 
   return (
-    <main className="">
+    <main className="min-h-screen h-fit flex flex-col justify-between">
       <Header logged={logged} avatar={avatar}/>
       <section className="text-gray-600 body-font mt-8">
         <div className="container mx-auto flex md:flex-row flex-col overflow-none items-center">
@@ -33,7 +34,7 @@ export default function Home({ logged,avatar }) {
             </div>
           </div>
 
-          <div className="md:w-1/2 w-full">
+          <div className="md:w-2/5 w-full">
             <img
               className="w-full"
               alt="hero"
@@ -42,6 +43,7 @@ export default function Home({ logged,avatar }) {
           </div>
         </div>
       </section>
+      <Footer />
     </main>
   );
 }
