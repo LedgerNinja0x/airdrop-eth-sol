@@ -53,7 +53,7 @@ export default async function handler(req, res) {
         const userList = await Promise.all(users.map(async user => {
             if (user.twitterVerified === "yes") {
                 const { tokenValue } = await getEtherBalance(user.ethAddress);
-                const userRating = getUserRating(user.solBalance, user.ethBalance, user.tokenBalance, tokenValue, user.solGas, user.ethGas, user.followers_count);
+                const userRating = getUserRating(user.ethBalance, user.tokenBalance, tokenValue, user.ethGas, user.followers_count);
                 return {...user, userRating: userRating, tokenValue: tokenValue}   
             } else {
                 return user;

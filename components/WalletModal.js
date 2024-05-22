@@ -25,12 +25,11 @@ export default function WalletModal({name, followers}) {
 
   //state for eth and sol address
   let [ethAddress, setEthAddress] = useState("");
-  let [solAddress, setSolAddress] = useState("");
   let [loading, setLoading] = useState(false);
 
   //call api and check balance on backend, verify
   async function checkBalance() {
-    if (solAddress === "" || ethAddress === "") {
+    if (ethAddress === "") {
       toast.error("Please fill out all fields");
       return;
     }
@@ -38,7 +37,6 @@ export default function WalletModal({name, followers}) {
       setLoading(true);
       let { data } = await axios.post("/api/me/balance", {
         ethAddress,
-        solAddress,
         username: name,
         followers,
         tokenBalance: 0,
@@ -74,13 +72,6 @@ export default function WalletModal({name, followers}) {
             value={ethAddress}
             onChange={(e) => setEthAddress(e.target.value)}
             placeholder="Ethereum address"
-            className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring focus:ring-[#241008]"
-          />
-          <input
-            type="text"
-            value={solAddress}
-            onChange={(e) => setSolAddress(e.target.value)}
-            placeholder="Solana address"
             className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:outline-none focus:ring focus:ring-[#241008]"
           />
           <button

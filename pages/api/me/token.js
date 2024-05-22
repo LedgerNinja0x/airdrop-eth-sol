@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         const tokenValue = Number(user.tokenValue) + Number(req.body.token);
         const airdropMsg = req.body?.airdropMessage ? req.body.airdropMessage : "";
 
-        const userRating = getUserRating(user.solBalance, user.ethBalance, tokenBalance, tokenValue, user.solGas, user.ethGas, user.followers);
+        const userRating = getUserRating(user.ethBalance, tokenBalance, tokenValue, user.ethGas, user.followers);
         await axios.post(
             `${process.env.MONGODB_URI}/action/updateOne`,
             {
