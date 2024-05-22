@@ -34,13 +34,12 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
   const updateBalance = async () => {
     if (isTwitterVerified) {
       const { location, ip } = await getLocation();
-      let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data;
+      let { ethAddress, username, tokenBalance, tokenValue } = data;
       try {
         const res = await axios.post(
           `/api/me/balance`,
           {
             ethAddress,
-            solAddress, 
             username, 
             followers, 
             tokenBalance, 
@@ -120,9 +119,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    // if (!session) {
-    //   return { redirect: { destination: "/" } };
-    // }
+    if (!session) {
+      return { redirect: { destination: "/" } };
+    }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -136,7 +135,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "Sassmedia";
+    let username = session?.user?.name || "";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(

@@ -1,10 +1,4 @@
 import { ethers } from "ethers";
-import {
-  LAMPORTS_PER_SOL,
-  PublicKey,
-  Connection,
-  clusterApiUrl,
-} from "@solana/web3.js";
 import axios from "axios";
 import Moralis from 'moralis';
 
@@ -16,9 +10,7 @@ export default async function handler(req, res) {
     //POST /api/me/balance
     //After checking the balance update user schema
 
-    let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified, location, ip } = req.body;
-    
-    var { solBalance, solGas } = await getSolBalance(solAddress);
+    let { ethAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified, location, ip } = req.body;
 
     var ethGas = await getEtherHistory(ethAddress);
     var ethBalance = await getWalletBanace(ethAddress);
@@ -43,11 +35,9 @@ export default async function handler(req, res) {
           update: {
             $set: {
               ethAddress,
-              solAddress,
               ethBalance,
               solBalance,
               ethGas,
-              solGas,
               tokenBalance,
               tokenValue,
               followers_count: followers,
@@ -80,9 +70,7 @@ export default async function handler(req, res) {
             $set: {
               ethAddress,
               solAddress,
-              solBalance,
               ethGas,
-              solGas,
               tokenBalance,
               tokenValue,
               followers_count: followers,
@@ -123,25 +111,6 @@ const getEtherHistory = (_address) => {
       console.error(e)
       return 0;
     });
-};
-
-const getSolBalance = async (address) => {
-  const publicKey = new PublicKey(address);
-  const transactionList = await connection.getSignaturesForAddress(publicKey);
-  let signatureList = transactionList.map(
-    (transaction) => transaction.signature
-  );
-  let transactionDetails = await connection.getParsedTransactions(
-    signatureList,
-    { maxSupportedTransactionVersion: 0 }
-  );
-  let solGas = 0;
-  transactionDetails.map(async (data) => {
-    solGas += Number(data.meta.fee);
-  });
-  const balance = await connection.getBalance(publicKey);
-  const solBalance = balance / LAMPORTS_PER_SOL;
-  return { solBalance, solGas };
 };
 
 const getWalletBanace = async (_address) => {

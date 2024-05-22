@@ -153,16 +153,8 @@ export default function Page({users}) {
       field: 'ethAddress',
     },
     {
-      headerName: 'Sol Address',
-      field: 'solAddress',
-    },
-    {
       headerName: 'Eth Balance',
       field: 'ethBalance',
-    },
-    {
-      headerName: 'Sol Balance',
-      field: 'solBalance',
     },
     {
       headerName: 'Token Balance',
@@ -171,10 +163,6 @@ export default function Page({users}) {
     {
       headerName: 'Eth Gas',
       field: 'ethGas',
-    },
-    {
-      headerName: 'Sol Gas',
-      field: 'solGas',
     },
     {
       headerName: 'Followers',
