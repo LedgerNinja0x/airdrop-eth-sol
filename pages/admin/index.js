@@ -482,9 +482,9 @@ export default function Page({users}) {
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsOpen(true)}>
               Airdrop
             </button>
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsStakingOpen(true)}>
+            {/* <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsStakingOpen(true)}>
               Staking
-            </button>
+            </button> */}
             <SetBtn setIsAirMsgOpen={setIsAirMsgOpen} setOpenOwner={setOpenOwner} setIsTweetOpen={setIsTweetOpen} setIsContractOpen={setIsContractOpen}/>
           </div>
         </div>
