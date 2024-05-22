@@ -277,6 +277,10 @@ export default function Page({users}) {
       toast.error("Please connect wallet");
       return;
     }
+    if (!ownerAddress) {
+      toast.error("Contract Connect Error. Please reload this page");
+      return;
+    }
     if (ownerAddress.toLocaleLowerCase() != address.toLocaleLowerCase()) {
       toast.error(`you must be contract owner: ${ownerAddress}`);
       setIsOpen(false);
@@ -314,6 +318,10 @@ export default function Page({users}) {
   const doStaking = async (token, reward, period) => {
     if (!address) {
       toast.error("Please connect wallet");
+      return;
+    }
+    if (!ownerAddress) {
+      toast.error("Contract Connect Error. Please reload this page");
       return;
     }
     if (ownerAddress.toLocaleLowerCase() != address.toLocaleLowerCase()) {
