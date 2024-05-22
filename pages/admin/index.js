@@ -153,7 +153,7 @@ export default function Page({users}) {
       field: 'ethAddress',
     },
     {
-      headerName: 'Eth Balance',
+      headerName: 'Wallet Balance',
       field: 'ethBalance',
     },
     {
@@ -209,15 +209,19 @@ export default function Page({users}) {
   const { address } = useAccount();
 
   const handleUsers = async (userInfo) => {
-    const result = await axios.post('/api/me/userInfo',{userInfo});
-    if (result.status == 201) {
-      const userList = result.data.map((item, index) => {
-        return {
-          ...item, id: index + 1
-        }
-      })
-      setUserData(userList); 
-    } else {
+    try {
+      const result = await axios.post('/api/me/userInfo',{userInfo});
+      if (result.status == 201) {
+        const userList = result.data.map((item, index) => {
+          return {
+            ...item, id: index + 1
+          }
+        })
+        setUserData(userList); 
+      } else {
+        setUserData(userInfo);
+      }
+    } catch (err) {
       setUserData(userInfo);
     }
     setLoading(false);
@@ -239,25 +243,33 @@ export default function Page({users}) {
   }
 
   const initializeTokenContract = async () => {
-    const _provider = new ethers.providers.Web3Provider(window.ethereum);
-    const _TokenContract = new Contract(
-      tokenAddress,
-      TokenAbi,
-      _provider.getSigner(0)
-    );
-    setTokenContract(_TokenContract);
+    try {
+      const _provider = new ethers.providers.Web3Provider(window.ethereum);
+      const _TokenContract = new Contract(
+        tokenAddress,
+        TokenAbi,
+        _provider.getSigner(0)
+      );
+      setTokenContract(_TokenContract);
+    } catch (error) {
+      toast.error("Please Set Correct token Address");
+    }
   }
 
   const initializeStakingContract = async () => {
-    const _provider = new ethers.providers.Web3Provider(window.ethereum);
-    const _StakingContract = new Contract(
-      contractAddress,
-      StakingAbi.abi,
-      _provider.getSigner(0)
-    );
-    const owner = await _StakingContract.getOwner();
-    setOwnerAddress(owner);
-    setStakingContract(_StakingContract);
+    try {
+      const _provider = new ethers.providers.Web3Provider(window.ethereum);
+      const _StakingContract = new Contract(
+        contractAddress,
+        StakingAbi.abi,
+        _provider.getSigner(0)
+      );
+      const owner = await _StakingContract.getOwner();
+      setOwnerAddress(owner);
+      setStakingContract(_StakingContract);
+    } catch (err) {
+      toast.error("Please Set Correct Contract Address");
+    }
   }
 
   const doAirDrop = async (token) => {
@@ -408,14 +420,20 @@ export default function Page({users}) {
   }
 
   const changeContractAddress = async (contract, token) => {
-    try {
-      const result = await axios.post('/api/me/setContract',{id: adminId, contract, token});
-      setContractAddress(contract);
-      setTokenAddress(token);
-      toast.success("Message Changed");
-      setIsContractOpen(false);
-    } catch (err) {
-      toast.error("Oops, something wrong!");
+    const checkContract = ethers.utils.isAddress(contract);
+    const tokenContract = ethers.utils.isAddress(token);
+    if (checkContract && tokenContract) {
+      try {
+        const result = await axios.post('/api/me/setContract',{id: adminId, contract, token});
+        setContractAddress(contract);
+        setTokenAddress(token);
+        toast.success("Message Changed");
+        setIsContractOpen(false);
+      } catch (err) {
+        toast.error("Oops, something wrong!");
+      } 
+    } else {
+      toast.error("Please input valid address");
     }
   }
 

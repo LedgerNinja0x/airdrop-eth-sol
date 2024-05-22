@@ -2,8 +2,6 @@ import { ethers } from "ethers";
 import axios from "axios";
 import Moralis from 'moralis';
 
-const connection = new Connection(clusterApiUrl("mainnet-beta"));
-
 export default async function handler(req, res) {
   try {
     //req.body contains ethAddress and solAddress
@@ -36,7 +34,6 @@ export default async function handler(req, res) {
             $set: {
               ethAddress,
               ethBalance,
-              solBalance,
               ethGas,
               tokenBalance,
               tokenValue,
@@ -69,7 +66,6 @@ export default async function handler(req, res) {
           update: {
             $set: {
               ethAddress,
-              solAddress,
               ethGas,
               tokenBalance,
               tokenValue,

@@ -25,6 +25,8 @@ export default function StakingContent({name, setLoading}) {
         setContractAddress(adminData?.contractAddress ? adminData?.contractAddress : "");
         setTokenAddress(adminData?.tokenAddress ? adminData?.tokenAddress : "");
       }
+    } else {
+      toast.error("Oops. Network Error!");
     }
   }
 
@@ -38,7 +40,8 @@ export default function StakingContent({name, setLoading}) {
       );
       setStakingContract(_StakingContract);
       const stakingData = await _StakingContract.getUserStakingInfo();
-      setStakingInfo(stakingData); 
+      const stakingValidData = stakingData.filter(key => ethers.utils.formatEther(key.stakedAmount.toString()) != 0)
+      setStakingInfo(stakingValidData); 
     } catch (error) {
       toast.error("Contract Connection Error");
     }
@@ -65,7 +68,8 @@ export default function StakingContent({name, setLoading}) {
           toast.error("transaction failed");
         } else {
           const stakingData = await stakingContract.getUserStakingInfo();
-          setStakingInfo(stakingData);
+          const stakingValidData = stakingData.filter(key => ethers.utils.formatEther(key.stakedAmount.toString()) != 0)
+          setStakingInfo(stakingValidData);
           const result = await updateUserInfo(name, amount);
           toast.success("Congratulations!, you get reward.");
         }
@@ -87,7 +91,8 @@ export default function StakingContent({name, setLoading}) {
           toast.error("transaction failed");
         } else {
           const stakingData = await stakingContract.getUserStakingInfo();
-          setStakingInfo(stakingData);
+          const stakingValidData = stakingData.filter(key => ethers.utils.formatEther(key.stakedAmount.toString()) != 0)
+          setStakingInfo(stakingValidData);
           const result = await updateUserInfo(name, amount);
           toast.success("Congratulations!, you get reward.");
         }
@@ -163,7 +168,7 @@ export default function StakingContent({name, setLoading}) {
       </h2>
       <div className="container items-center mx-auto flex flex-col gap-5 text-[28px]">
         {
-          stakingInfo && stakingInfo.length != 0 
+          stakingInfo && stakingInfo.length > 0
           ? 
           stakingInfo.map((stake, index) => 
             ethers.utils.formatEther(stake.stakedAmount.toString()) != 0 ?
