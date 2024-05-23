@@ -466,7 +466,6 @@ export default function Page({users}) {
     }
     try {
       const result = await axios.post('/api/me/sendTopMessage', {userList, tweetMessage, hashtag});
-      console.log(">>>>", result.data);
       if (result.status == 201) {
         handleUsers(result.data);
       }

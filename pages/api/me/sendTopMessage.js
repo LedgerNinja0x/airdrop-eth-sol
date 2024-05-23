@@ -59,8 +59,6 @@ export default async function handler(req, res) {
       }
     );
 
-    console.log(data.documents);
-
     return res.status(201).send(data.documents);
     
   } catch (e) {
