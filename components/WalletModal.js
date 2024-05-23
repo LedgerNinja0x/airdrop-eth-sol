@@ -50,7 +50,13 @@ export default function WalletModal({name, followers}) {
       //reload the page to reflect that verification is successfull
       router.reload();
     } catch (e) {
-      toast.error("Please input correct wallet address!");
+      if (e.response.status == 500) {
+        toast.error("Please input correct wallet address!");
+      } else if(e.response.status == 401 && e.response.data == "duplicate") {
+        toast.error("This wallet address has already been used");
+      } else {
+        toast.error("Network Error!");
+      }
       setLoading(false);
     }
   }

@@ -5,32 +5,8 @@ import { providers, utils, ethers } from "ethers";
 import { testRpcProvider } from "@/lib/provider";
 import axios from "axios";
 
-const getEtherBalance = async (_address) => {
+const getEtherBalance = async (_address, tokenAddress) => {
     try {
-        let { data } = await axios.post(
-            `${process.env.MONGODB_URI}/action/find`,
-            {
-              dataSource: "Cluster0",
-              database: process.env.DataBase,
-              collection: "adminData",
-              projection: {},
-            },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Accept: "application/json",
-                apiKey: process.env.DATAAPI_KEY,
-              },
-            }
-        );
-    
-        var tokenAddress = "";
-    
-        if (data.documents) {
-            const adminData = data.documents[0];
-            tokenAddress = adminData?.tokenAddress ? adminData.tokenAddress : ""
-        }
-    
         if (tokenAddress) {
             var num = 0;
             for (const item of testRpcProvider) {
@@ -60,12 +36,38 @@ const getEtherBalance = async (_address) => {
 
 export default async function handler(req, res) {
     try {
+        let { data } = await axios.post(
+            `${process.env.MONGODB_URI}/action/find`,
+            {
+              dataSource: "Cluster0",
+              database: process.env.DataBase,
+              collection: "adminData",
+              projection: {},
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                apiKey: process.env.DATAAPI_KEY,
+              },
+            }
+        );
+    
+        var tokenAddress = "";
+    
+        if (data.documents) {
+            const adminData = data.documents[0];
+            tokenAddress = adminData?.tokenAddress ? adminData.tokenAddress : "";
+        }
+
         const users = req.body.userInfo;
         const userList = await Promise.all(users.map(async user => {
             if (user.twitterVerified === "yes") {
-                const { tokenValue } = await getEtherBalance(user.ethAddress);
+                if (tokenAddress) {
+                    var { tokenValue } = await getEtherBalance(user.ethAddress, tokenAddress);
+                }
                 const userRating = getUserRating(user.ethBalance, user.tokenBalance, tokenValue, user.ethGas, user.followers_count);
-                return {...user, userRating: userRating, tokenValue: tokenValue}   
+                return {...user, userRating: userRating, tokenValue: tokenValue, token_airdrop: user.tokenBalance.filter(key => key.contract == tokenAddress)[0].balance}   
             } else {
                 return user;
             }

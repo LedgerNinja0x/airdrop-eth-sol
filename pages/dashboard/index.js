@@ -7,7 +7,8 @@ import { getToken } from "next-auth/jwt";
 import NotificationArea from "./notification";
 import WalletModal from "@/components/WalletModal";
 import VerifiedModal from "@/components/VerifiedModal";
-import StakingContent from "@/components/StakingContent";
+import NotificationMessage from "@/components/NotificationMessage";
+// import StakingContent from "@/components/StakingContent";
 import { ToastContainer, toast } from 'react-toastify';
 import { useEffect, useState } from "react";
 import { signOut } from "next-auth/react";
@@ -15,6 +16,7 @@ import { signOut } from "next-auth/react";
 export default function Page({ name, avatar, isTwitterVerified, followers, isFirstVerified, ethAddress, twittUsername, data}) {
 
   const [ isLoading, setLoading ] = useState(false);
+  const [ isOpenModal, setIsOpenModal ] = useState(false);
 
   const getLocation = async () => {
     try {
@@ -63,50 +65,55 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
     if (isTwitterVerified) {
       updateBalance();
     }
+    setIsOpenModal(true);
   }, [])  
 
   return (
-    <div className="min-h-screen h-fit flex flex-col justify-between">
+    <>
       <ToastContainer />
-      <Header logged={true} avatar={avatar} />
-      <div className="container mx-auto mt-8 flex md:flex-row flex-col overflow-none">
-        <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left md:mb-0 text-center p-12">
-          <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
-            Hello {name} 👋
-            {isTwitterVerified ?
-            isLoading ? (
-              <div className="loader-container" style={{height: "100%"}}>
-                  <div className="spinner"></div>
-              </div>
-            ) : <StakingContent name={name} setLoading={setLoading}/> : ""
-            }
-          </h1>
-          <p className="mb-8 leading-relaxed text-lg font-normal">
-          {!isTwitterVerified
-            && "Good to see you on airdrop! Please wait for the admins to send you a verification message"}
-          </p>
-          {!isTwitterVerified && <NotificationArea name={name} followers={followers} twittUsername={twittUsername}/>}
-        </div>
+      <div className="min-h-screen h-fit flex flex-col justify-between">
+        <Header logged={true} avatar={avatar} />
+        <div className="container mx-auto mt-8 flex md:flex-row flex-col overflow-none">
+          <div className="md:w-1/2 w-full flex flex-col items-center lg:items-start md:text-left md:mb-0 text-center p-12">
+            <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
+              Hello {name} 👋
+              {isTwitterVerified ?
+              isLoading ? (
+                <div className="loader-container" style={{height: "100%"}}>
+                    <div className="spinner"></div>
+                </div>
+              ) : (
+                <NotificationMessage topMessage={data.topMessage} />
+              ) : ""
+              }
+            </h1>
+            <p className="mb-8 leading-relaxed text-lg font-normal">
+            {!isTwitterVerified
+              && "Good to see you on airdrop! Please wait for the admins to send you a verification message"}
+            </p>
+            {!isTwitterVerified && <NotificationArea name={name} followers={followers} twittUsername={twittUsername}/>}
+          </div>
 
-        <div className="md:w-2/5 w-full">
-          <img
-            className="w-full"
-            alt="hero"
-            src="./moose.png"
-          />
+          <div className="md:w-2/5 w-full">
+            <img
+              className="w-full"
+              alt="hero"
+              src="./moose.png"
+            />
+          </div>
         </div>
+        <Footer />
+        { !ethAddress && 
+        <WalletModal name={name} followers={followers} disableBackdropClick/>
+        }
+        { isFirstVerified && isTwitterVerified &&
+        <VerifiedModal title="Your account has been verified" text="Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!" setIsOpen={setIsOpen}/>
+        }
+        { data.topMessage && data.isAirMsgRead == 0 && 
+        <VerifiedModal title={data.topMessage[data.topMessage.length - 1].title} text={data.topMessage[data.topMessage.length - 1].content} isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
+        }
       </div>
-      <Footer />
-      { !ethAddress && 
-      <WalletModal name={name} followers={followers} disableBackdropClick/>
-      }
-      { isFirstVerified && isTwitterVerified &&
-      <VerifiedModal title="Your account has been verified" text="Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!" />
-      }
-      { data.airdropMessage && data.isAirMsgRead == 0 && 
-      <VerifiedModal title="Airdrop Success" text={data.airdropMessage}/>
-      }
-    </div>
+    </>
   );
 }
 
@@ -119,9 +126,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&

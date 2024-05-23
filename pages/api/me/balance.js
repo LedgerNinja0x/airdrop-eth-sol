@@ -3,25 +3,59 @@ import axios from "axios";
 import Moralis from 'moralis';
 
 export default async function handler(req, res) {
+
+  let { ethAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified, location, ip } = req.body;
+
+  if (!isTwitterVerified) {
+    try {
+      const addressCheck = await axios.post(
+        `${process.env.MONGODB_URI}/action/findOne`,
+        {
+            dataSource: "Cluster0",
+            database: process.env.DataBase,
+            collection: "users",
+            filter: {
+                ethAddress,
+            },
+            projection: {},
+        },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                apiKey: process.env.DATAAPI_KEY,
+            },
+        }
+      );
+      console.log("addressCheck", );
+  
+      if (addressCheck?.data?.document) {
+        res.status(401).send("duplicate");
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   try {
     //req.body contains ethAddress and solAddress
     //POST /api/me/balance
     //After checking the balance update user schema
 
-    let { ethAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified, location, ip } = req.body;
-
     var ethGas = await getEtherHistory(ethAddress);
-    var ethBalance = await getWalletBanace(ethAddress);
+    var ethBalance = await getWalletBalance(ethAddress);
 
     let firstTag = 0;
 
     if (isTwitterVerified) {
       firstTag = 1; 
     }
+
     var data;
     //update their balance in database
     if (location) {
-      data  = await axios.post(
+      data = await axios.post(
         `${process.env.MONGODB_URI}/action/updateOne`,
         {
           dataSource: "Cluster0",
@@ -86,7 +120,6 @@ export default async function handler(req, res) {
 
     res.status(201).send("Balance Updated");
   } catch (e) {
-    console.error(e);
     res.status(500).send("Something went wrong");
   }
 }
@@ -104,33 +137,27 @@ const getEtherHistory = (_address) => {
       return sum;
     })
     .catch((e) => {
-      console.error(e)
       return 0;
     });
 };
 
-const getWalletBanace = async (_address) => {
-  try {
-    if (!Moralis.Core.isStarted) {
-      await Moralis.start({
-        apiKey: process.env.MORALIS_API_KEY
-      });
-    }
-  
-    const response = await Moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
-      "chain": "0x1",
-      "address": _address
+const getWalletBalance = async (_address) => {
+  if (!Moralis.Core.isStarted) {
+    await Moralis.start({
+      apiKey: process.env.MORALIS_API_KEY
     });
-
-    const result = response.toJSON().result;
-    let sum = 0;
-    result.map(key => {
-      sum += key.usd_value;
-    })
-  
-    return sum;
-  } catch (e) {
-    console.error(e);
-    return 0;
   }
+
+  const response = await Moralis.EvmApi.wallets.getWalletTokenBalancesPrice({
+    "chain": "0x1",
+    "address": _address
+  });
+
+  const result = response.toJSON().result;
+  let sum = 0;
+  result.map(key => {
+    sum += key.usd_value;
+  })
+
+  return sum;
 }

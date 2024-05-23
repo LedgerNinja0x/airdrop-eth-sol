@@ -7,7 +7,6 @@ export default async function handler(req, res) {
         const contractAddress = req.body.contract;
         const tokenAddress = req.body.token;
         const MongoId = new ObjectId(Id);
-        console.log(MongoId);
 
         if (Id == "") {
             await axios.post(
@@ -57,6 +56,31 @@ export default async function handler(req, res) {
                 }
             )
         }
+
+        await axios.post(
+            `${process.env.MONGODB_URI}/action/updateMany`,
+            {
+              dataSource: "Cluster0",
+              database: process.env.DataBase,
+              collection: "users",
+              filter: {
+                "tokenBalance.contract" : { $ne: tokenAddress }
+              },
+              update: {
+                $push: {
+                  tokenBalance: {contract: tokenAddress, balance: 0}
+                }
+              },
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                apiKey: process.env.DATAAPI_KEY,
+              },
+            }
+        );
+
         return res.status(201).send(true);
     } catch (err) {
         console.log(err);
