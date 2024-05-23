@@ -52,7 +52,7 @@ export default async function handler(req, res) {
                             },
                             then: {
                               $add: [
-                                "$$this.balance", 1
+                                "$$this.balance", tokenBalance
                               ]
                             },
                             else: "$$this.balance"

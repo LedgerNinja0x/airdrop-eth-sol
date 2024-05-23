@@ -29,7 +29,13 @@ import React from "react";
 
 const renderSummaryButton = (params) => {
 
-  async function sendMessage(twitt_username) {
+  async function sendMessage(twitt_username, ethAddress) {
+    
+    if (!ethAddress) {
+      toast.error("You can send tweet message to user who input ethereum wallet address");
+      return;
+    }
+
     try {
       //insert msg into required user
 
@@ -70,7 +76,7 @@ const renderSummaryButton = (params) => {
         </svg>
         {/* dont show message btn is twitter already verified */}
 
-        <span onClick={() => sendMessage(params.row.twitt_username)}>
+        <span onClick={() => sendMessage(params.row.twitt_username, params.row.ethAddress)}>
           Message
         </span>
 
@@ -452,12 +458,20 @@ export default function Page({users}) {
     }
   }
 
-  const sendTopMessage = async (msg) => {
+  const sendTopMessage = async (type, topCount) => {
     setLoading(true);
-    const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, topCount);
+    let userList = userData.filter(entry => entry.twitterVerified != "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating);
+    if (type != "all") {
+      userList.slice(0, topCount);
+    }
     try {
-      const result = await axios.post('/api/me/sendTopMessage', {userList, msg});
+      const result = await axios.post('/api/me/sendTopMessage', {userList, tweetMessage, hashtag});
+      console.log(">>>>", result.data);
+      if (result.status == 201) {
+        handleUsers(result.data);
+      }
       toast.success("Message Sent");
+
     } catch (err) {
       toast.error("Oops, something wrong!");
     }

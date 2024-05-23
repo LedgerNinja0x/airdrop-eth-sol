@@ -142,7 +142,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "Sassmedia";
+    let username = session?.user?.name || "";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
@@ -212,7 +212,7 @@ export async function getServerSideProps({ req, res }) {
       followersCount = details?.data?.data?.public_metrics?.followers_count || 0;
       const followingCount = details?.data?.data?.public_metrics?.following_count || 0;
       const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
-      twittUsername = details?.data?.data.username || "SmediaSas55633";
+      twittUsername = details?.data?.data.username || "";
 
       //ip address
       const forwarded = req.headers["x-forwarded-for"];

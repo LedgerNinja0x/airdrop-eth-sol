@@ -1,5 +1,10 @@
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
 import { useState,useEffect } from "react";
 
 const style = {
@@ -22,23 +27,20 @@ export default function MessageModal({
   setTopCount,
   topCount
 }) {
-  let [message, setMessage] = useState("");
   let [info, setInfo] = useState({ text: "", type: "" });
+  const [type, setType] = useState('all');
+
+  const handleChange = (event) => {
+    setType(event.target.value);
+  };
 
   const sendMessage = () => {
-    if (!message) {
-        setInfo({ text: "Input token number!", type: "error" });
-        return;
+    if (type == "set" && topCount == 0) {
+      setInfo({ text: "Set Members!", type: "error" });
+      return;
     }
-    action(message);
+    action(type, topCount);
   }
-
-  useEffect(() => {
-    if (!isOpen) {
-      setMessage("")
-    }
-  },[isOpen]);
-
 
   return (
     <Modal
@@ -52,7 +54,7 @@ export default function MessageModal({
         <div className="flex flex-col md:flex-row justify-center items-center gap-2">
           <div>
           <h1 className="font-bold text-3xl mb-4 text-center">{title}</h1>
-            <p className="pb-8 text-center">{description}</p>
+            <p className="py-2 text-center">{description}</p>
             {info.text && (
               <p
                 className={`${
@@ -63,6 +65,18 @@ export default function MessageModal({
               </p>
             )}
               <>
+                <FormControl>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-controlled-radio-buttons-group"
+                    name="controlled-radio-buttons-group"
+                    value={type}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel value="all" control={<Radio />} label="ALL" />
+                    <FormControlLabel value="set" control={<Radio />} label="SET" />
+                  </RadioGroup>
+                </FormControl>
                 <p>Top Members: </p>
                 <input
                   type="Number"
@@ -71,9 +85,8 @@ export default function MessageModal({
                   placeholder="Input token Number"
                   min="0"
                   className="block mb-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
+                  disabled={type === "all" ? true : false}
                 />
-                <p>Message: </p>
-                <textarea className="block mb-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6 h-36" onChange={(e) => setMessage(e.target.value)} value={message} />
                 <button className="flex items-center gap-x-1 bg-[#241008] text-white text-sm text-center justify-center py-2 mx-auto rounded-md w-full" onClick={sendMessage}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
