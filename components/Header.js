@@ -17,16 +17,15 @@ export default function Header({ logged, avatar }) {
   const pathname = usePathname()
   return (
     <header className="text-gray-600 body-font shadow-sm">
-      <div className="flex flex-wrap md:px-32 sm:px-8 py-8 flex-col gap-2 md:flex-row items-center w-screen justify-between">
+      <div className="flex flex-wrap md:px-20 sm:px-8 py-8 flex-col gap-2 md:flex-row items-center w-screen justify-between">
         <a className="flex title-font font-medium items-center text-gray-900" href={process.env.NEXTAUTH_URL}>
           <img src="/logo.png"></img>
           <span className="ml-3 text-xl logo-txt">Moose</span>
         </a>
         {logged ? (
           <div className="flex flex-col md:flex-row gap-2">
-            <WalletButton />
+            {/* <WalletButton /> */}
             {avatar ? (
-              <>
                 <SpeedDial
                   ariaLabel="SpeedDial basic example"
                   sx={{ position: 'absolute', top: 30, right: 40 }}
@@ -47,27 +46,14 @@ export default function Header({ logged, avatar }) {
                     />
                   ))}
                 </SpeedDial>
-              </>
             ) : (
-              <Link
-                href="/dashboard"
-                className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto text-center"
-              >
-                <span className="leading-7">Go To Dashboard</span>
-              </Link>
+              <></>
             )}
           </div>
         ) : (
           <>
             {/* don't show login to admins */}
-            {!pathname.includes("admin") ? (
-              <div
-                onClick={() => signIn("twitter", { callbackUrl: "/dashboard" })}
-                className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-64"
-              >
-                <img src="/twitter.png"/>
-                <span className="text-center leading-7">Log In With Twitter</span>
-              </div>) : 
+            {!pathname.includes("admin") ? (<></>) : 
               (
               <div className="flex flex-col md:flex-row gap-2">
                 <WalletButton />

@@ -9,6 +9,7 @@ import AirdropModal from "@/components/AirdropModal";
 import StakingModal from "@/components/StakingModal";
 import AirdropMessage from "@/components/AirdropMessage";
 import ContractModal from "@/components/ContractModal";
+import MessageModal from "@/components/MessageModal";
 import SetBtn from "@/components/SetBtn";
 import TweetMessage from "@/components/Modal";
 import { ethers, Contract } from "ethers";
@@ -157,8 +158,8 @@ export default function Page({users}) {
       field: 'ethBalance',
     },
     {
-      headerName: 'Token Balance',
-      field: 'tokenValue'
+      headerName: 'Tokens Airdropped',
+      field: 'token_airdrop'
     },
     {
       headerName: 'Eth Gas',
@@ -192,6 +193,7 @@ export default function Page({users}) {
   const [ isAirMsgOpen, setIsAirMsgOpen ] = useState(false);
   const [ isTweetOpen, setIsTweetOpen ] = useState(false);
   const [ isContractOpen, setIsContractOpen ] = useState(false);
+  const [ isMessageOpen, setIsMessageOpen ] = useState(false);
   const [ openOwner, setOpenOwner ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
   const [ stakingContract, setStakingContract ] = useState(false);
@@ -301,11 +303,16 @@ export default function Page({users}) {
         if(airdropReceipt.status === 0) {
           toast.error("transaction failed");
         } else {
-          const result = await axios.post('/api/me/token',{userList, token, airdropMessage})
-          if (result.status == 201) {
-            handleUsers(result.data);
+          try {
+            const result = await axios.post('/api/me/token',{userList, token, airdropMessage, tokenAddress})
+            if (result.status == 201) {
+              handleUsers(result.data);
+            }
+            toast.success("Success AirDrop");
+          } catch (err) {
+            console.log(err);
+            toast.error("DataBase Connection Error");
           }
-          toast.success("Success AirDrop");
         }
       }
     } catch (error) {
@@ -445,6 +452,19 @@ export default function Page({users}) {
     }
   }
 
+  const sendTopMessage = async (msg) => {
+    setLoading(true);
+    const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, topCount);
+    try {
+      const result = await axios.post('/api/me/sendTopMessage', {userList, msg});
+      toast.success("Message Sent");
+    } catch (err) {
+      toast.error("Oops, something wrong!");
+    }
+    setLoading(false);
+    setIsMessageOpen(false);
+  }
+
   useEffect(() => {
     setLoading(true);
     handleUsers(users);
@@ -463,9 +483,10 @@ export default function Page({users}) {
   }, [address, contractAddress, tokenAddress])
 
   return (
+    <>
+    <ToastContainer />
     <div className="admin-dashboard min-h-screen h-fit flex flex-col justify-between">
       <Header/>
-      <ToastContainer/>
       <div className="p-12 pb-0">
         <div className="flex justify-between flex-col md:flex-row mb-6 gap-2">
           <div className="flex justify-center items-center lg:flex-row flex-col gap-3">
@@ -473,6 +494,9 @@ export default function Page({users}) {
             <div className="text-nowrap">(Twitter Verified Accounts: {userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").length})</div>
           </div>
           <div className="flex gap-1 flex-wrap">
+          <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsMessageOpen(true)}>
+              Send Message
+            </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => generateExcelData()}>
               Export
             </button>
@@ -547,6 +571,17 @@ export default function Page({users}) {
           contractAddress={contractAddress}
           tokenAddress={tokenAddress}
         />
+        <MessageModal 
+          isOpen={isMessageOpen}
+          setIsOpen={setIsMessageOpen}
+          title={"Message Manager"}
+          description={
+            "Please Input Message Info"
+          }
+          action={sendTopMessage}
+          setTopCount={setTopCount}
+          topCount={topCount}
+        />
       </div>
       <Footer />
       <Dialog
@@ -585,6 +620,7 @@ export default function Page({users}) {
         </div>
       </Dialog>
     </div>
+    </>
   );
 }
 

@@ -14,8 +14,7 @@ const style = {
   p: 4,
 };
 
-export default function VerifiedModal({title, text}) {
-  let [isOpen, setIsOpen] = useState(true);
+export default function VerifiedModal({title, text, isOpen, setIsOpen}) {
 
   return (
     <Modal
