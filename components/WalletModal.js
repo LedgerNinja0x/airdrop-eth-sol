@@ -72,7 +72,7 @@ export default function WalletModal({name, followers}) {
           <h2 className="font-bold text-xl mb-1">
             Enter Your Wallet Information
           </h2>
-          <p className="pt-[15px]">Enter your ethereum and solana <br/> wallet address</p>
+          <p className="pt-[15px]">Enter your ethereum wallet address</p>
           <input
             type="text"
             value={ethAddress}

@@ -77,20 +77,21 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
           <div className="md:w-1/2 w-full flex flex-col items-center lg:items-start md:text-left md:mb-0 text-center p-12">
             <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
               Hello {name} 👋
-              {isTwitterVerified ?
+            </h1>
+            {
+            isTwitterVerified ?
               isLoading ? (
                 <div className="loader-container" style={{height: "100%"}}>
                     <div className="spinner"></div>
                 </div>
               ) : (
-                <NotificationMessage topMessage={data.topMessage} />
+                <>
+                  <NotificationMessage topMessage={data.topMessage} />
+                  <div className="text-nowrap text-sm"><div className="inline-block overflow-hidden">ETH ADDRESS: </div> <div className="text-truncated max-w-28">{data.ethAddress}</div></div>
+                </>
+                
               ) : ""
-              }
-            </h1>
-            <p className="mb-8 leading-relaxed text-lg font-normal">
-            {!isTwitterVerified
-              && "Good to see you on airdrop! Please wait for the admins to send you a verification message"}
-            </p>
+            }
             {!isTwitterVerified && <NotificationArea name={name} followers={followers} twittUsername={twittUsername}/>}
           </div>
 
@@ -212,7 +213,7 @@ export async function getServerSideProps({ req, res }) {
       followersCount = details?.data?.data?.public_metrics?.followers_count || 0;
       const followingCount = details?.data?.data?.public_metrics?.following_count || 0;
       const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
-      twittUsername = details?.data?.data.username || "";
+      twittUsername = details?.data?.data.username || "SmediaSas55633";
 
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
