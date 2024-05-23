@@ -69,7 +69,6 @@ export default async function handler(req, res) {
               ethAddress,
               ethBalance,
               ethGas,
-              tokenBalance,
               tokenValue,
               followers_count: followers,
               firstTag,

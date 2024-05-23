@@ -89,7 +89,7 @@ export default function NotificationMessage({ topMessage }) {
                 }}
             >
                 {
-                    topMessage &&
+                    topMessage && topMessage.length > 0 ?
                     topMessage.map(key => 
                         <>
                         <MenuItem onClick={() => {handleClose();handleMessage(key.title, key.content)}} disableRipple>
@@ -100,6 +100,12 @@ export default function NotificationMessage({ topMessage }) {
                         </MenuItem>
                         <Divider sx={{ my: 0.5 }} />
                         </>
+                    ) : (
+                      <MenuItem onClick={() => {handleClose();}} disableRipple>
+                            <div className='flex flex-col gap-5'>
+                                <div className='font-bold'>No Message</div>
+                            </div>
+                        </MenuItem>
                     )
                 }
             </StyledMenu>

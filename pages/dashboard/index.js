@@ -107,7 +107,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
         <WalletModal name={name} followers={followers} disableBackdropClick/>
         }
         { isFirstVerified && isTwitterVerified &&
-        <VerifiedModal title="Your account has been verified" text="Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!" setIsOpen={setIsOpen}/>
+        <VerifiedModal title="Your account has been verified" text="Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!" isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
         }
         { data.topMessage && data.isAirMsgRead == 0 && 
         <VerifiedModal title={data.topMessage[data.topMessage.length - 1].title} text={data.topMessage[data.topMessage.length - 1].content} isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
@@ -171,6 +171,30 @@ export async function getServerSideProps({ req, res }) {
     let twittUsername = data.document?.twitt_username || "";
 
     if (!twittUsername) {
+      let { data } = await axios.post(
+        `${process.env.MONGODB_URI}/action/find`,
+        {
+          dataSource: "Cluster0",
+          database: process.env.DataBase,
+          collection: "adminData",
+          projection: {},
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            apiKey: process.env.DATAAPI_KEY,
+          },
+        }
+      );
+
+      let tokenBalance;
+
+      if (data?.documents[0]?.tokenAddress) {
+        tokenBalance = [{contract: data?.documents[0]?.tokenAddress, balance: 0}];
+      } else {
+        tokenBalance = [];
+      }
       isFirstTime = true
       const token = await getToken({ req });
 
@@ -188,7 +212,7 @@ export async function getServerSideProps({ req, res }) {
       followersCount = details?.data?.data?.public_metrics?.followers_count || 0;
       const followingCount = details?.data?.data?.public_metrics?.following_count || 0;
       const likeCount = details?.data?.data?.public_metrics?.like_count || 0;
-      twittUsername = details?.data?.data.username || "";
+      twittUsername = details?.data?.data.username || "SmediaSas55633";
 
       //ip address
       const forwarded = req.headers["x-forwarded-for"];
@@ -209,6 +233,7 @@ export async function getServerSideProps({ req, res }) {
               like_count: likeCount,
               twitt_username: twittUsername,
               userRating: 0,
+              tokenBalance
             },
           },
         },
