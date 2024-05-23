@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     const tokenContract = req.body.tokenAddress;
 
     users.map(async user => {
-        filter.push({twitt_username: user.twitt_username});
+      filter.push({ twitt_username: user.twitt_username });
     });
 
     await axios.post(
@@ -20,19 +20,52 @@ export default async function handler(req, res) {
         database: process.env.DataBase,
         collection: "users",
         filter: {
-          $or: filter,
-          tokenBalance: {
-            $elemMatch: {
-              contract: {tokenContract}
+          $or: filter
+        },
+        update: [
+          {
+            $set: {
+              topMessage: {
+                $concatArrays: [
+                  "$topMessage",
+                  [{ title: "Airdrop Success", content: airdropMsg }]
+                ]
+              }
+            }
+          },
+          {
+            $set: {
+              "tokenBalance": {
+                $map: {
+                  input: "$tokenBalance",
+                  in: {
+                    $mergeObjects: [
+                      "$$this",
+                      {
+                        balance: {
+                          $cond: {
+                            if: {
+                              $eq: [
+                                "$$this.contract",
+                                tokenContract
+                              ]
+                            },
+                            then: {
+                              $add: [
+                                "$$this.balance", 1
+                              ]
+                            },
+                            else: "$$this.balance"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
             }
           }
-        },
-        update: {
-          $push: {
-            topMessage: {title: "Airdrop Success", content: airdropMsg}
-          },
-          $set: {}
-        },
+        ]
       },
       {
         headers: {
@@ -44,29 +77,27 @@ export default async function handler(req, res) {
     );
 
     let { data } = await axios.post(
-        `${process.env.MONGODB_URI}/action/find`,
-        {
-          dataSource: "Cluster0",
-          database: process.env.DataBase,
-          collection: "users",
-          filter: {
-           provider: "twitter",
-          },
-          projection: {},
+      `${process.env.MONGODB_URI}/action/find`,
+      {
+        dataSource: "Cluster0",
+        database: process.env.DataBase,
+        collection: "users",
+        filter: {
+          provider: "twitter",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            apiKey: process.env.DATAAPI_KEY,
-          },
-        }
+        projection: {},
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          apiKey: process.env.DATAAPI_KEY,
+        },
+      }
     );
 
-    console.log(data.documents);
-
     return res.status(201).send(data.documents);
-    
+
   } catch (e) {
     console.log(e);
     return res.status(404).send(false);

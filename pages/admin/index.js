@@ -40,13 +40,13 @@ const renderSummaryButton = (params) => {
       if (res.status == 201) {
         toast.success("Message sent successfully");
         document.location.reload();
-      } else if (res.status == 400){
+      }
+    } catch (e) {
+      if (e.response.status == 400){
         toast.error("Please set Tweet Message");
       } else {
         toast.error("Oops! Something Wrong");
       }
-    } catch (e) {
-      toast.error("Something went wrong. Check logs.");
     }
   }
 

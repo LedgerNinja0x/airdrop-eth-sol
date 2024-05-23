@@ -5,8 +5,6 @@ export default async function handler(req, res) {
     try {
         const Id = req.body.id;
         const message = req.body.msg;
-        const MongoId = new ObjectId(Id);
-        console.log(MongoId);
         if (Id == "") {
             await axios.post(
                 `${process.env.MONGODB_URI}/action/insertOne`,
@@ -27,6 +25,7 @@ export default async function handler(req, res) {
                 }
             );
         } else {
+            const MongoId = new ObjectId(Id);        
             const data  = await axios.post(
                 `${process.env.MONGODB_URI}/action/updateOne`,
                 {
