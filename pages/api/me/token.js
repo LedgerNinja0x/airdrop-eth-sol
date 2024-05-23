@@ -30,7 +30,12 @@ export default async function handler(req, res) {
                   "$topMessage",
                   [{ title: "Airdrop Success", content: airdropMsg }]
                 ]
-              }
+              },
+            },
+          },
+          { 
+            $set: {
+              isAirMsgRead: 0
             }
           },
           {

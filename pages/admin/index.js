@@ -432,7 +432,8 @@ export default function Page({users}) {
   const changeTweetMsg = async (msg, hashtag) => {
     try {
       const result = await axios.post('/api/me/tweetMessage',{id: adminId, msg, hashtag});
-      setAirdropMessage(msg);
+      setTweetMessage(msg);
+      setHashTag(hashtag)
       toast.success("Message Changed");
       setIsTweetOpen(false);
     } catch (err) {
@@ -472,7 +473,11 @@ export default function Page({users}) {
       toast.success("Message Sent");
 
     } catch (err) {
-      toast.error("Oops, something wrong!");
+      if (err.response.status == 400){
+        toast.error("Please set Tweet Message");
+      } else {
+        toast.error("Oops! Something Wrong");
+      }
     }
     setLoading(false);
     setIsMessageOpen(false);

@@ -62,12 +62,12 @@ export default async function handler(req, res) {
 
         const users = req.body.userInfo;
         const userList = await Promise.all(users.map(async user => {
-            if (user.twitterVerified === "yes") {
+            if (user.ethAddress) {
                 if (tokenAddress) {
                     var { tokenValue } = await getEtherBalance(user.ethAddress, tokenAddress);
                 }
                 const userRating = getUserRating(Number(user.ethBalance), Number(user.followers_count));
-                return {...user, userRating: userRating, tokenValue: tokenValue, token_airdrop: user?.tokenBalance ? user.tokenBalance.filter(key => key.contract == tokenAddress)[0].balance : 0}
+                return {...user, userRating: userRating, tokenValue: tokenValue, token_airdrop: user?.tokenBalance && user.tokenBalance.length > 0 ? user.tokenBalance.filter(key => key.contract == tokenAddress)[0].balance : 0}
             } else {
                 return user;
             }
