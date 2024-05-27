@@ -92,11 +92,15 @@ body {
     animation: spin-anim 1.2s linear infinite;
 }
 
-.text-truncated {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
+@media (max-width: 450px) {
+    .text-truncated {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .eth-truncated {
+        overflow: hidden;
+    }
 }
 
 @keyframes spin-anim {

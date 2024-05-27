@@ -74,7 +74,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
       <div className="min-h-screen h-fit flex flex-col justify-between">
         <Header logged={true} avatar={avatar} />
         <div className="container mx-auto mt-8 flex md:flex-row flex-col overflow-none">
-          <div className="md:w-1/2 w-full flex flex-col items-center lg:items-start md:text-left md:mb-0 text-center p-12">
+          <div className="md:w-1/2 w-full flex flex-col text-left md:mb-0 p-12">
             <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
               Hello {name} 👋
             </h1>
@@ -87,7 +87,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
               ) : (
                 <>
                   <NotificationMessage topMessage={data.topMessage} />
-                  <div className="text-nowrap text-sm"><div className="inline-block overflow-hidden">ETH ADDRESS: </div> <div className="text-truncated max-w-28">{data.ethAddress}</div></div>
+                  <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
                 </>
                 
               ) : ""
@@ -127,9 +127,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -143,7 +143,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "";
+    let username = session?.user?.name || "Sassmedia";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
