@@ -154,16 +154,6 @@ const Signup = ({ providers, error }) => {
                 </button>
               </div>
             </form>
-
-            {/* <p className="mt-10 text-center text-sm text-gray-500">
-              Already have an account?
-              <Link
-                href="/auth/login"
-                className="font-semibold leading-6 px-2 text-indigo-600 hover:text-indigo-500"
-              >
-                Login here
-              </Link>
-            </p> */}
           </div>
         </div>
       </div>

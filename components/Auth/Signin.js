@@ -113,16 +113,6 @@ const Signin = ({ providers, error }) => {
                 </button>
               </div>
             </form>
-
-            {/* <p className="mt-10 text-center text-sm text-gray-500">
-              Want to create a new admin ?
-              <Link
-                href="/auth/register"
-                className="font-semibold leading-6 px-2 text-indigo-600 hover:text-indigo-500"
-              >
-                Signup here
-              </Link>
-            </p> */}
           </div>
         </div>
       </div>
