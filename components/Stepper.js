@@ -163,20 +163,22 @@ export default function HorizontalLinearStepper({
               <div>
                 {message ? (
                   <>
-                    <h2 className="font-bold text-2xl mb-1">
+                    <h2 className="font-bold md:text-2xl mb-1 sm:text-[20px]">
                       Here are your tweet details
                     </h2>
-                    <p>Post this exact tweet on your account</p>
+                    <p className="md:text-[18px] sm:text-[10px]">Post this exact tweet on your account</p>
                     <h3 className="font-semibold text-lg my-2">Message</h3>
                     <p className="bg-[#ECF7FC] rounded-md py-2 px-1">
                       {message}
                     </p>
                     <h3 className="font-semibold text-lg my-2">Hashtags</h3>
+                    <div className="flex flex-wrap">
                     {hashtags.map((tag) => (
                       <span className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer">
                         #{tag}
                       </span>
                     ))}
+                    </div>
                   </>
                 ) : (
                   <div className="bg-[#DEC470] py-2 px-8 mt-4">
