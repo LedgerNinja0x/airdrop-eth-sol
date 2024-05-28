@@ -90,9 +90,9 @@ export default function NotificationMessage({ topMessage }) {
             >
                 {
                     topMessage && topMessage.length > 0 ?
-                    topMessage.map(key => 
+                    topMessage.map((key, index)=> 
                         <>
-                        <MenuItem onClick={() => {handleClose();handleMessage(key.title, key.content)}} disableRipple>
+                        <MenuItem key={index} onClick={() => {handleClose();handleMessage(key.title, key.content)}} disableRipple>
                             <div className='flex flex-col gap-5'>
                                 <div className='text-xl font-bold'>{key.title}</div>
                                 <div className='text-sm text-wrap'>{key.content}</div>
