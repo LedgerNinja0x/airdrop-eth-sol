@@ -12,7 +12,7 @@ export default function Home({ logged,avatar }) {
       <Header logged={logged} avatar={avatar}/>
       <section className="text-gray-600 body-font mt-8">
         <div className="container mx-auto flex md:flex-row flex-col overflow-none items-center">
-          <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left mb-16 md:mb-0 text-center">
+          <div className="md:w-1/2 w-full flex flex-col md:items-start md:text-left mb-16 md:mb-0 text-center px-4 items-center">
             <h1 className="font-bold lg:text-6xl md:text-5xl mb-7 text-[#241008]">
               Verify Your Twitter & Join the Moose family To Get Rewards.
             </h1>
@@ -29,7 +29,7 @@ export default function Home({ logged,avatar }) {
             ) : (
               <div
                 onClick={() => signIn("twitter",{ callbackUrl: '/dashboard' })}
-                className="bg-[#000] text-white transition-all flex items-center px-8 py-2 mb-6 rounded-md text-[16px] hover:rounded-none cursor-pointer"
+                className="bg-[#000] text-white transition-all flex items-center px-8 py-2 mb-6 rounded-md text-[16px] hover:rounded-none cursor-pointer max-w-60"
               >
                 <img src="/twitter.jpg" className="w-8 h-8" />
                 <span className="w-full text-center">Log In With Twitter</span>

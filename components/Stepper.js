@@ -3,13 +3,13 @@ import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-import { styled } from '@mui/material/styles';
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ArrowForward } from '@mui/icons-material';
+import TwitterIcon from '@mui/icons-material/Twitter';
 
 const steps = ["Post Tweet", "Verify Tweet"];
 
@@ -182,7 +182,7 @@ export default function HorizontalLinearStepper({
                   </>
                 ) : (
                   <div className="bg-[#DEC470] py-2 px-8 mt-4">
-                    Please wait for admin to send message...
+                    Our Admin team will send a Tweet to post if you’re eligible to Participate in the Airdrop.
                   </div>
                 )}
               </div>
@@ -250,7 +250,10 @@ export default function HorizontalLinearStepper({
 
             {/* only allow next btn for first step */}
             {activeStep == 0 && message && (
-              <Button onClick={handleNext}>Next <ArrowForward /></Button>
+              <div className="flex gap-2">
+                <Button variant="contained">Share <TwitterIcon /></Button>
+                <Button onClick={handleNext}>Next <ArrowForward /></Button>
+              </div>
             )}
           </Box>
         </React.Fragment>

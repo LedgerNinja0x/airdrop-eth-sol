@@ -36,12 +36,13 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
   const updateBalance = async () => {
     if (isTwitterVerified) {
       const { location, ip } = await getLocation();
-      let { ethAddress, username, tokenBalance, tokenValue } = data;
+      let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data;
       try {
         const res = await axios.post(
           `/api/me/balance`,
           {
             ethAddress,
+            solAddress,
             username, 
             followers, 
             tokenBalance, 
@@ -78,21 +79,26 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
             <h1 className="font-bold lg:text-6xl md:text-5xl text-4xl mb-7 text-[#241008]">
               Hello {name} 👋
             </h1>
-            {
-            isTwitterVerified ?
-              isLoading ? (
-                <div className="loader-container" style={{height: "100%"}}>
-                    <div className="spinner"></div>
-                </div>
-              ) : (
-                <>
-                  <NotificationMessage topMessage={data.topMessage} />
-                  <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
-                </>
-                
-              ) : ""
-            }
-            {!isTwitterVerified && <NotificationArea name={name} followers={followers} twittUsername={twittUsername}/>}
+              {
+                isLoading ? (
+                  <div className="loader-container" style={{height: "100%"}}>
+                      <div className="spinner"></div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex gap-x-2 gap-y-4 flex-col md:flex-row mt-4 mb-6">
+                      <NotificationArea name={name} followers={followers} twittUsername={twittUsername} isTwitterVerified={isTwitterVerified}/>
+                      {
+                        isTwitterVerified && <NotificationMessage topMessage={data.topMessage} />
+                      }
+                    </div>
+                    {
+                      isTwitterVerified && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
+                    }
+                  </>
+                  
+                )
+              }
           </div>
 
           <div className="md:w-2/5 w-full">
@@ -127,9 +133,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    if (!session) {
-      return { redirect: { destination: "/" } };
-    }
+    // if (!session) {
+    //   return { redirect: { destination: "/" } };
+    // }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -143,7 +149,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "";
+    let username = session?.user?.name || "Sassmedia";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
@@ -169,7 +175,7 @@ export async function getServerSideProps({ req, res }) {
     let isTwitterVerified = data.document?.twitterVerified == "yes";
     let isFirstVerified = data.document?.firstTag == 0;
     let followersCount = data.document?.followers_count;
-    let twittUsername = data.document?.twitt_username || "";
+    let twittUsername = data.document?.twitt_username || "Sassmedia";
 
     if (!twittUsername) {
       let { data } = await axios.post(

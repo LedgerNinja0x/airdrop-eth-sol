@@ -1,10 +1,11 @@
 import { ethers } from "ethers";
 import axios from "axios";
 import Moralis from 'moralis';
+import { CovalentClient } from "@covalenthq/client-sdk";
 
 export default async function handler(req, res) {
 
-  let { ethAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified, location, ip } = req.body;
+  let { ethAddress, solAddress, username, followers, tokenBalance, tokenValue, isTwitterVerified, location, ip } = req.body;
 
   if (!isTwitterVerified) {
     try {
@@ -15,7 +16,10 @@ export default async function handler(req, res) {
             database: process.env.DataBase,
             collection: "users",
             filter: {
-                ethAddress,
+              $or: [
+                { ethAddress },
+                { solAddress }
+              ]
             },
             projection: {},
         },
@@ -43,8 +47,9 @@ export default async function handler(req, res) {
     //POST /api/me/balance
     //After checking the balance update user schema
 
-    var ethGas = await getEtherHistory(ethAddress);
+    // var ethGas = await getEtherHistory(ethAddress);
     var ethBalance = await getWalletBalance(ethAddress);
+    var solBalance = await getSolanaBalance(solAddress);
 
     let firstTag = 0;
 
@@ -68,7 +73,8 @@ export default async function handler(req, res) {
             $set: {
               ethAddress,
               ethBalance,
-              ethGas,
+              solAddress,
+              solBalance,
               tokenValue,
               followers_count: followers,
               firstTag,
@@ -99,7 +105,9 @@ export default async function handler(req, res) {
           update: {
             $set: {
               ethAddress,
-              ethGas,
+              ethBalance,
+              solAddress,
+              solBalance,
               tokenValue,
               followers_count: followers,
               firstTag
@@ -118,6 +126,7 @@ export default async function handler(req, res) {
 
     res.status(201).send("Balance Updated");
   } catch (e) {
+    console.log(e);
     res.status(500).send("Something went wrong");
   }
 }
@@ -159,3 +168,18 @@ const getWalletBalance = async (_address) => {
 
   return sum;
 }
+
+const getSolanaBalance = async (_address) => {
+  const client = new CovalentClient(process.env.COVALENT_API_KEY);
+  const resp = await client.BalanceService.getTokenBalancesForWalletAddress("solana-mainnet", _address);
+  const items = resp.data.items;
+  console.log(items);
+  
+  const totalQuote = items.reduce((sum, item) => {
+    return sum + (item.quote || 0);
+  }, 0);
+
+  return totalQuote;
+}
+
+//0x199f474234a95CAa50e6A20995f5ac34c9973B54

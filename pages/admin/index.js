@@ -164,12 +164,16 @@ export default function Page({users}) {
       field: 'ethBalance',
     },
     {
-      headerName: 'Tokens Airdropped',
-      field: 'token_airdrop'
+      headerName: 'Sol Address',
+      field: 'solAddress',
     },
     {
-      headerName: 'Eth Gas',
-      field: 'ethGas',
+      headerName: 'Solana Balance',
+      field: 'solBalance',
+    },
+    {
+      headerName: 'Tokens Airdropped',
+      field: 'token_airdrop'
     },
     {
       headerName: 'Followers',
@@ -445,15 +449,20 @@ export default function Page({users}) {
     const checkContract = ethers.utils.isAddress(contract);
     const tokenContract = ethers.utils.isAddress(token);
     if (checkContract && tokenContract) {
+      setLoading(true);
       try {
         const result = await axios.post('/api/me/setContract',{id: adminId, contract, token});
-        setContractAddress(contract);
-        setTokenAddress(token);
-        toast.success("Message Changed");
-        setIsContractOpen(false);
+        if (result.status == 201) {
+          handleUsers(result.data);
+          setContractAddress(contract);
+          setTokenAddress(token);
+          toast.success("Message Changed");
+          setIsContractOpen(false);
+        }
       } catch (err) {
         toast.error("Oops, something wrong!");
       } 
+      setLoading(false);
     } else {
       toast.error("Please input valid address");
     }
