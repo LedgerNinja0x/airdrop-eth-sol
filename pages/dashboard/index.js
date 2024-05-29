@@ -133,9 +133,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await getServerSession(req, res, authOptions);
 
     // Protect route from unlogged users
-    // if (!session) {
-    //   return { redirect: { destination: "/" } };
-    // }
+    if (!session) {
+      return { redirect: { destination: "/" } };
+    }
 
     if (
       session?.user?.email == process.env.ADMIN_EMAIL &&
@@ -149,7 +149,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "Sassmedia";
+    let username = session?.user?.name || "";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
