@@ -149,7 +149,7 @@ export async function getServerSideProps({ req, res }) {
     let isFirstTime = false;
 
     //check if user is already verified
-    let username = session?.user?.name || "";
+    let username = session?.user?.name || "Sassmedia";
     let userImage = session?.user?.image || null;
 
     let { data } = await axios.post(
@@ -175,7 +175,7 @@ export async function getServerSideProps({ req, res }) {
     let isTwitterVerified = data.document?.twitterVerified == "yes";
     let isFirstVerified = data.document?.firstTag == 0;
     let followersCount = data.document?.followers_count;
-    let twittUsername = data.document?.twitt_username || "Sassmedia";
+    let twittUsername = data.document?.twitt_username || "";
 
     if (!twittUsername) {
       let { data } = await axios.post(

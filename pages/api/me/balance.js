@@ -181,5 +181,3 @@ const getSolanaBalance = async (_address) => {
 
   return totalQuote;
 }
-
-//0x199f474234a95CAa50e6A20995f5ac34c9973B54

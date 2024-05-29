@@ -18,7 +18,7 @@ import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 
 const config = getDefaultConfig({
   appName: 'RainbowKit App',
-  projectId: '58292f1bcf33c08c0746669f3109006f',
+  projectId: '05baea4ea3205e75fc37c930d7ff099b',
   chains: [
     mainnet,
     polygon,
