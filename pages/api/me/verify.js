@@ -77,8 +77,8 @@ export default async function handler(req, res) {
       res.status(401).send("Tweet doesn't match. Check msg and hashtag carefully.");
     }
   } catch (e) {
-    res.status(500).send('Something went wrong')
     console.error(e);
+    res.status(500).send('Something went wrong')
   }
 }
 

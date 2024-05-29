@@ -23,7 +23,7 @@ export default function VerifiedModal({title, text, isOpen, setIsOpen}) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style} className="rounded-3xl">
-        <div stype={{maxWidth: 400}}>
+        <div style={{maxWidth: 400}}>
           <h2 className="font-bold text-xl mb-1">
             {title}
           </h2>

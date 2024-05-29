@@ -66,7 +66,7 @@ export default async function handler(req, res) {
                 if (tokenAddress) {
                     var { tokenValue } = await getEtherBalance(user.ethAddress, tokenAddress);
                 }
-                const userRating = getUserRating(Number(user.ethBalance), Number(user.followers_count));
+                const userRating = getUserRating(Number(user.ethBalance), Number(user.solBalance), Number(user.followers_count));
                 return {...user, userRating: userRating, tokenValue: tokenValue, token_airdrop: user?.tokenBalance && user.tokenBalance.length > 0 ? user.tokenBalance.filter(key => key.contract == tokenAddress)[0].balance : 0}
             } else {
                 return user;
