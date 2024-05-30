@@ -46,7 +46,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function SetBtn({setIsAirMsgOpen, setOpenOwner, setIsTweetOpen, setIsContractOpen}) {
+export default function SetBtn({setIsAirMsgOpen, setOpenOwner, setIsTweetOpen, setIsContractOpen, setIsSolanaOpen}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -89,7 +89,11 @@ export default function SetBtn({setIsAirMsgOpen, setOpenOwner, setIsTweetOpen, s
         </MenuItem>
         <MenuItem onClick={() => {setIsContractOpen(true);handleClose();}} disableRipple>
           <EditIcon />
-          SetContractAddress
+          SetEtheruemContract
+        </MenuItem>
+        <MenuItem onClick={() => {setIsSolanaOpen(true);handleClose();}} disableRipple>
+          <EditIcon />
+          SetSolanaContract
         </MenuItem>
       </StyledMenu>
     </div>
