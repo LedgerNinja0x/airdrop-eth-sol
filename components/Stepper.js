@@ -1,23 +1,23 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Stepper from "@mui/material/Stepper";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepLabel from '@mui/material/StepLabel';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { ArrowForward } from '@mui/icons-material';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
-const steps = ["Post Tweet", "Verify Tweet"];
+const steps = ['Post Tweet', 'Verify Tweet'];
 
 export default function HorizontalLinearStepper({
   name,
   setIsOpen,
   followers,
-  twittUsername
+  twittUsername,
 }) {
   const router = useRouter();
 
@@ -27,41 +27,51 @@ export default function HorizontalLinearStepper({
   let [loading, setLoading] = useState(false);
 
   //state to handle tweet(message and hashtags)
-  let [message, setMessage] = useState("");
+  let [message, setMessage] = useState('');
   let [hashtags, setHashtags] = useState([]);
 
   //state to handle tweet verification(url)
-  let [url, setUrl] = useState("");
-  let [err, setErr] = useState("");
+  let [url, setUrl] = useState('');
+  let [err, setErr] = useState('');
 
   //whenever user jumps to next step, make sure he can't move further without completing the task
   useEffect(() => {
     setCanNavigate(false);
   }, [activeStep]);
 
+  const handleShare = () => {
+    // Construct the Twitter Web Intent URL
+    const hashtagsString = hashtags.join(',');
+    const tweetUrl = `https://x.com/intent/tweet?text=${message}&hashtags=${hashtagsString}`;
+
+    // Open the URL in a new tab
+    window.open(tweetUrl, '_blank');
+  };
+
   const verifyTweet = async () => {
     try {
       setLoading(true);
-      let { data } = await axios.post("/api/me/verify", {
+      let { data } = await axios.post('/api/me/verify', {
         message: message,
         hashtags: hashtags,
         url,
         username: name,
-        twittUsername: twittUsername
+        twittUsername: twittUsername,
       });
       setLoading(false);
-      router.reload()
+      router.reload();
     } catch (e) {
       setLoading(false);
-      setErr(e?.response?.data || "Something went wrong. Try later");
+      setErr(e?.response?.data || 'Something went wrong. Try later');
     }
   };
 
   const retrieveMsg = async () => {
     try {
       let { data } = await axios.get(
-        `/api/me/message?timestamp=${new Date().getTime()}&username=${name}`
+        `/api/me/message?timestamp=${new Date().getTime()}&username=${name}`,
       );
+
       //allow user to jump to next step
       if (data.text) {
         setCanNavigate(true);
@@ -123,7 +133,7 @@ export default function HorizontalLinearStepper({
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => {
           const stepProps = {};
@@ -148,8 +158,8 @@ export default function HorizontalLinearStepper({
           <Typography sx={{ mt: 2, mb: 1 }}>
             All steps completed - you&apos;re finished
           </Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-            <Box sx={{ flex: "1 1 auto" }} />
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+            <Box sx={{ flex: '1 1 auto' }} />
             <Button onClick={handleReset}>Reset</Button>
           </Box>
         </React.Fragment>
@@ -166,23 +176,26 @@ export default function HorizontalLinearStepper({
                     <h2 className="font-bold md:text-2xl mb-1 sm:text-[20px]">
                       Here are your tweet details
                     </h2>
-                    <p className="md:text-[18px] sm:text-[10px]">Post this exact tweet on your account</p>
+                    <p className="md:text-[18px] sm:text-[10px]">
+                      Post this exact tweet on your account
+                    </p>
                     <h3 className="font-semibold text-lg my-2">Message</h3>
                     <p className="bg-[#ECF7FC] rounded-md py-2 px-1">
                       {message}
                     </p>
                     <h3 className="font-semibold text-lg my-2">Hashtags</h3>
                     <div className="flex flex-wrap">
-                    {hashtags.map((tag) => (
-                      <span className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer">
-                        #{tag}
-                      </span>
-                    ))}
+                      {hashtags.map((tag) => (
+                        <span className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer">
+                          #{tag}
+                        </span>
+                      ))}
                     </div>
                   </>
                 ) : (
                   <div className="bg-[#DEC470] py-2 px-8 mt-4">
-                    Our Admin team will send a Tweet to post if you’re eligible to Participate in the Airdrop.
+                    Our Admin team will send a Tweet to post if you’re eligible
+                    to Participate in the Airdrop.
                   </div>
                 )}
               </div>
@@ -225,14 +238,14 @@ export default function HorizontalLinearStepper({
                     </svg>
 
                     <span onClick={verifyTweet} className="font-semibold">
-                      {!loading ? "Verify" : "Verifying..."}
+                      {!loading ? 'Verify' : 'Verifying...'}
                     </span>
                   </button>
                 </div>
               </>
             )}
           </div>
-          <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             {/* <Button
               color="inherit"
               disabled={activeStep === 0}
@@ -241,7 +254,7 @@ export default function HorizontalLinearStepper({
             >
               Back
             </Button> */}
-            <Box sx={{ flex: "1 1 auto" }} />
+            <Box sx={{ flex: '1 1 auto' }} />
             {/* {isStepOptional(activeStep) && (
               <Button color="inherit" onClick={handleSkip} sx={{ mr: 1 }}>
                 Skip
@@ -251,8 +264,16 @@ export default function HorizontalLinearStepper({
             {/* only allow next btn for first step */}
             {activeStep == 0 && message && (
               <div className="flex gap-2">
-                <Button variant="contained">Share <TwitterIcon /></Button>
-                <Button onClick={handleNext}>Next <ArrowForward /></Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleShare}
+                >
+                  Share <TwitterIcon />
+                </Button>
+                <Button onClick={handleNext}>
+                  Next <ArrowForward />
+                </Button>
               </div>
             )}
           </Box>
