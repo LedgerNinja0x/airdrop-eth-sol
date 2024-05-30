@@ -92,6 +92,10 @@ body {
     animation: spin-anim 1.2s linear infinite;
 }
 
+.MuiButton-containedPrimary {
+    background-color: #1976d2;
+}
+
 @media (max-width: 520px) {
     .text-truncated {
         white-space: nowrap;

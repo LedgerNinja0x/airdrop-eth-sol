@@ -6,38 +6,30 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { ArrowForward } from '@mui/icons-material';
+import { ArrowForward, ArrowBack } from '@mui/icons-material';
 import TwitterIcon from '@mui/icons-material/Twitter';
 
 const steps = ['Post Tweet', 'Verify Tweet'];
 
 export default function HorizontalLinearStepper({
   name,
-  setIsOpen,
-  followers,
   twittUsername,
+  message,
+  hashtags
 }) {
   const router = useRouter();
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
-  let [canNavigate, setCanNavigate] = React.useState(false);
   let [loading, setLoading] = useState(false);
-
-  //state to handle tweet(message and hashtags)
-  let [message, setMessage] = useState('');
-  let [hashtags, setHashtags] = useState([]);
 
   //state to handle tweet verification(url)
   let [url, setUrl] = useState('');
   let [err, setErr] = useState('');
 
   //whenever user jumps to next step, make sure he can't move further without completing the task
-  useEffect(() => {
-    setCanNavigate(false);
-  }, [activeStep]);
 
   const handleShare = () => {
     // Construct the Twitter Web Intent URL
@@ -65,30 +57,6 @@ export default function HorizontalLinearStepper({
       setErr(e?.response?.data || 'Something went wrong. Try later');
     }
   };
-
-  const retrieveMsg = async () => {
-    try {
-      let { data } = await axios.get(
-        `/api/me/message?timestamp=${new Date().getTime()}&username=${name}`,
-      );
-
-      //allow user to jump to next step
-      if (data.text) {
-        setCanNavigate(true);
-      }
-      setMessage(data.text);
-      setHashtags(data.hashtags);
-    } catch (e) {
-      console.error(e?.response?.data || e);
-    }
-  };
-
-  // retrieve tweet to be posted details
-  useEffect(() => {
-    retrieveMsg();
-  }, []);
-
-  // retrieveMsg()
 
   const isStepOptional = (step) => {
     return false;
@@ -171,7 +139,7 @@ export default function HorizontalLinearStepper({
 
               //check if msg from admin exists
               <div>
-                {message ? (
+                {message && (
                   <>
                     <h2 className="font-bold md:text-2xl mb-1 sm:text-[20px]">
                       Here are your tweet details
@@ -185,18 +153,13 @@ export default function HorizontalLinearStepper({
                     </p>
                     <h3 className="font-semibold text-lg my-2">Hashtags</h3>
                     <div className="flex flex-wrap">
-                      {hashtags.map((tag) => (
-                        <span className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer">
+                      {hashtags.map((tag, index) => (
+                        <span key={index} className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer">
                           #{tag}
                         </span>
                       ))}
                     </div>
                   </>
-                ) : (
-                  <div className="bg-[#DEC470] py-2 px-8 mt-4">
-                    Our Admin team will send a Tweet to post if you’re eligible
-                    to Participate in the Airdrop.
-                  </div>
                 )}
               </div>
             ) : (
@@ -218,29 +181,6 @@ export default function HorizontalLinearStepper({
                     placeholder="Enter url of your tweet..."
                     className="block !outline-none rounded-md w-full my-4 px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:outline-none focus:ring focus:ring-[#241008] sm:text-sm sm:leading-6"
                   />
-                  <button
-                    disabled={loading}
-                    className="flex gap-x-1 bg-[#241008] text-white text-sm px-12 py-2 ml-1 rounded-md "
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-6 h-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-                      />
-                    </svg>
-
-                    <span onClick={verifyTweet} className="font-semibold">
-                      {!loading ? 'Verify' : 'Verifying...'}
-                    </span>
-                  </button>
                 </div>
               </>
             )}
@@ -276,6 +216,36 @@ export default function HorizontalLinearStepper({
                 </Button>
               </div>
             )}
+            {activeStep == 1 && 
+              <div className='flex justify-between w-full'>
+                <button
+                  disabled={loading}
+                  className="flex gap-x-1 bg-[#241008] text-white text-sm px-12 py-2 ml-1 rounded-md "
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                    />
+                  </svg>
+
+                  <span onClick={verifyTweet} className="font-semibold">
+                    {!loading ? 'Verify' : 'Verifying...'}
+                  </span>
+                </button>
+                <Button onClick={handleBack}>
+                  <ArrowBack /> Back
+                </Button>
+              </div>
+            }
           </Box>
         </React.Fragment>
       )}

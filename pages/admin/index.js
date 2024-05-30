@@ -232,7 +232,7 @@ export default function Page({users}) {
             ...item, id: index + 1
           }
         })
-        setUserData(userList); 
+        setUserData(userList);
       } else {
         setUserData(userInfo);
       }
@@ -414,16 +414,10 @@ export default function Page({users}) {
     const worksheet = utils.json_to_sheet(userData);
     const workbook = utils.book_new();
     utils.book_append_sheet(workbook, worksheet, "Sheet1");
-    const excelData = writeFile(workbook, "products.xlsx", {
+    const fileName = "userList" + new Date().toJSON() + ".xlsx";
+    writeFile(workbook, fileName, {
       compression: true,
     });
-    const blob = new Blob([excelData], { type: "application/octet-stream" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", "data.xlsx");
-    document.body.appendChild(link);
-    link.click();
   }
 
   const changeAirMsg = async (msg) => {

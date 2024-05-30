@@ -61,11 +61,11 @@ export default async function handler(req, res) {
               database: process.env.DataBase,
               collection: "users",
               filter: {
-                "tokenBalance.contract" : { $ne: tokenAddress }
+                "solTokenBalance.contract" : { $ne: solanaAddress }
               },
               update: {
                 $push: {
-                  tokenBalance: {contract: tokenAddress, balance: 0}
+                  solTokenBalance: {contract: solanaAddress, balance: 0}
                 }
               },
             },

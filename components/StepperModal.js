@@ -1,6 +1,8 @@
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import HorizontalLinearStepper from "./Stepper";
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const style = {
   position: "absolute",
@@ -14,6 +16,29 @@ const style = {
 };
 
 export default function StepperModal({ isOpen, setIsOpen, name, followers, twittUsername}) {
+
+  let [message, setMessage] = useState('');
+  let [hashtags, setHashtags] = useState([]);
+
+  const retrieveMsg = async () => {
+    try {
+      let { data } = await axios.get(
+        `/api/me/message?timestamp=${new Date().getTime()}&username=${name}`,
+      );
+
+      //allow user to jump to next step
+      setMessage(data.text);
+      setHashtags(data.hashtags);
+    } catch (e) {
+      console.error(e?.response?.data || e);
+    }
+  };
+
+  // retrieve tweet to be posted details
+  useEffect(() => {
+    retrieveMsg();
+  }, []);
+
   return (
     <Modal
       open={isOpen}
@@ -23,13 +48,16 @@ export default function StepperModal({ isOpen, setIsOpen, name, followers, twitt
     >
       <Box sx={style}>
         <div style={{maxHeight:"80vh", overflow: "auto"}}>
-          <h1 className="font-bold md:text-[32px] sm:text-[20px] mb-4">Verify Your Account</h1>
-          <div className="flex w-full">
+          <div className="flex w-full items-center">
             <div>
+              <h1 className="font-bold md:text-[32px] sm:text-[20px] mb-4">{ message ? "Verify Your Account" : "We got your details!"}</h1>
               <p className="mb-8 md:text-[18px] sm:text-[10px]">
-                Verify your account by posting a tweet and adding your wallet
+                {message ? "Verify your account by posting a tweet and adding your wallet" : "Our Admin team will send a Tweet to post if you’re eligible to Participate in the Airdrop."}
               </p>
-              <HorizontalLinearStepper name={name} setIsOpen={setIsOpen} followers={followers} twittUsername={twittUsername}/>
+              {
+                message &&
+                <HorizontalLinearStepper name={name} twittUsername={twittUsername} message={message} hashtags={hashtags}/>
+              }
             </div>
             <div>
               <img src="./moose_verify.png" />

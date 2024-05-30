@@ -88,7 +88,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
                   <>
                     <div className="flex gap-x-2 gap-y-4 flex-col md:flex-row mt-4 mb-6">
                       <NotificationArea name={name} followers={followers} twittUsername={twittUsername} isTwitterVerified={isTwitterVerified}/>
-                      <NotificationMessage topMessage={data.topMessage} />
+                      <NotificationMessage topMessage={data?.topMessage} />
                     </div>
                     {
                       data.ethAddress && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
