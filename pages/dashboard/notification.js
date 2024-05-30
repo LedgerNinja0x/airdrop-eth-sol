@@ -26,7 +26,7 @@ export default function NotificationArea({name,followers,twittUsername,isTwitter
         <span className="w-full text-center">Participate In Airdrop</span>
       </div>
       <StepperModal isOpen={isOpen} setIsOpen={setIsopen} name={name} followers={followers} twittUsername={twittUsername}/>
-      <VerifiedModal title="Your account has been verified" text="Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!" isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
+      <VerifiedModal title="Your participation has been registered!" text="Congratulations on verifying your account. Our admin team will take this into consideration and will send a gift your way if eligible." isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
     </>
   );
 }

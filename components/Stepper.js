@@ -145,7 +145,7 @@ export default function HorizontalLinearStepper({
                       Here are your tweet details
                     </h2>
                     <p className="md:text-[18px] sm:text-[10px]">
-                      Post this exact tweet on your account
+                      Post this EXACT tweet along with the hashtag OR click on “Share” button below.
                     </p>
                     <h3 className="font-semibold text-lg my-2">Message</h3>
                     <p className="bg-[#ECF7FC] rounded-md py-2 px-1">

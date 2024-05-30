@@ -115,7 +115,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
         <WalletModal name={name} followers={followers} disableBackdropClick/>
         }
         { isFirstVerified && isTwitterVerified &&
-        <VerifiedModal title="Your account has been verified" text="Congratulations on verifying your account. Our admin team will soon take into consideration your account and send a gift your way!" isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
+        <VerifiedModal title="Your participation has been registered!" text="Congratulations on verifying your account. Our admin team will take this into consideration and will send a gift your way if eligible." isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
         }
         { data.topMessage && data.isAirMsgRead == 0 && 
         <VerifiedModal title={data.topMessage[data.topMessage.length - 1].title} text={data.topMessage[data.topMessage.length - 1].content} isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>

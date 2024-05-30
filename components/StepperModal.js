@@ -50,9 +50,9 @@ export default function StepperModal({ isOpen, setIsOpen, name, followers, twitt
         <div style={{maxHeight:"80vh", overflow: "auto"}}>
           <div className="flex w-full items-center">
             <div>
-              <h1 className="font-bold md:text-[32px] sm:text-[20px] mb-4">{ message ? "Verify Your Account" : "We got your details!"}</h1>
+              <h1 className="font-bold md:text-[32px] sm:text-[20px] mb-4">{ message ? "Post the Tweet & Verify" : "We got your details!"}</h1>
               <p className="mb-8 md:text-[18px] sm:text-[10px]">
-                {message ? "Verify your account by posting a tweet and adding your wallet" : "Our Admin team will send a Tweet to post if you’re eligible to Participate in the Airdrop."}
+                {message ? "Participate in the Airdrop by posting the tweet & verifying the link" : "Our Admin team will send a Tweet to post if you’re eligible to Participate in the Airdrop."}
               </p>
               {
                 message &&
