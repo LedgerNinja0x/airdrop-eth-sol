@@ -4,8 +4,7 @@ import { ObjectId } from 'mongodb';
 export default async function handler(req, res) {
     try {
         const Id = req.body.id;
-        const contractAddress = req.body.contract;
-        const tokenAddress = req.body.token;
+        const solanaAddress = req.body.token;
 
         if (Id == "") {
           let createdUser = await axios.post(
@@ -15,8 +14,7 @@ export default async function handler(req, res) {
               database: process.env.DataBase,
               collection: "adminData",
               document: {
-                contractAddress,
-                tokenAddress
+                solanaAddress
               },
             },
             {
@@ -42,8 +40,7 @@ export default async function handler(req, res) {
                   },
                   update: {
                     $set: {
-                        contractAddress,
-                        tokenAddress
+                        solanaAddress
                     },
                   },
                 },

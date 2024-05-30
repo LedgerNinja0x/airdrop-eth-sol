@@ -92,7 +92,7 @@ body {
     animation: spin-anim 1.2s linear infinite;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 520px) {
     .text-truncated {
         white-space: nowrap;
         overflow: hidden;

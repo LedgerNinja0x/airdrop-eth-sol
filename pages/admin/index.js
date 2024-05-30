@@ -9,6 +9,7 @@ import AirdropModal from "@/components/AirdropModal";
 import StakingModal from "@/components/StakingModal";
 import AirdropMessage from "@/components/AirdropMessage";
 import ContractModal from "@/components/ContractModal";
+import SolanaModal from "@/components/SolanaModal";
 import MessageModal from "@/components/MessageModal";
 import SetBtn from "@/components/SetBtn";
 import TweetMessage from "@/components/Modal";
@@ -203,6 +204,7 @@ export default function Page({users}) {
   const [ isAirMsgOpen, setIsAirMsgOpen ] = useState(false);
   const [ isTweetOpen, setIsTweetOpen ] = useState(false);
   const [ isContractOpen, setIsContractOpen ] = useState(false);
+  const [ isSolanaOpen, setIsSolanaOpen ] = useState(false);
   const [ isMessageOpen, setIsMessageOpen ] = useState(false);
   const [ openOwner, setOpenOwner ] = useState(false);
   const [ tokenContract, setTokenContract ] = useState(false);
@@ -217,6 +219,7 @@ export default function Page({users}) {
   const [ tweetMessage, setTweetMessage ] = useState("");
   const [ contractAddress, setContractAddress ] = useState("");
   const [ tokenAddress, setTokenAddress ] = useState("");
+  const [ SolanaTokenAddress, setSolanaTokenAddress ] = useState("");
   const [ hashtag, setHashTag ] = useState("");
   const { address } = useAccount();
 
@@ -250,6 +253,7 @@ export default function Page({users}) {
         setHashTag(adminData?.hashtag ? adminData.hashtag : "");
         setContractAddress(adminData?.contractAddress ? adminData?.contractAddress : "");
         setTokenAddress(adminData?.tokenAddress ? adminData?.tokenAddress : "");
+        setSolanaTokenAddress(adminData?.solanaAddress ? adminData?.solanaAddress : "");
       }
     }
   }
@@ -316,7 +320,7 @@ export default function Page({users}) {
           try {
             const result = await axios.post('/api/me/token',{userList, token, airdropMessage, tokenAddress})
             if (result.status == 201) {
-              handleUsers(result.data);
+              await handleUsers(result.data);
             }
             toast.success("Success AirDrop");
           } catch (err) {
@@ -453,9 +457,30 @@ export default function Page({users}) {
       try {
         const result = await axios.post('/api/me/setContract',{id: adminId, contract, token});
         if (result.status == 201) {
-          handleUsers(result.data);
+          await handleUsers(result.data);
           setContractAddress(contract);
           setTokenAddress(token);
+          toast.success("Message Changed");
+          setIsContractOpen(false);
+        }
+      } catch (err) {
+        toast.error("Oops, something wrong!");
+      } 
+      setLoading(false);
+    } else {
+      toast.error("Please input valid address");
+    }
+  }
+
+  const changeSolanaAddress = async (token) => {
+    const tokenContract = ethers.utils.isAddress(token);
+    if (tokenContract) {
+      setLoading(true);
+      try {
+        const result = await axios.post('/api/me/setSolanaContract',{id: adminId, token});
+        if (result.status == 201) {
+          await handleUsers(result.data);
+          setSolanaTokenAddress(token);
           toast.success("Message Changed");
           setIsContractOpen(false);
         }
@@ -477,10 +502,9 @@ export default function Page({users}) {
     try {
       const result = await axios.post('/api/me/sendTopMessage', {userList, tweetMessage, hashtag});
       if (result.status == 201) {
-        handleUsers(result.data);
+        await handleUsers(result.data);
       }
       toast.success("Message Sent");
-
     } catch (err) {
       if (err.response.status == 400){
         toast.error("Please set Tweet Message");
@@ -490,6 +514,18 @@ export default function Page({users}) {
     }
     setLoading(false);
     setIsMessageOpen(false);
+  }
+
+  const resetData = async () => {
+    setLoading(true);
+    const result = await axios.post('/api/me/resetDatabase');
+    if (result.status == 201) {
+      await handleUsers(result.data);
+      toast.success("Reset Success");
+    } else {
+      toast.error("Oops! Something Wrong");
+    }
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -521,7 +557,10 @@ export default function Page({users}) {
             <div className="text-nowrap">(Twitter Verified Accounts: {userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").length})</div>
           </div>
           <div className="flex gap-1 flex-wrap">
-          <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsMessageOpen(true)}>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={resetData}>
+              Reset
+            </button>
+            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsMessageOpen(true)}>
               Send Message
             </button>
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => generateExcelData()}>
@@ -536,7 +575,7 @@ export default function Page({users}) {
             {/* <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsStakingOpen(true)}>
               Staking
             </button> */}
-            <SetBtn setIsAirMsgOpen={setIsAirMsgOpen} setOpenOwner={setOpenOwner} setIsTweetOpen={setIsTweetOpen} setIsContractOpen={setIsContractOpen}/>
+            <SetBtn setIsAirMsgOpen={setIsAirMsgOpen} setOpenOwner={setOpenOwner} setIsTweetOpen={setIsTweetOpen} setIsContractOpen={setIsContractOpen} setIsSolanaOpen={setIsSolanaOpen}/>
           </div>
         </div>
         {
@@ -590,13 +629,23 @@ export default function Page({users}) {
         <ContractModal 
           isOpen={isContractOpen}
           setIsOpen={setIsContractOpen}
-          title={"Contract Manager"}
+          title={"Etheruem Contract Manager"}
           description={
-            "Please Set Contract Address"
+            "Please Set Ethereum Contract Address"
           }
           action={changeContractAddress}
           contractAddress={contractAddress}
           tokenAddress={tokenAddress}
+        />
+        <SolanaModal 
+          isOpen={isSolanaOpen}
+          setIsOpen={setIsSolanaOpen}
+          title={"Solana Token Manager"}
+          description={
+            "Please Set Solana Token Address"
+          }
+          action={changeSolanaAddress}
+          tokenAddress={SolanaTokenAddress}
         />
         <MessageModal 
           isOpen={isMessageOpen}

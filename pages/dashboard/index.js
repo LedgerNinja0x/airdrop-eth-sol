@@ -88,12 +88,13 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
                   <>
                     <div className="flex gap-x-2 gap-y-4 flex-col md:flex-row mt-4 mb-6">
                       <NotificationArea name={name} followers={followers} twittUsername={twittUsername} isTwitterVerified={isTwitterVerified}/>
-                      {
-                        isTwitterVerified && <NotificationMessage topMessage={data.topMessage} />
-                      }
+                      <NotificationMessage topMessage={data.topMessage} />
                     </div>
                     {
-                      isTwitterVerified && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
+                      data.ethAddress && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
+                    }
+                    {
+                      data.solAddress && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">SOL ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.solAddress}</div></div>
                     }
                   </>
                   
@@ -202,6 +203,11 @@ export async function getServerSideProps({ req, res }) {
       } else {
         tokenBalance = [];
       }
+      if (data?.documents[0]?.solanaAddress) {
+        solTokenBalance = [{contract: data?.documents[0]?.solanaAddress, balance: 0}];
+      } else {
+        solTokenBalance = [];
+      }
       isFirstTime = true
       const token = await getToken({ req });
 
@@ -241,6 +247,7 @@ export async function getServerSideProps({ req, res }) {
               twitt_username: twittUsername,
               userRating: 0,
               tokenBalance,
+              solTokenBalance,
               topMessage : []
             },
           },
