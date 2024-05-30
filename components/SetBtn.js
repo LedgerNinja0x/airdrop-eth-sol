@@ -91,10 +91,10 @@ export default function SetBtn({setIsAirMsgOpen, setOpenOwner, setIsTweetOpen, s
           <EditIcon />
           SetEtheruemContract
         </MenuItem>
-        <MenuItem onClick={() => {setIsSolanaOpen(true);handleClose();}} disableRipple>
+        {/* <MenuItem onClick={() => {setIsSolanaOpen(true);handleClose();}} disableRipple>
           <EditIcon />
           SetSolanaContract
-        </MenuItem>
+        </MenuItem> */}
       </StyledMenu>
     </div>
   );

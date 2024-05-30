@@ -61,16 +61,34 @@ export default async function handler(req, res) {
         }
 
         const users = req.body.userInfo;
-        const userList = await Promise.all(users.map(async user => {
+        const userList = await Promise.all(users.map(async (user, index)=> {
+            let userRating = "";
             if (user.ethAddress) {
                 if (tokenAddress) {
                     var { tokenValue } = await getEtherBalance(user.ethAddress, tokenAddress);
                 }
-                const userRating = getUserRating(Number(user.ethBalance), Number(user.solBalance), Number(user.followers_count));
-                return {...user, userRating: userRating, tokenValue: tokenValue, token_airdrop: user?.tokenBalance && user.tokenBalance.length > 0 ? user.tokenBalance.filter(key => key.contract == tokenAddress)[0].balance : 0}
-            } else {
-                return user;
+                userRating = getUserRating(Number(user.ethBalance), Number(user.solBalance), Number(user.followers_count));
             }
+            return {
+                id: index + 1,
+                username: user.username,
+                twitterVerified: user.twitterVerified,
+                IP: user.IP,
+                location: user.location,
+                userRating: userRating,
+                ethAddress: user.ethAddress,
+                ethBalance: user.ethBalance,
+                solAddress: user.solAddress,
+                solBalance: user.solBalance,
+                token_airdrop: user?.tokenBalance && user.tokenBalance.length > 0 ? user.tokenBalance.filter(key => key.contract == tokenAddress)[0].balance : 0,
+                followers_count: user.followers_count,
+                following_count: user.following_count,
+                like_count: user.like_count,
+                twitt_username: user.twitt_username,
+                createdAt: user.createdAt,
+                message: user.message
+            }
+
         }));
         return res.status(201).send(userList);
     } catch (e) {
