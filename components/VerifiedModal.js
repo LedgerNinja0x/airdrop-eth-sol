@@ -23,12 +23,12 @@ export default function VerifiedModal({title, text, isOpen, setIsOpen}) {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style} className="rounded-3xl">
-        <div style={{maxWidth: 400}}>
+        <div>
           <h2 className="font-bold text-xl mb-1">
             {title}
           </h2>
-          <p className="pt-[15px]">{text}</p>
-          <img src="./party_moose.png" />
+          <p className="pt-[15px] break-all">{text}</p>
+          <img src="./party_moose.png" style={{width: "100%"}}/>
         </div>
       </Box>
     </Modal>
