@@ -103,8 +103,6 @@ export default function HorizontalLinearStepper({
     setActiveStep(0);
   };
 
-  console.log('messages', message);
-
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep} alternativeLabel>
@@ -154,12 +152,12 @@ export default function HorizontalLinearStepper({
                       “Share” button below.
                     </p>
                     <h3 className="font-semibold text-lg my-2">Message</h3>
-                    <p
-                      className="bg-[#ECF7FC] rounded-md py-4 px-3"
-                      style={{ whiteSpace: 'pre-wrap' }}
+                    <div
+                      className="bg-[#ECF7FC] rounded-md py-4 px-3 break-all"
+                      style={{whiteSpace: 'pre-wrap'}}
                     >
                       {message}
-                    </p>
+                    </div>
                     <h3 className="font-semibold text-lg my-2">Hashtags</h3>
                     <div className="flex flex-wrap">
                       {hashtags.map((tag, index) => (

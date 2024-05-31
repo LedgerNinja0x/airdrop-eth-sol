@@ -60,6 +60,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
 
   useEffect(() => {
     if (!twittUsername) {
+      console.log("ddd");
       toast.error("Oops! Something wrong. Please login again after few mins!");
       signOut();
     }
@@ -197,6 +198,7 @@ export async function getServerSideProps({ req, res }) {
       );
 
       let tokenBalance;
+      let solTokenBalance;
 
       if (data?.documents[0]?.tokenAddress) {
         tokenBalance = [{contract: data?.documents[0]?.tokenAddress, balance: 0}];
