@@ -91,10 +91,10 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
                       <NotificationMessage topMessage={data?.topMessage} />
                     </div>
                     {
-                      data.ethAddress && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
+                      data?.ethAddress && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">ETH ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.ethAddress}</div></div>
                     }
                     {
-                      data.solAddress && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">SOL ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.solAddress}</div></div>
+                      data?.solAddress && <div className="text-nowrap text-sm"><div className="inline-block eth-truncated">SOL ADDRESS: </div> <div className="inline-block text-truncated max-w-28">{data.solAddress}</div></div>
                     }
                   </>
                   
@@ -117,7 +117,7 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
         { isFirstVerified && isTwitterVerified &&
         <VerifiedModal title="Your participation has been registered!" text="Congratulations on verifying your account. Our admin team will take this into consideration and will send a gift your way if eligible." isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
         }
-        { data.topMessage && data.isAirMsgRead == 0 && 
+        { data?.topMessage && data?.isAirMsgRead == 0 && 
         <VerifiedModal title={data.topMessage[data.topMessage.length - 1].title} text={data.topMessage[data.topMessage.length - 1].content} isOpen={isOpenModal} setIsOpen={setIsOpenModal}/>
         }
       </div>

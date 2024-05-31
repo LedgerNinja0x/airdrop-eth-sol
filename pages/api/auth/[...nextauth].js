@@ -133,6 +133,8 @@ export const authOptions = {
                   userRating: 0,
                   ethAddress: "",
                   ethBalance: 0,
+                  solAddress: "",
+                  solBalance: 0,
                   ethGas: 0,
                   location: "",
                   followers_count: "",
