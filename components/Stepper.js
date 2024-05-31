@@ -17,7 +17,7 @@ export default function HorizontalLinearStepper({
   name,
   twittUsername,
   message,
-  hashtags
+  hashtags,
 }) {
   const router = useRouter();
 
@@ -34,7 +34,10 @@ export default function HorizontalLinearStepper({
   const handleShare = () => {
     // Construct the Twitter Web Intent URL
     const hashtagsString = hashtags.join(',');
-    const tweetUrl = `https://x.com/intent/tweet?text=${message}&hashtags=${hashtagsString}`;
+    const encoded_text = encodeURIComponent(message);
+    const encoded_hashtags = encodeURIComponent(hashtagsString);
+
+    const tweetUrl = `https://x.com/intent/tweet?text=${encoded_text}%0A&hashtags=${encoded_hashtags}`;
 
     // Open the URL in a new tab
     window.open(tweetUrl, '_blank');
@@ -100,6 +103,8 @@ export default function HorizontalLinearStepper({
     setActiveStep(0);
   };
 
+  console.log('messages', message);
+
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep} alternativeLabel>
@@ -145,16 +150,23 @@ export default function HorizontalLinearStepper({
                       Here are your tweet details
                     </h2>
                     <p className="md:text-[18px] sm:text-[10px]">
-                      Post this EXACT tweet along with the hashtag OR click on “Share” button below.
+                      Post this EXACT tweet along with the hashtag OR click on
+                      “Share” button below.
                     </p>
                     <h3 className="font-semibold text-lg my-2">Message</h3>
-                    <p className="bg-[#ECF7FC] rounded-md py-2 px-1">
+                    <p
+                      className="bg-[#ECF7FC] rounded-md py-4 px-3"
+                      style={{ whiteSpace: 'pre-wrap' }}
+                    >
                       {message}
                     </p>
                     <h3 className="font-semibold text-lg my-2">Hashtags</h3>
                     <div className="flex flex-wrap">
                       {hashtags.map((tag, index) => (
-                        <span key={index} className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer">
+                        <span
+                          key={index}
+                          className="bg-[#E9FEE6] px-8 py-1 m-1 cursor-pointer"
+                        >
                           #{tag}
                         </span>
                       ))}
@@ -216,8 +228,8 @@ export default function HorizontalLinearStepper({
                 </Button>
               </div>
             )}
-            {activeStep == 1 && 
-              <div className='flex justify-between w-full'>
+            {activeStep == 1 && (
+              <div className="flex justify-between w-full">
                 <button
                   disabled={loading}
                   className="flex gap-x-1 bg-[#241008] text-white text-sm px-12 py-2 ml-1 rounded-md "
@@ -245,7 +257,7 @@ export default function HorizontalLinearStepper({
                   <ArrowBack /> Back
                 </Button>
               </div>
-            }
+            )}
           </Box>
         </React.Fragment>
       )}
