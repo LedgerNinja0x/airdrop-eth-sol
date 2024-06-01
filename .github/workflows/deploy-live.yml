@@ -2,7 +2,7 @@ name: (Live) Deploy on the server
 on:
   push:
     branches:
-      - release
+      - main
       
 jobs:
   build:
