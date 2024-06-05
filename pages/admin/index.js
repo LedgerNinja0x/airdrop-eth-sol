@@ -12,7 +12,9 @@ import ContractModal from "@/components/ContractModal";
 import SolanaModal from "@/components/SolanaModal";
 import MessageModal from "@/components/MessageModal";
 import SetBtn from "@/components/SetBtn";
+import AirdropBtn from "@/components/AirdropBtn";
 import TweetMessage from "@/components/Modal";
+import AirdropSolModal from "@/components/AirdropSolModal";
 import { ethers, Contract } from "ethers";
 import TokenAbi from "@/Contracts/erc20.json";
 import StakingAbi from "@/Contracts/Staking.json";
@@ -200,6 +202,7 @@ export default function Page({users}) {
     // Add more columns as needed
   ]
   const [ isOpen, setIsOpen ] = useState(false);
+  const [ isSolAirOpen, setIsSolAirOpen ] = useState(false);
   const [ isStakingOpen, setIsStakingOpen ] = useState(false);
   const [ isAirMsgOpen, setIsAirMsgOpen ] = useState(false);
   const [ isTweetOpen, setIsTweetOpen ] = useState(false);
@@ -219,7 +222,8 @@ export default function Page({users}) {
   const [ tweetMessage, setTweetMessage ] = useState("");
   const [ contractAddress, setContractAddress ] = useState("");
   const [ tokenAddress, setTokenAddress ] = useState("");
-  const [ SolanaTokenAddress, setSolanaTokenAddress ] = useState("");
+  const [ solanaTokenAddress, setSolanaTokenAddress ] = useState("");
+  const [ solanaContractAddress, setSolanaContractAddress ] = useState("");
   const [ hashtag, setHashTag ] = useState("");
   const { address } = useAccount();
 
@@ -254,6 +258,7 @@ export default function Page({users}) {
         setContractAddress(adminData?.contractAddress ? adminData?.contractAddress : "");
         setTokenAddress(adminData?.tokenAddress ? adminData?.tokenAddress : "");
         setSolanaTokenAddress(adminData?.solanaAddress ? adminData?.solanaAddress : "");
+        setSolanaContractAddress(adminData?.solanaContractAddress ? adminData?.solanaContractAddress : "");
       }
     }
   }
@@ -334,6 +339,10 @@ export default function Page({users}) {
     }
     setIsOpen(false);
     setLoading(false);
+  }
+
+  const doSolAirDrop = async (token) => {
+
   }
 
   const doStaking = async (token, reward, period) => {
@@ -466,12 +475,11 @@ export default function Page({users}) {
     }
   }
 
-  const changeSolanaAddress = async (token) => {
-    const tokenContract = ethers.utils.isAddress(token);
-    if (tokenContract) {
+  const changeSolanaAddress = async (contract, token) => {
+    if (contract) {
       setLoading(true);
       try {
-        const result = await axios.post('/api/me/setSolanaContract',{id: adminId, token});
+        const result = await axios.post('/api/me/setSolanaContract',{id: adminId, contract, token});
         if (result.status == 201) {
           await handleUsers(result.data);
           setSolanaTokenAddress(token);
@@ -481,6 +489,7 @@ export default function Page({users}) {
       } catch (err) {
         toast.error("Oops, something wrong!");
       } 
+      setIsSolanaOpen(false);
       setLoading(false);
     } else {
       toast.error("Please input valid address");
@@ -563,9 +572,7 @@ export default function Page({users}) {
             <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => location.reload()}>
               Reload
             </button>
-            <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsOpen(true)}>
-              Airdrop
-            </button>
+            <AirdropBtn setIsEthOpen={setIsOpen} setIsSolOpen={setIsSolAirOpen}/>
             {/* <button className="items-center bg-[#5A3214] text-white text-lg px-3 py-2 rounded-lg mx-2" style={{height: "fit-content"}} onClick={() => setIsStakingOpen(true)}>
               Staking
             </button> */}
@@ -583,11 +590,22 @@ export default function Page({users}) {
         <AirdropModal 
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          title={"Airdrop Manager"}
+          title={"Ethereum Airdrop Manager"}
           description={
             "Please input information for airdrop"
           }
           action={doAirDrop}
+          setTopCount={setTopCount}
+          topCount={topCount}
+        />
+        <AirdropSolModal
+          isOpen={isSolAirOpen}
+          setIsOpen={setIsSolAirOpen}
+          title={"Solana Airdrop Manager"}
+          description={
+            "Please input information for airdrop"
+          }
+          action={doSolAirDrop}
           setTopCount={setTopCount}
           topCount={topCount}
         />
@@ -639,7 +657,8 @@ export default function Page({users}) {
             "Please Set Solana Token Address"
           }
           action={changeSolanaAddress}
-          tokenAddress={SolanaTokenAddress}
+          contractAddress={solanaContractAddress}
+          tokenAddress={solanaTokenAddress}
         />
         <MessageModal 
           isOpen={isMessageOpen}

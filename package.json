@@ -45,7 +45,7 @@
     "react-dom": "^18",
     "react-table": "^7.8.0",
     "react-toastify": "^10.0.5",
-    "rpc-websockets": "^7.11.0",
+    "rpc-websockets": "^7.10.0",
     "toastr": "^2.1.4",
     "uuid": "^9.0.1",
     "viem": "^2.10.3",

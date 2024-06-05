@@ -46,7 +46,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-export default function SetBtn({setIsAirMsgOpen, setOpenOwner, setIsTweetOpen, setIsContractOpen, setIsSolanaOpen}) {
+export default function AirdropBtn({setIsEthOpen, setIsSolOpen}) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -64,7 +64,7 @@ export default function SetBtn({setIsAirMsgOpen, setOpenOwner, setIsTweetOpen, s
         style={{height: "fit-content"}}
         onClick={handleClick}
       >
-        Setting <KeyboardArrowDownIcon />
+        Airdrop <KeyboardArrowDownIcon />
       </button>
       <StyledMenu
         id="demo-customized-menu"
@@ -75,25 +75,13 @@ export default function SetBtn({setIsAirMsgOpen, setOpenOwner, setIsTweetOpen, s
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={() => {setIsAirMsgOpen(true);handleClose();}} disableRipple>
+        <MenuItem onClick={() => {setIsEthOpen(true);handleClose();}} disableRipple>
           <EditIcon />
-          AirdropMessage
+          Ethereum
         </MenuItem>
-        <MenuItem onClick={() => {setOpenOwner(true);handleClose();}} disableRipple>
+        <MenuItem onClick={() => {setIsSolOpen(true);handleClose();}} disableRipple>
           <EditIcon />
-          Change Owner
-        </MenuItem>
-        <MenuItem onClick={() => {setIsTweetOpen(true);handleClose();}} disableRipple>
-          <EditIcon />
-          SetTweetMessage
-        </MenuItem>
-        <MenuItem onClick={() => {setIsContractOpen(true);handleClose();}} disableRipple>
-          <EditIcon />
-          SetEtheruemContract
-        </MenuItem>
-        <MenuItem onClick={() => {setIsSolanaOpen(true);handleClose();}} disableRipple>
-          <EditIcon />
-          SetSolanaContract
+          Solana
         </MenuItem>
       </StyledMenu>
     </div>
