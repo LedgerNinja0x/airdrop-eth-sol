@@ -13,7 +13,7 @@ const style = {
   p: 4,
 };
 
-export default function AirdropModal({
+export default function AirdropSolModal({
   isOpen,
   setIsOpen,
   title,

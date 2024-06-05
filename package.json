@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@coral-xyz/anchor": "^0.30.0",
+    "@coral-xyz/anchor": "^0.29.0",
     "@covalenthq/client-sdk": "^1.0.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -19,6 +19,7 @@
     "@mui/x-data-grid": "^7.0.0",
     "@mui/x-data-grid-generator": "^7.0.0",
     "@rainbow-me/rainbowkit": "^2.0.7",
+    "@solana/spl-token": "^0.4.6",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@solana/wallet-adapter-react": "^0.15.35",
     "@solana/wallet-adapter-react-ui": "^0.9.35",

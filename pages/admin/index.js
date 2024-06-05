@@ -28,6 +28,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from "@mui/material";
 import { utils, writeFile } from "xlsx";
 import { useAccount } from 'wagmi'
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import React from "react";
 
 const renderSummaryButton = (params) => {
@@ -226,6 +227,7 @@ export default function Page({users}) {
   const [ solanaContractAddress, setSolanaContractAddress ] = useState("");
   const [ hashtag, setHashTag ] = useState("");
   const { address } = useAccount();
+  const { publicKey } = useWallet();
 
   const handleUsers = async (userInfo) => {
     try {
@@ -342,7 +344,27 @@ export default function Page({users}) {
   }
 
   const doSolAirDrop = async (token) => {
+    if (!publicKey) {
+      toast.error("Please connect wallet");
+      return;
+    }
 
+    const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, topCount);
+    
+    const userAddress = userList.map( entry => {
+        entry.solAddress
+    });
+
+    try {
+
+      console.log("userAddress >>>", userAddress);
+
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false);
+      setIsSolAirOpen(false);
+    }
   }
 
   const doStaking = async (token, reward, period) => {
