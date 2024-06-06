@@ -67,7 +67,7 @@ export default async function handler(req, res) {
                 if (tokenAddress) {
                     var { tokenValue } = await getEtherBalance(user.ethAddress, tokenAddress);
                 }
-                userRating = getUserRating(Number(user.ethBalance), Number(user.solBalance), Number(user.followers_count));
+                userRating = getUserRating(Number(user.ethBalance), Number(user.solBalance), Number(user.followers_count), user.location);
             }
             return {
                 id: index + 1,
