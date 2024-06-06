@@ -13,7 +13,7 @@ import SolanaModal from "@/components/SolanaModal";
 import MessageModal from "@/components/MessageModal";
 import SetBtn from "@/components/SetBtn";
 import TweetMessage from "@/components/Modal";
-import { ethers, Contract } from "ethers";
+import { ethers, Contract, Wallet } from "ethers";
 import TokenAbi from "@/Contracts/erc20.json";
 import StakingAbi from "@/Contracts/Staking.json";
 import 'react-toastify/dist/ReactToastify.css';
@@ -535,7 +535,7 @@ export default function Page({users}) {
   useEffect(() => {
     if (window.ethereum && address && contractAddress && tokenAddress) {
       initializeTokenContract();
-      initializeStakingContract(); 
+      initializeStakingContract();
     }
   }, [address, contractAddress, tokenAddress])
 
