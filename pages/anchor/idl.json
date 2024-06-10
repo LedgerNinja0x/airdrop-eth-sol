@@ -1,0 +1,1 @@
+{"version":"0.1.0","name":"solana_token_airdrop","instructions":[{"name":"transferSplTokens","accounts":[{"name":"authority","isMut":true,"isSigner":true},{"name":"sourceTokenAccount","isMut":true,"isSigner":false},{"name":"splTokenProgram","isMut":false,"isSigner":false}],"args":[{"name":"amount","type":"u64"}]}]}

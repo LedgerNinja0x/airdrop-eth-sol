@@ -4,6 +4,7 @@ import { ObjectId } from 'mongodb';
 export default async function handler(req, res) {
     try {
         const Id = req.body.id;
+        const solanaContractAddress = req.body.contract;
         const solanaAddress = req.body.token;
 
         if (Id == "") {
@@ -14,6 +15,7 @@ export default async function handler(req, res) {
               database: process.env.DataBase,
               collection: "adminData",
               document: {
+                solanaContractAddress,
                 solanaAddress
               },
             },
@@ -40,6 +42,7 @@ export default async function handler(req, res) {
                   },
                   update: {
                     $set: {
+                        solanaContractAddress,
                         solanaAddress
                     },
                   },

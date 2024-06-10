@@ -1,20 +1,30 @@
 'use client'
 
-import { signIn, signOut } from "next-auth/react";
-import Link from "next/link"; 
+import { signOut } from "next-auth/react";
 import { usePathname } from 'next/navigation'
 
 import SpeedDial from '@mui/material/SpeedDial';
 import SpeedDialAction from '@mui/material/SpeedDialAction';
 import { Logout } from '@mui/icons-material';
 import WalletButton from "./WalletButton";
+import {
+  WalletMultiButton,
+} from "@solana/wallet-adapter-react-ui";
+
+import { useState, useEffect } from "react";
 
 const actions = [
   { icon: <Logout />, name: 'SignOut' }
 ];
 
 export default function Header({ logged, avatar }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const [ isMount, setIsMount ] = useState(false);
+
+  useEffect(()=> {
+    setIsMount(true);
+  }, [])
+
   return (
     <header className="text-gray-600 body-font shadow-sm">
       <div className="flex flex-wrap md:px-20 sm:px-8 py-8 flex-col gap-2 md:flex-row items-center w-screen justify-between">
@@ -57,6 +67,7 @@ export default function Header({ logged, avatar }) {
               (
               <div className="flex flex-col md:flex-row gap-2">
                 <WalletButton />
+                {isMount && <WalletMultiButton style={{backgroundColor: "#241008", fontFamily: "inherit", fontWeight: "100", fontSize: "18px", padding: "1.8rem", borderRadius: "0.385rem"}} className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto text-center"/>}
                 <a
                   className="bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto"
                   onClick={() => signOut()}

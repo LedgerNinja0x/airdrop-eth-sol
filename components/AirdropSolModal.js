@@ -13,31 +13,31 @@ const style = {
   p: 4,
 };
 
-export default function SolanaModal({
+export default function AirdropSolModal({
   isOpen,
   setIsOpen,
   title,
   description,
   action,
-  contractAddress,
-  tokenAddress
+  setTopCount,
+  topCount
 }) {
-  let [ contract, setContract ] = useState("");
-  let [ token, setToken ] = useState("");
+  let [token, setToken] = useState(0);
   let [info, setInfo] = useState({ text: "", type: "" });
 
-  const setAddress = () => {
-    if (token === "" || contract === "") {
-        setInfo({ text: "Input Address!", type: "error" });
+  const doAirDrop = () => {
+    if (token === 0) {
+        setInfo({ text: "Input token number!", type: "error" });
         return;
     }
-    action(contract, token);
+    action(token);
   }
 
   useEffect(() => {
-    setContract(contractAddress);
-    setToken(tokenAddress);
-  },[ contractAddress, tokenAddress]);
+    if (!isOpen) {
+      setToken(0)
+    }
+  },[isOpen]);
 
 
   return (
@@ -63,25 +63,25 @@ export default function SolanaModal({
               </p>
             )}
               <>
-                <p>Airdrop Contract: </p>
+                <p>Top Members: </p>
                 <input
-                  type="text"
-                  value={contract}
-                  onChange={(e) => setContract(e.target.value)}
-                  placeholder="Input token Address"
+                  type="Number"
+                  value={topCount}
+                  onChange={(e) => setTopCount(e.target.value)}
+                  placeholder="Input token Number"
                   min="0"
                   className="block mb-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
                 />
-                <p>Token Contract: </p>
+                <p>Token Amount: </p>
                 <input
-                  type="text"
+                  type="Number"
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
-                  placeholder="Input token Address"
+                  placeholder="Input token Number"
                   min="0"
                   className="block mb-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
                 />
-                <button className="flex items-center gap-x-1 bg-[#241008] text-white text-sm text-center justify-center py-2 mx-auto rounded-md w-full" onClick={setAddress}>
+                <button className="flex items-center gap-x-1 bg-[#241008] text-white text-sm text-center justify-center py-2 mx-auto rounded-md w-full" onClick={doAirDrop}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -96,7 +96,7 @@ export default function SolanaModal({
                       d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
                     />
                   </svg>
-                  <span>SetAddress</span>
+                  <span>Airdrop</span>
                 </button>
               </>
           </div>
