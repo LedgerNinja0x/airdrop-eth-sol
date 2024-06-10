@@ -34,39 +34,34 @@ export default function Page({ name, avatar, isTwitterVerified, followers, isFir
   }
 
   const updateBalance = async () => {
-    if (isTwitterVerified) {
-      const { location, ip } = await getLocation();
-      let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data;
-      try {
-        const res = await axios.post(
-          `/api/me/balance`,
-          {
-            ethAddress,
-            solAddress,
-            username, 
-            followers, 
-            tokenBalance, 
-            tokenValue, 
-            isTwitterVerified: 1,
-            location,
-            ip,
-          }
-        );
-      } catch (e) {
-        console.log(e);
-      }
+    const { location, ip } = await getLocation();
+    let { ethAddress, solAddress, username, tokenBalance, tokenValue } = data;
+    try {
+      const res = await axios.post(
+        `/api/me/balance`,
+        {
+          ethAddress,
+          solAddress,
+          username, 
+          followers, 
+          tokenBalance, 
+          tokenValue, 
+          isTwitterVerified: 1,
+          location,
+          ip,
+        }
+      );
+    } catch (e) {
+      console.log(e);
     }
   }
 
   useEffect(() => {
     if (!twittUsername) {
-      console.log("ddd");
       toast.error("Oops! Something wrong. Please login again after few mins!");
       signOut();
     }
-    if (isTwitterVerified) {
-      updateBalance();
-    }
+    updateBalance();
     setIsOpenModal(true);
   }, [])  
 

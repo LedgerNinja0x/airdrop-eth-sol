@@ -28,7 +28,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from "@mui/material";
 import { utils, writeFile } from "xlsx";
 import { useAccount } from 'wagmi'
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
+import { callSplit } from "../anchor/setup";
 import React from "react";
 
 const renderSummaryButton = (params) => {
@@ -227,7 +228,9 @@ export default function Page({users}) {
   const [ solanaContractAddress, setSolanaContractAddress ] = useState("");
   const [ hashtag, setHashTag ] = useState("");
   const { address } = useAccount();
-  const { publicKey } = useWallet();
+  const { publicKey, connected } = useWallet();
+  const { connection } = useConnection();
+  const wallet = useAnchorWallet();
 
   const handleUsers = async (userInfo) => {
     try {
@@ -344,23 +347,25 @@ export default function Page({users}) {
   }
 
   const doSolAirDrop = async (token) => {
-    if (!publicKey) {
+    if (!connected) {
       toast.error("Please connect wallet");
       return;
     }
 
-    const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.ethAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, topCount);
+    if (!solanaContractAddress || !solanaTokenAddress) {
+      toast.error("Pleaes input Solana Contract Address");
+      return;
+    }
     
-    const userAddress = userList.map( entry => {
-        entry.solAddress
-    });
+    setLoading(true);
 
     try {
-
-      console.log("userAddress >>>", userAddress);
-
+      const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.solAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, topCount);
+      const userAddress = userList.map(entry => entry.solAddress);
+      const result = await callSplit(wallet, connection, userAddress, token, solanaContractAddress, solanaTokenAddress);
+      toast.success("Success Airdrop");
     } catch (error) {
-      console.log(error)
+      toast.error("Oops! Something Wrong.");
     } finally {
       setLoading(false);
       setIsSolAirOpen(false);
@@ -566,7 +571,7 @@ export default function Page({users}) {
   useEffect(() => {
     if (window.ethereum && address && contractAddress && tokenAddress) {
       initializeTokenContract();
-      initializeStakingContract(); 
+      initializeStakingContract();
     }
   }, [address, contractAddress, tokenAddress])
 
