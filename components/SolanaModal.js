@@ -19,22 +19,25 @@ export default function SolanaModal({
   title,
   description,
   action,
+  contractAddress,
   tokenAddress
 }) {
+  let [ contract, setContract ] = useState("");
   let [ token, setToken ] = useState("");
   let [info, setInfo] = useState({ text: "", type: "" });
 
   const setAddress = () => {
-    if (token === "") {
-        setInfo({ text: "Input Token Address!", type: "error" });
+    if (token === "" || contract === "") {
+        setInfo({ text: "Input Address!", type: "error" });
         return;
     }
-    action(token);
+    action(contract, token);
   }
 
   useEffect(() => {
+    setContract(contractAddress);
     setToken(tokenAddress);
-  },[tokenAddress]);
+  },[ contractAddress, tokenAddress]);
 
 
   return (
@@ -60,6 +63,15 @@ export default function SolanaModal({
               </p>
             )}
               <>
+                <p>Airdrop Contract: </p>
+                <input
+                  type="text"
+                  value={contract}
+                  onChange={(e) => setContract(e.target.value)}
+                  placeholder="Input token Address"
+                  min="0"
+                  className="block mb-4 !outline-none rounded-md w-full px-4 border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-stone-600 sm:text-sm sm:leading-6"
+                />
                 <p>Token Contract: </p>
                 <input
                   type="text"
