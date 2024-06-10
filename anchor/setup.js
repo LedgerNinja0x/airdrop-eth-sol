@@ -11,7 +11,7 @@ import {
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
 
-import IDL from "../anchor/idl.json";
+import IDL from "./idl.json";
 import { Program } from "@coral-xyz/anchor";
 
 var programID;
