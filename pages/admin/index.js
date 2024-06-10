@@ -30,6 +30,7 @@ import { utils, writeFile } from "xlsx";
 import { useAccount } from 'wagmi'
 import { useConnection, useWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { callSplit } from "../anchor/setup";
+import { PublicKey } from '@solana/web3.js'
 import React from "react";
 
 const renderSummaryButton = (params) => {
@@ -322,7 +323,7 @@ export default function Page({users}) {
       if (receipt.status === 0) {
         toast.error("transaction failed");
       } else {
-        const airdropTx = await stakingContract.doAirDrop(userAddress, BigInt(tokenToWei));
+        const airdropTx = await stakingContract.doAirDrop(userAddress, BigInt(tokenToWei), tokenAddress);
         const airdropReceipt = await airdropTx.wait();
         if(airdropReceipt.status === 0) {
           toast.error("transaction failed");
@@ -412,6 +413,16 @@ export default function Page({users}) {
     setIsStakingOpen(false);
     setLoading(false);
   }
+
+  const validateSolanaAddress = async (addr) => {
+    let publicKey;
+    try {
+      publicKey = new PublicKey(addr);
+      return await PublicKey.isOnCurve(publicKey.toBytes());
+    } catch (err) {
+      return false;
+    }
+  };
 
   const changeOwnerAddress = async () => {
     if (!address) {
@@ -503,7 +514,9 @@ export default function Page({users}) {
   }
 
   const changeSolanaAddress = async (contract, token) => {
-    if (contract) {
+    const contractAdd = await validateSolanaAddress(contract);
+    const tokenAdd = await validateSolanaAddress(token);
+    if (contractAdd && tokenAdd) {
       setLoading(true);
       try {
         const result = await axios.post('/api/me/setSolanaContract',{id: adminId, contract, token});

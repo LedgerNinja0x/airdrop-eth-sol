@@ -173,7 +173,6 @@ const getSolanaBalance = async (_address) => {
   const client = new CovalentClient(process.env.COVALENT_API_KEY);
   const resp = await client.BalanceService.getTokenBalancesForWalletAddress("solana-mainnet", _address);
   const items = resp.data.items;
-  console.log(items);
   
   const totalQuote = items.reduce((sum, item) => {
     return sum + (item.quote || 0);
