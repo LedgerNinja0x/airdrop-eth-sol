@@ -5,7 +5,9 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import { isAddress } from "ethers/lib/utils";
 import 'react-toastify/dist/ReactToastify.css';
+import { PublicKey } from '@solana/web3.js'
 
 const style = {
   position: "absolute",
@@ -27,12 +29,33 @@ export default function WalletModal({name, followers}) {
   let [solAddress, setSolAddress] = useState("");
   let [loading, setLoading] = useState(false);
 
+  const validateSolanaAddress = async (addr) => {
+    let publicKey;
+    try {
+      publicKey = new PublicKey(addr);
+      return await PublicKey.isOnCurve(publicKey.toBytes());
+    } catch (err) {
+      return false;
+    }
+  };
+
   //call api and check balance on backend, verify
   async function checkBalance() {
-    if (ethAddress === "") {
+    if (ethAddress === "" || solAddress === "") {
       toast.error("Please fill out all fields");
       return;
     }
+
+    if (!isAddress(ethAddress)) {
+      toast.error("Please Input Correct Ethereum Wallet Address");
+      return;
+    }
+
+    if (!await validateSolanaAddress(solAddress)) {
+      toast.error("Please Input Correct Solana Wallet Address");
+      return;
+    }
+
     try {
       setLoading(true);
       let { data } = await axios.post("/api/me/balance", {
