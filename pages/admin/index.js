@@ -29,7 +29,7 @@ import { Button } from "@mui/material";
 import { utils, writeFile } from "xlsx";
 import { useAccount } from 'wagmi'
 import { useConnection, useWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
-import { callSplit } from "../../anchor/setup";
+import { callSplit } from "@/anchor/setup";
 import { PublicKey } from '@solana/web3.js'
 import React from "react";
 
