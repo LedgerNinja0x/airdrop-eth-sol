@@ -247,7 +247,8 @@ export default function Page({users}) {
         setUserData(userInfo);
       }
     } catch (err) {
-      setUserData(userInfo);
+      toast.error("Network Error. try again after few mins");
+      setUserData(false);
     }
     setLoading(false);
   }
