@@ -46,7 +46,11 @@ const WalletButton = () => {
               }
               if (chain.unsupported) {
                 return (
-                  <button onClick={openChainModal} type="button">
+                  <button 
+                    onClick={openChainModal} 
+                    type="button"
+                    className='bg-[#241008] text-white transition-all flex items-center px-4 py-4 rounded-md text-[18px] hover:rounded-none cursor-pointer gap-x-7 w-auto text-center'
+                  >
                     Wrong network
                   </button>
                 );

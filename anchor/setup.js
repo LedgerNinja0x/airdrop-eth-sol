@@ -7,6 +7,7 @@ import {
 } from "@solana/web3.js";
 import {
   TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
   createAssociatedTokenAccountIdempotentInstruction,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
@@ -80,6 +81,13 @@ export async function callSplit(
     tokenAddress
   );
 
+  const mintInfo = await connection.getAccountInfo(new PublicKey(MINT_ADDRESS));
+
+  if (!mintInfo) {
+    throw new Error('Invalid mint address');
+  }
+
+  const programStandard = new PublicKey(mintInfo.owner.toBase58());
   const provider = createProvider(wallet, connection);
   const program = new Program(IDL, programID, provider);
   const transaction = createTransaction();
@@ -88,7 +96,7 @@ export async function callSplit(
     MINT_ADDRESS,
     wallet.publicKey,
     false,
-    TOKEN_PROGRAM_ID
+    programStandard
   );
 
   const senderAtaInstruction =
@@ -97,7 +105,7 @@ export async function callSplit(
       associatedToken,
       wallet.publicKey,
       MINT_ADDRESS,
-      TOKEN_PROGRAM_ID
+      programStandard
     );
   transaction.add(senderAtaInstruction);
 
@@ -120,7 +128,7 @@ export async function callSplit(
     isWritable: true,
   }));
 
-  const decimals = 9;
+  const decimals = mintInfo.data.readUInt8(44);;
 
   transaction.add(
     await program.methods
@@ -128,7 +136,7 @@ export async function callSplit(
       .accounts({
         sourceTokenAccount: associatedToken,
         authority: wallet.publicKey,
-        splTokenProgram: TOKEN_PROGRAM_ID,
+        splTokenProgram: programStandard,
       })
       .remainingAccounts(destinationAtas)
       .instruction()

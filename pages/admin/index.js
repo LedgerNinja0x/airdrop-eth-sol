@@ -182,6 +182,10 @@ export default function Page({users}) {
       field: 'token_airdrop'
     },
     {
+      headerName: 'Solana Airdropped',
+      field: 'solana_airdrop'
+    },
+    {
       headerName: 'Followers',
       field: 'followers_count',
     },
@@ -244,7 +248,8 @@ export default function Page({users}) {
         })
         setUserData(userList);
       } else {
-        setUserData(userInfo);
+        toast.error("Network Error. try again after few mins");
+        setUserData(false);
       }
     } catch (err) {
       toast.error("Network Error. try again after few mins");
@@ -365,8 +370,20 @@ export default function Page({users}) {
       const userList = userData.filter(entry => entry.twitterVerified === "yes" && entry.solAddress !== "").sort((a, b) => b.userRating - a.userRating).slice(0, topCount);
       const userAddress = userList.map(entry => entry.solAddress);
       const result = await callSplit(wallet, connection, userAddress, token, solanaContractAddress, solanaTokenAddress);
+      console.log("solana result", result)
       toast.success("Success Airdrop");
+      try {
+        const result = await axios.post('/api/me/solanaToken',{userList, token, airdropMessage, solanaTokenAddress})
+        if (result.status == 201) {
+          await handleUsers(result.data);
+        }
+        toast.success("Success AirDrop");
+      } catch (err) {
+        console.log(err);
+        toast.error("DataBase Connection Error");
+      }
     } catch (error) {
+      console.log(error);
       toast.error("Oops! Something Wrong.");
     } finally {
       setLoading(false);

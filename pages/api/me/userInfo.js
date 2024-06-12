@@ -54,19 +54,21 @@ export default async function handler(req, res) {
         );
     
         var tokenAddress = "";
+        var solTokenAddress = ""
     
         if (data.documents) {
             const adminData = data.documents[0];
             tokenAddress = adminData?.tokenAddress ? adminData.tokenAddress : "";
+            solTokenAddress = adminData?.solanaAddress ? adminData.solanaAddress : "";
         }
 
         const users = req.body.userInfo;
         const userList = await Promise.all(users.map(async (user, index)=> {
             let userRating = "";
             if (user.ethAddress) {
-                if (tokenAddress) {
-                    var { tokenValue } = await getEtherBalance(user.ethAddress, tokenAddress);
-                }
+                // if (tokenAddress) {
+                //     var { tokenValue } = await getEtherBalance(user.ethAddress, tokenAddress);
+                // }
                 userRating = getUserRating(Number(user.ethBalance), Number(user.solBalance), Number(user.followers_count), user.location);
             }
             return {
@@ -81,6 +83,7 @@ export default async function handler(req, res) {
                 solAddress: user.solAddress,
                 solBalance: user.solBalance,
                 token_airdrop: user?.tokenBalance && user.tokenBalance.length > 0 ? user.tokenBalance.filter(key => key.contract == tokenAddress)[0].balance : 0,
+                solana_airdrop: user?.solTokenBalance && user.solTokenBalance.length > 0 ? user.solTokenBalance.filter(key => key.contract == solTokenAddress)[0].balance : 0,
                 followers_count: user.followers_count,
                 following_count: user.following_count,
                 like_count: user.like_count,
