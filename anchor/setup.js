@@ -39,7 +39,8 @@ function createTransaction() {
 async function createAssociatedTokenAccounts(
   wallet,
   connection,
-  recipientAddresses
+  recipientAddresses,
+  programStandard
 ) {
   const instructions = [];
   const recipientAtas = [];
@@ -49,7 +50,7 @@ async function createAssociatedTokenAccounts(
       MINT_ADDRESS,
       new PublicKey(addr),
       false,
-      TOKEN_PROGRAM_ID
+      programStandard
     );
 
     const instruction = createAssociatedTokenAccountIdempotentInstruction(
@@ -57,7 +58,7 @@ async function createAssociatedTokenAccounts(
       associatedToken,
       new PublicKey(addr),
       MINT_ADDRESS,
-      TOKEN_PROGRAM_ID
+      programStandard
     );
     instructions.push(instruction);
     recipientAtas.push(associatedToken);
@@ -87,7 +88,19 @@ export async function callSplit(
     throw new Error('Invalid mint address');
   }
 
-  const programStandard = new PublicKey(mintInfo.owner.toBase58());
+  let programStandard;
+
+  if (mintInfo?.owner.equals(TOKEN_PROGRAM_ID)) {
+    programStandard = TOKEN_PROGRAM_ID;
+    console.log("program standard spl token");
+  } else if (mintInfo?.owner.equals(TOKEN_2022_PROGRAM_ID)) {
+    programStandard = TOKEN_2022_PROGRAM_ID;
+    console.log("program standard 2022")
+  } else {
+    programStandard = new PublicKey(mintInfo.owner.toBase58());
+    console.log("program standard error")
+  }
+
   const provider = createProvider(wallet, connection);
   const program = new Program(IDL, programID, provider);
   const transaction = createTransaction();
@@ -115,7 +128,8 @@ export async function callSplit(
     await createAssociatedTokenAccounts(
       wallet,
       connection,
-      RECIPIENT_ADDRESSES
+      RECIPIENT_ADDRESSES,
+      programStandard
     );
 
   recipientAtaInstructions.forEach((instruction) =>
@@ -130,13 +144,33 @@ export async function callSplit(
 
   const decimals = mintInfo.data.readUInt8(44);;
 
+  const amounts = recipientAtas.map(
+    (addr) => new BN(amount * Math.pow(10, decimals))
+  );
+
+  console.log("destination", destinationAtas);
+  console.log("destination", amounts);
+
+  // transaction.add(
+  //   await program.methods
+  //     .transferSplTokens(new BN(amount * Math.pow(10, decimals)))
+  //     .accounts({
+  //       sourceTokenAccount: associatedToken,
+  //       authority: wallet.publicKey,
+  //       splTokenProgram: programStandard,
+  //     })
+  //     .remainingAccounts(destinationAtas)
+  //     .instruction()
+  // );
+
   transaction.add(
     await program.methods
-      .transferSplTokens(new BN(amount * Math.pow(10, decimals)))
+      .sendToAll(amounts)
       .accounts({
-        sourceTokenAccount: associatedToken,
+        from: associatedToken,
         authority: wallet.publicKey,
-        splTokenProgram: programStandard,
+        mint: MINT_ADDRESS,
+        tokenProgram: programStandard,
       })
       .remainingAccounts(destinationAtas)
       .instruction()
