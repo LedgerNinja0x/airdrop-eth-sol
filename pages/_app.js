@@ -42,7 +42,7 @@ export default function App({ Component, pageProps }) {
   // Can be set to 'devnet', 'testnet', or 'mainnet-beta'
   let network;
   console.log("env vars", process.env);
-  if (process.env.ENVRIONMENT_MODE == "MAIN") {
+  if (process.env.ENVIRONMENT_MODE == "PROD") {
     network = WalletAdapterNetwork.Mainnet;
   } else {
     network = WalletAdapterNetwork.Devnet;
